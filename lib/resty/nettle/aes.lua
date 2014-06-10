@@ -75,7 +75,7 @@ function aes128:decrypt(src)
         nettle.nettle_aes128_invert_key(self.context, self.context)
     end
     local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len)
+    local dst = ffi_new(uint8t, len + 1)
     if self.mode == "cbc" then
         local iv = ffi_new(uint8t, 16)
         ffi_copy(iv, self.iv, 16)
@@ -130,7 +130,7 @@ function aes192:decrypt(src)
         nettle.nettle_aes192_invert_key(self.context, self.context)
     end
     local len = #src
-    local dst = ffi_new(uint8t, len)
+    local dst = ffi_new(uint8t, len + 1)
     if self.mode == "cbc" then
         local iv = ffi_new(uint8t, 16)
         ffi_copy(iv, self.iv, 16)
@@ -185,7 +185,7 @@ function aes256:decrypt(src)
         nettle.nettle_aes256_invert_key(self.context, self.context)
     end
     local len = #src
-    local dst = ffi_new(uint8t, len)
+    local dst = ffi_new(uint8t, len + 1)
     if self.mode == "cbc" then
         local iv = ffi_new(uint8t, 16)
         ffi_copy(iv, self.iv, 16)
