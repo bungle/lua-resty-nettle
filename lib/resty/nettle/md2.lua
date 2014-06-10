@@ -2,8 +2,8 @@ local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
 local ffi_cdef   = ffi.cdef
-local ffi_load   = ffi.load
 local ffi_str    = ffi.string
+local nettle     = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct md2_ctx {
@@ -16,8 +16,6 @@ void nettle_md2_init(struct md2_ctx *ctx);
 void nettle_md2_update(struct md2_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_md2_digest(struct md2_ctx *ctx, size_t length, uint8_t *digest);
 ]]
-
-local nettle = ffi_load("libnettle")
 
 local ctx = ffi_typeof("MD2_CTX[1]")
 local buf = ffi_new("uint8_t[?]", 16)
