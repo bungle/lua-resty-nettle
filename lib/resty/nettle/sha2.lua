@@ -4,8 +4,8 @@ local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
 local ffi_cdef   = ffi.cdef
-local ffi_load   = ffi.load
 local ffi_str    = ffi.string
+local nettle     = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_sha224_init(struct sha256_ctx *ctx);
@@ -24,7 +24,6 @@ void nettle_sha512_256_init(struct sha512_ctx *ctx);
 void nettle_sha512_256_digest(struct sha512_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local nettle = ffi_load("libnettle")
 local uint8t = ffi_typeof("uint8_t[?]")
 local ctx256 = ffi_typeof("SHA256_CTX[1]")
 local ctx512 = ffi_typeof("SHA512_CTX[1]")

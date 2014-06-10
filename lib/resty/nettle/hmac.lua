@@ -3,11 +3,11 @@ require "resty.nettle.types.ripemd160"
 require "resty.nettle.types.sha1"
 require "resty.nettle.types.sha2"
 
+local nettle     = require "resty.nettle"
 local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
 local ffi_cdef   = ffi.cdef
-local ffi_load   = ffi.load
 local ffi_str    = ffi.string
 
 ffi_cdef[[
@@ -56,8 +56,6 @@ void nettle_hmac_sha512_set_key(struct hmac_sha512_ctx *ctx, size_t key_length, 
 void nettle_hmac_sha512_update(struct hmac_sha512_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_hmac_sha512_digest(struct hmac_sha512_ctx *ctx, size_t length, uint8_t *digest);
 ]]
-
-local nettle = ffi_load("libnettle")
 
 local uint8t = ffi_typeof("uint8_t[?]")
 local ctxmd5 = ffi_typeof("HMAC_MD5_CTX[1]")

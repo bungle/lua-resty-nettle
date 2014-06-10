@@ -2,8 +2,8 @@ local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
 local ffi_cdef   = ffi.cdef
-local ffi_load   = ffi.load
 local ffi_str    = ffi.string
+local nettle     = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct sha3_state {
@@ -42,8 +42,6 @@ void nettle_sha3_512_init(struct sha3_512_ctx *ctx);
 void nettle_sha3_512_update(struct sha3_512_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_sha3_512_digest(struct sha3_512_ctx *ctx, size_t length, uint8_t *digest);
 ]]
-
-local nettle = ffi_load("libnettle")
 
 local uint8t = ffi_typeof("uint8_t[?]")
 local ctx224 = ffi_typeof("SHA3_224_CTX[1]")

@@ -4,8 +4,8 @@ local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
 local ffi_cdef   = ffi.cdef
-local ffi_load   = ffi.load
 local ffi_str    = ffi.string
+local nettle     = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct umac32_ctx {
@@ -81,8 +81,6 @@ void nettle_umac64_digest(struct umac64_ctx *ctx, size_t length, uint8_t *digest
 void nettle_umac96_digest(struct umac96_ctx *ctx, size_t length, uint8_t *digest);
 void nettle_umac128_digest(struct umac128_ctx *ctx, size_t length, uint8_t *digest);
 ]]
-
-local nettle = ffi_load("libnettle")
 
 local uint8t = ffi_typeof("uint8_t[?]")
 local ctxu32 = ffi_typeof("UMAC32_CTX[1]")

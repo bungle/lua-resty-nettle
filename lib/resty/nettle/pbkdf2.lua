@@ -2,15 +2,14 @@ local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
 local ffi_cdef   = ffi.cdef
-local ffi_load   = ffi.load
 local ffi_str    = ffi.string
+local nettle     = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_pbkdf2_hmac_sha1(size_t key_length, const uint8_t *key, unsigned iterations, size_t salt_length, const uint8_t *salt, size_t length, uint8_t *dst);
 void nettle_pbkdf2_hmac_sha256(size_t key_length, const uint8_t *key, unsigned iterations, size_t salt_length, const uint8_t *salt, size_t length, uint8_t *dst);
 ]]
 
-local nettle = ffi_load("libnettle")
 local uint8t = ffi_typeof("uint8_t[?]")
 local pbkdf2 = {}
 
