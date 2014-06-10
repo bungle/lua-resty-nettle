@@ -1,3 +1,5 @@
+require "resty.nettle.types.md5"
+
 local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
@@ -5,13 +7,8 @@ local ffi_cdef   = ffi.cdef
 local ffi_load   = ffi.load
 local ffi_str    = ffi.string
 
+
 ffi_cdef[[
-typedef struct md5_ctx {
-  uint32_t state[4];
-  uint64_t count;
-  uint8_t block[64];
-  unsigned index;
-} MD5_CTX;
 void nettle_md5_init(struct md5_ctx *ctx);
 void nettle_md5_update(struct md5_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_md5_digest(struct md5_ctx *ctx, size_t length, uint8_t *digest);

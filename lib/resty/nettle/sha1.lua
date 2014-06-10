@@ -1,3 +1,5 @@
+require "resty.nettle.types.sha1"
+
 local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
@@ -6,12 +8,6 @@ local ffi_load   = ffi.load
 local ffi_str    = ffi.string
 
 ffi_cdef[[
-typedef struct sha1_ctx {
-  uint32_t state[5];
-  uint64_t count;
-  uint8_t block[64];
-  unsigned int index;
-} SHA1_CTX;
 void nettle_sha1_init(struct sha1_ctx *ctx);
 void nettle_sha1_update(struct sha1_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_sha1_digest(struct sha1_ctx *ctx, size_t length, uint8_t *digest);

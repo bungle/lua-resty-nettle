@@ -12,7 +12,6 @@ void nettle_pbkdf2_hmac_sha256(size_t key_length, const uint8_t *key, unsigned i
 
 local nettle = ffi_load("libnettle")
 local uint8t = ffi_typeof("uint8_t[?]")
-
 local pbkdf2 = {}
 
 function pbkdf2.hmac_sha1(key, iterations, salt, len)

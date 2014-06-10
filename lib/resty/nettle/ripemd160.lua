@@ -1,3 +1,5 @@
+require "resty.nettle.types.ripemd160"
+
 local ffi        = require "ffi"
 local ffi_new    = ffi.new
 local ffi_typeof = ffi.typeof
@@ -6,12 +8,6 @@ local ffi_load   = ffi.load
 local ffi_str    = ffi.string
 
 ffi_cdef[[
-typedef struct ripemd160_ctx {
-  uint32_t state[5];
-  uint64_t count;
-  uint8_t block[64];
-  unsigned int index;
-} RIPEMD160_CTX;
 void nettle_ripemd160_init(struct ripemd160_ctx *ctx);
 void nettle_ripemd160_update(struct ripemd160_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_ripemd160_digest(struct ripemd160_ctx *ctx, size_t length, uint8_t *digest);
