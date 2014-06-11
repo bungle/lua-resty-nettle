@@ -81,6 +81,7 @@ function aes:encrypt(src)
     local cipher = ciphers[self.bits]
     if self.inverted then
         self.cipher.invert(self.context, self.context)
+        self.inverted = false
     end
     if self.mode == "ctr" then
         local len = #src
@@ -106,6 +107,7 @@ function aes:decrypt(src)
     local cipher = ciphers[self.bits]
     if not self.inverted and self.mode ~= "ctr" then
         cipher.invert(self.context, self.context)
+        self.inverted = true
     end
     if self.mode == "ctr" then
         local len = #src
