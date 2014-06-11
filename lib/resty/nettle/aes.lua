@@ -58,40 +58,53 @@ function aes128:encrypt(src)
     if self.inverted then
         nettle.nettle_aes128_invert_key(self.context, self.context)
     end
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len)
     if self.mode == "cbc" then
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len)
         local iv = ffi_new(uint8t, len)
         ffi_copy(iv, self.iv, 16)
         nettle.nettle_cbc_encrypt(self.context, nettle.nettle_aes128_encrypt, 16, iv, len, dst, src)
+        return ffi_str(dst, len)
     elseif self.mode == "ctr" then
+        local len = #src
+        local dst = ffi_new(uint8t, len)
         local ctr = ffi_new(uint8t, 16)
         ffi_copy(ctr, self.ctr, 16)
         nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes128_encrypt, 16, ctr, len, dst, src)
+        return ffi_str(dst, len)
     else
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len)
         nettle.nettle_aes128_encrypt(self.context, len, dst, src)
+        return ffi_str(dst, len)
     end
-    return ffi_str(dst, len)
 end
 
 function aes128:decrypt(src)
     if not self.inverted and self.mode ~= "ctr" then
         nettle.nettle_aes128_invert_key(self.context, self.context)
     end
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len + 1)
     if self.mode == "cbc" then
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len + 1)
         local iv = ffi_new(uint8t, 16)
         ffi_copy(iv, self.iv, 16)
         nettle.nettle_cbc_decrypt(self.context, nettle.nettle_aes128_decrypt, 16, iv, len, dst, src)
+        return ffi_str(dst)
     elseif self.mode == "ctr" then
+        local len = #src
+        local dst = ffi_new(uint8t, len)
         local ctr = ffi_new(uint8t, 16)
         ffi_copy(ctr, self.ctr, 16)
         nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes128_encrypt, 16, ctr, len, dst, src)
+        return ffi_str(dst, len)
     else
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len + 1)
         nettle.nettle_aes128_decrypt(self.context, len, dst, src)
+        return ffi_str(dst)
     end
-    return ffi_str(dst)
+
 end
 
 local aes192 = {}
@@ -117,40 +130,54 @@ function aes192:encrypt(src)
     if self.inverted then
         nettle.nettle_aes192_invert_key(self.context, self.context)
     end
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len)
     if self.mode == "cbc" then
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len)
         local iv = ffi_new(uint8t, len)
         ffi_copy(iv, self.iv, 16)
         nettle.nettle_cbc_encrypt(self.context, nettle.nettle_aes192_encrypt, 16, iv, len, dst, src)
+        return ffi_str(dst, len)
     elseif self.mode == "ctr" then
+        local len = #src
+        local dst = ffi_new(uint8t, len)
         local ctr = ffi_new(uint8t, 16)
         ffi_copy(ctr, self.ctr, 16)
         nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes192_encrypt, 16, ctr, len, dst, src)
+        return ffi_str(dst, len)
     else
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len)
         nettle.nettle_aes192_encrypt(self.context, len, dst, src)
+        return ffi_str(dst, len)
     end
-    return ffi_str(dst, len)
+
 end
 
 function aes192:decrypt(src)
     if not self.inverted and self.mode ~= "ctr" then
         nettle.nettle_aes192_invert_key(self.context, self.context)
     end
-    local len = #src
-    local dst = ffi_new(uint8t, len + 1)
     if self.mode == "cbc" then
+        local len = #src
+        local dst = ffi_new(uint8t, len + 1)
         local iv = ffi_new(uint8t, 16)
         ffi_copy(iv, self.iv, 16)
         nettle.nettle_cbc_decrypt(self.context, nettle.nettle_aes192_decrypt, 16, iv, len, dst, src)
+        return ffi_str(dst)
     elseif self.mode == "ctr" then
+        local len = #src
+        local dst = ffi_new(uint8t, len)
         local ctr = ffi_new(uint8t, 16)
         ffi_copy(ctr, self.ctr, 16)
         nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes192_encrypt, 16, ctr, len, dst, src)
+        return ffi_str(dst, len)
     else
+        local len = #src
+        local dst = ffi_new(uint8t, len + 1)
         nettle.nettle_aes192_decrypt(self.context, len, dst, src)
+        return ffi_str(dst)
     end
-    return ffi_str(dst)
+
 end
 
 local aes256 = {}
@@ -176,40 +203,52 @@ function aes256:encrypt(src)
     if self.inverted then
         nettle.nettle_aes256_invert_key(self.context, self.context)
     end
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len)
     if self.mode == "cbc" then
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len)
         local iv = ffi_new(uint8t, len)
         ffi_copy(iv, self.iv, 16)
         nettle.nettle_cbc_encrypt(self.context, nettle.nettle_aes256_encrypt, 16, iv, len, dst, src)
+        return ffi_str(dst, len)
     elseif self.mode == "ctr" then
+        local len = #src
+        local dst = ffi_new(uint8t, len)
         local ctr = ffi_new(uint8t, 16)
         ffi_copy(ctr, self.ctr, 16)
         nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes256_encrypt, 16, ctr, len, dst, src)
+        return ffi_str(dst, len)
     else
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len)
         nettle.nettle_aes256_encrypt(self.context, len, dst, src)
+        return ffi_str(dst, len)
     end
-    return ffi_str(dst, len)
 end
 
 function aes256:decrypt(src)
     if not self.inverted and self.mode ~= "ctr" then
         nettle.nettle_aes256_invert_key(self.context, self.context)
     end
-    local len = #src
-    local dst = ffi_new(uint8t, len + 1)
     if self.mode == "cbc" then
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len)
         local iv = ffi_new(uint8t, 16)
         ffi_copy(iv, self.iv, 16)
         nettle.nettle_cbc_decrypt(self.context, nettle.nettle_aes256_decrypt, 16, iv, len, dst, src)
+        return ffi_str(dst)
     elseif self.mode == "ctr" then
+        local len = #src
+        local dst = ffi_new(uint8t, len)
         local ctr = ffi_new(uint8t, 16)
         ffi_copy(ctr, self.ctr, 16)
         nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes256_encrypt, 16, ctr, len, dst, src)
+        return ffi_str(dst, len)
     else
+        local len = ceil(#src / 16) * 16
+        local dst = ffi_new(uint8t, len + 1)
         nettle.nettle_aes256_decrypt(self.context, len, dst, src)
+        return ffi_str(dst)
     end
-    return ffi_str(dst)
 end
 
 return {
