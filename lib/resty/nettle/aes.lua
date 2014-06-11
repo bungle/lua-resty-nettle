@@ -1,4 +1,4 @@
-require "resty.nettle.types.aes"
+require "resty.nettle.types.gcm"
 
 local ffi        = require "ffi"
 local ffi_new    = ffi.new
@@ -28,109 +28,239 @@ void nettle_aes256_decrypt(const struct aes256_ctx *ctx, size_t length, uint8_t 
 void nettle_cbc_encrypt(const void *ctx, nettle_cipher_func *f, size_t block_size, uint8_t *iv, size_t length, uint8_t *dst, const uint8_t *src);
 void nettle_cbc_decrypt(const void *ctx, nettle_cipher_func *f, size_t block_size, uint8_t *iv, size_t length, uint8_t *dst, const uint8_t *src);
 void nettle_ctr_crypt(const void *ctx, nettle_cipher_func *f, size_t block_size, uint8_t *ctr, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_aes128_set_key(struct gcm_aes128_ctx *ctx, const uint8_t *key);
+void nettle_gcm_aes128_update (struct gcm_aes128_ctx *ctx, size_t length, const uint8_t *data);
+void nettle_gcm_aes128_set_iv (struct gcm_aes128_ctx *ctx, size_t length, const uint8_t *iv);
+void nettle_gcm_aes128_encrypt(struct gcm_aes128_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_aes128_decrypt(struct gcm_aes128_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_aes128_digest (struct gcm_aes128_ctx *ctx, size_t length, uint8_t *digest);
+void nettle_gcm_aes192_set_key(struct gcm_aes192_ctx *ctx, const uint8_t *key);
+void nettle_gcm_aes192_update (struct gcm_aes192_ctx *ctx, size_t length, const uint8_t *data);
+void nettle_gcm_aes192_set_iv (struct gcm_aes192_ctx *ctx, size_t length, const uint8_t *iv);
+void nettle_gcm_aes192_encrypt(struct gcm_aes192_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_aes192_decrypt(struct gcm_aes192_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_aes192_digest (struct gcm_aes192_ctx *ctx, size_t length, uint8_t *digest);
+void nettle_gcm_aes256_set_key(struct gcm_aes256_ctx *ctx, const uint8_t *key);
+void nettle_gcm_aes256_update (struct gcm_aes256_ctx *ctx, size_t length, const uint8_t *data);
+void nettle_gcm_aes256_set_iv (struct gcm_aes256_ctx *ctx, size_t length, const uint8_t *iv);
+void nettle_gcm_aes256_encrypt(struct gcm_aes256_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_aes256_decrypt(struct gcm_aes256_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_aes256_digest (struct gcm_aes256_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
 local uint8t = ffi_typeof("uint8_t[?]")
 
 local ciphers = {
-    [128] = {
-        setkey  = nettle.nettle_aes128_set_encrypt_key,
-        invert  = nettle.nettle_aes128_invert_key,
-        encrypt = nettle.nettle_aes128_encrypt,
-        decrypt = nettle.nettle_aes128_decrypt,
-        context = ffi_typeof("AES128_CTX[1]")
+    ecb = {
+        [128] = {
+            setkey  = nettle.nettle_aes128_set_encrypt_key,
+            invert  = nettle.nettle_aes128_invert_key,
+            encrypt = nettle.nettle_aes128_encrypt,
+            decrypt = nettle.nettle_aes128_decrypt,
+            context = ffi_typeof("AES128_CTX[1]")
+        },
+        [192] = {
+            setkey  = nettle.nettle_aes192_set_encrypt_key,
+            invert  = nettle.nettle_aes192_invert_key,
+            encrypt = nettle.nettle_aes192_encrypt,
+            decrypt = nettle.nettle_aes192_decrypt,
+            context = ffi_typeof("AES192_CTX[1]")
+        },
+        [256] = {
+            setkey  = nettle.nettle_aes256_set_encrypt_key,
+            invert  = nettle.nettle_aes256_invert_key,
+            encrypt = nettle.nettle_aes256_encrypt,
+            decrypt = nettle.nettle_aes256_decrypt,
+            context = ffi_typeof("AES256_CTX[1]")
+        }
     },
-    [192] = {
-        setkey  = nettle.nettle_aes192_set_encrypt_key,
-        invert  = nettle.nettle_aes192_invert_key,
-        encrypt = nettle.nettle_aes192_encrypt,
-        decrypt = nettle.nettle_aes192_decrypt,
-        context = ffi_typeof("AES192_CTX[1]")
+    cbc = {
+        iv_size  = 16,
+        [128] = {
+            setkey  = nettle.nettle_aes128_set_encrypt_key,
+            invert  = nettle.nettle_aes128_invert_key,
+            encrypt = nettle.nettle_cbc_encrypt,
+            decrypt = nettle.nettle_cbc_decrypt,
+            cipher  = {
+                encrypt = nettle.nettle_aes128_encrypt,
+                decrypt = nettle.nettle_aes128_decrypt
+            },
+            context = ffi_typeof("AES128_CTX[1]")
+        },
+        [192] = {
+            setkey  = nettle.nettle_aes192_set_encrypt_key,
+            invert  = nettle.nettle_aes192_invert_key,
+            encrypt = nettle.nettle_cbc_encrypt,
+            decrypt = nettle.nettle_cbc_decrypt,
+            cipher  = {
+                encrypt = nettle.nettle_aes192_encrypt,
+                decrypt = nettle.nettle_aes192_decrypt
+            },
+            context = ffi_typeof("AES192_CTX[1]")
+        },
+        [256] = {
+            setkey  = nettle.nettle_aes256_set_encrypt_key,
+            invert  = nettle.nettle_aes256_invert_key,
+            encrypt = nettle.nettle_cbc_encrypt,
+            decrypt = nettle.nettle_cbc_decrypt,
+            cipher  = {
+                encrypt = nettle.nettle_aes256_encrypt,
+                decrypt = nettle.nettle_aes256_decrypt
+            },
+            context = ffi_typeof("AES256_CTX[1]")
+        }
     },
-    [256] = {
-        setkey  = nettle.nettle_aes256_set_encrypt_key,
-        invert  = nettle.nettle_aes256_invert_key,
-        encrypt = nettle.nettle_aes256_encrypt,
-        decrypt = nettle.nettle_aes256_decrypt,
-        context = ffi_typeof("AES256_CTX[1]")
-    }
+    ctr = {
+        iv_size  = 16,
+        [128] = {
+            setkey  = nettle.nettle_aes128_set_encrypt_key,
+            encrypt  = nettle.nettle_ctr_crypt,
+            decrypt  = nettle.nettle_ctr_crypt,
+            cipher  = {
+                encrypt = nettle.nettle_aes128_encrypt,
+                decrypt = nettle.nettle_aes128_encrypt
+            },
+            context = ffi_typeof("AES128_CTX[1]")
+        },
+        [192] = {
+            setkey  = nettle.nettle_aes192_set_encrypt_key,
+            encrypt  = nettle.nettle_ctr_crypt,
+            decrypt  = nettle.nettle_ctr_crypt,
+            cipher  = {
+                encrypt = nettle.nettle_aes192_encrypt,
+                decrypt = nettle.nettle_aes192_encrypt
+            },
+            context = ffi_typeof("AES192_CTX[1]")
+        },
+        [256] = {
+            setkey  = nettle.nettle_aes256_set_encrypt_key,
+            encrypt = nettle.nettle_ctr_crypt,
+            decrypt = nettle.nettle_ctr_crypt,
+            cipher  = {
+                encrypt = nettle.nettle_aes256_encrypt,
+                decrypt = nettle.nettle_aes256_encrypt
+            },
+            context = ffi_typeof("AES256_CTX[1]")
+        }
+    },
+    gcm = {
+        iv_size  = 12,
+        [128] = {
+            setkey  = nettle.nettle_gcm_aes128_set_key,
+            setiv   = nettle.nettle_gcm_aes128_set_iv,
+            encrypt = nettle.nettle_gcm_aes128_encrypt,
+            decrypt = nettle.nettle_gcm_aes128_decrypt,
+            digest  = nettle.nettle_gcm_aes128_digest,
+            context = ffi_typeof("GCM_AES128_CTX[1]")
+        },
+        [192] = {
+            setkey  = nettle.nettle_gcm_aes192_set_key,
+            setiv   = nettle.nettle_gcm_aes192_set_iv,
+            encrypt = nettle.nettle_gcm_aes192_encrypt,
+            decrypt = nettle.nettle_gcm_aes192_decrypt,
+            digest  = nettle.nettle_gcm_aes192_digest,
+            context = ffi_typeof("GCM_AES192_CTX[1]")
+        },
+        [256] = {
+            setkey  = nettle.nettle_gcm_aes256_set_key,
+            setiv   = nettle.nettle_gcm_aes256_set_iv,
+            encrypt = nettle.nettle_gcm_aes256_encrypt,
+            decrypt = nettle.nettle_gcm_aes256_decrypt,
+            digest  = nettle.nettle_gcm_aes256_digest,
+            context = ffi_typeof("GCM_AES256_CTX[1]")
+        }        
+    }    
 }
 
 local aes = {}
 aes.__index = aes
 
-function aes.new(bits, key, options)
-    local cipher = ciphers[bits]
-    options = options or {}
-    local self = setmetatable({
-        context  = ffi_new(cipher.context),
-        inverted = false,
-        mode     = options.mode or "ecb",
-        bits     = bits
-    }, aes)
-    if self.mode == "cbc" then
-        self.iv = options.iv or ""
-    elseif self.mode == "ctr" then
-        self.ctr = options.ctr or ""
+function aes.new(key, mode, iv)
+    local len = #key
+    assert(len == 16 or len == 24 or len == 32, "The AES supported key sizes are 128, 192, and 256 bits.")
+    mode = (mode or "ecb"):lower()
+    local config = ciphers[mode]
+    assert(config, "The AES supported modes are ECB, CBC, CTR and GCM.")
+    local bits = len * 8
+    local cipher = config[bits]
+    local context = ffi_new(cipher.context)
+    cipher.setkey(context, key)
+    local iv_size = config.iv_size
+    if iv_size then
+        assert(#iv == iv_size, "The AES-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits.")
+        if cipher.setiv then
+            cipher.setiv(context, iv_size, iv)
+        else
+            return setmetatable({
+                context = context,
+                cipher  = cipher,
+                iv      = iv }, aes)
+        end
     end
-    cipher.setkey(self.context, key)
-    return self
+    return setmetatable({
+        context = context,
+        cipher  = cipher }, aes)
 end
 
 function aes:encrypt(src)
-    local cipher = ciphers[self.bits]
-    if self.inverted then
-        self.cipher.invert(self.context, self.context)
-        self.inverted = false
+    local cipher = self.cipher
+    if cipher.invert and self.inverted then
+        cipher.invert(self.context, self.context)
+        self.inverted = nil
     end
-    if self.mode == "ctr" then
+    if self.iv then
+        local len = #src
+        if cipher.invert then len = ceil(len / 16) * 16 end
+        local dst = ffi_new(uint8t, len)
+        local ivl = #self.iv
+        local iv = ffi_new(uint8t, ivl)
+        ffi_copy(iv, self.iv, ivl)
+        cipher.encrypt(self.context, cipher.cipher.encrypt, 16, iv, len, dst, src)
+        return ffi_str(dst, len)
+    elseif cipher.digest then
         local len = #src
         local dst = ffi_new(uint8t, len)
-        local ctr = ffi_new(uint8t, 16)
-        ffi_copy(ctr, self.ctr, 16)
-        nettle.nettle_ctr_crypt(self.context, cipher.encrypt, 16, ctr, len, dst, src)
-        return ffi_str(dst, len)
+        local dgt = ffi_new(uint8t, 16)
+        cipher.encrypt(self.context, len, dst, src)
+        cipher.digest(self.context, 16, dgt)
+        return ffi_str(dst, len), ffi_str(dgt, 16)
     end
     local len = ceil(#src / 16) * 16
     local dst = ffi_new(uint8t, len)
-    if self.mode == "cbc" then
-        local iv = ffi_new(uint8t, len)
-        ffi_copy(iv, self.iv, 16)
-        nettle.nettle_cbc_encrypt(self.context, cipher.encrypt, 16, iv, len, dst, src)
-    else
-        cipher.encrypt(self.context, len, dst, src)
-    end
+    cipher.encrypt(self.context, len, dst, src)
     return ffi_str(dst, len)
 end
 
 function aes:decrypt(src)
-    local cipher = ciphers[self.bits]
-    if not self.inverted and self.mode ~= "ctr" then
+    local cipher = self.cipher
+    if cipher.invert and not self.inverted then
         cipher.invert(self.context, self.context)
         self.inverted = true
     end
-    if self.mode == "ctr" then
+    if self.iv then
+        local len = #src
+        if cipher.invert then len = ceil(len / 16) * 16  end
+        local dst = ffi_new(uint8t, len + 1)
+        local ivl = #self.iv
+        local iv = ffi_new(uint8t, ivl)
+        ffi_copy(iv, self.iv, ivl)
+        cipher.decrypt(self.context, cipher.cipher.decrypt, 16, iv, len, dst, src)
+        if cipher.invert then
+            return ffi_str(dst)
+        end
+        return ffi_str(dst, len)
+    elseif cipher.digest then
         local len = #src
         local dst = ffi_new(uint8t, len)
-        local ctr = ffi_new(uint8t, 16)
-        ffi_copy(ctr, self.ctr, 16)
-        nettle.nettle_ctr_crypt(self.context, cipher.encrypt, 16, ctr, len, dst, src)
-        return ffi_str(dst, len)
+        local dgt = ffi_new(uint8t, 16)
+        cipher.decrypt(self.context, len, dst, src)
+        cipher.digest(self.context, 16, dgt)
+        return ffi_str(dst, len), ffi_str(dgt, 16)
     end
     local len = ceil(#src / 16) * 16
     local dst = ffi_new(uint8t, len + 1)
-    if self.mode == "cbc" then
-        local iv = ffi_new(uint8t, 16)
-        ffi_copy(iv, self.iv, 16)
-        nettle.nettle_cbc_decrypt(self.context, cipher.decrypt, 16, iv, len, dst, src)
-    else
-        cipher.decrypt(self.context, len, dst, src)
-    end
+    cipher.decrypt(self.context, len, dst, src)
     return ffi_str(dst)
 end
 
-return {
-    aes128 = { new = function(key, options) return aes.new(128, key, options) end },
-    aes192 = { new = function(key, options) return aes.new(192, key, options) end },
-    aes256 = { new = function(key, options) return aes.new(256, key, options) end }
-}
+return aes
