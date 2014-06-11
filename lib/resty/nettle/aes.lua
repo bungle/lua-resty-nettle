@@ -31,228 +31,104 @@ void nettle_ctr_crypt(const void *ctx, nettle_cipher_func *f, size_t block_size,
 ]]
 
 local uint8t = ffi_typeof("uint8_t[?]")
-local ctx128 = ffi_typeof("AES128_CTX[1]")
-local ctx192 = ffi_typeof("AES192_CTX[1]")
-local ctx256 = ffi_typeof("AES256_CTX[1]")
 
-local aes128 = {}
-aes128.__index = aes128
+local ciphers = {
+    [128] = {
+        setkey  = nettle.nettle_aes128_set_encrypt_key,
+        invert  = nettle.nettle_aes128_invert_key,
+        encrypt = nettle.nettle_aes128_encrypt,
+        decrypt = nettle.nettle_aes128_decrypt,
+        context = ffi_typeof("AES128_CTX[1]")
+    },
+    [192] = {
+        setkey  = nettle.nettle_aes192_set_encrypt_key,
+        invert  = nettle.nettle_aes192_invert_key,
+        encrypt = nettle.nettle_aes192_encrypt,
+        decrypt = nettle.nettle_aes192_decrypt,
+        context = ffi_typeof("AES192_CTX[1]")
+    },
+    [256] = {
+        setkey  = nettle.nettle_aes256_set_encrypt_key,
+        invert  = nettle.nettle_aes256_invert_key,
+        encrypt = nettle.nettle_aes256_encrypt,
+        decrypt = nettle.nettle_aes256_decrypt,
+        context = ffi_typeof("AES256_CTX[1]")
+    }
+}
 
-function aes128.new(key, options)
+local aes = {}
+aes.__index = aes
+
+function aes.new(bits, key, options)
+    local cipher = ciphers[bits]
     options = options or {}
     local self = setmetatable({
-        context  = ffi_new(ctx128),
+        context  = ffi_new(cipher.context),
         inverted = false,
         mode     = options.mode or "ecb",
-    }, aes128)
+        bits     = bits
+    }, aes)
     if self.mode == "cbc" then
         self.iv = options.iv or ""
     elseif self.mode == "ctr" then
         self.ctr = options.ctr or ""
     end
-    nettle.nettle_aes128_set_encrypt_key(self.context, key)
+    cipher.setkey(self.context, key)
     return self
 end
 
-function aes128:encrypt(src)
+function aes:encrypt(src)
+    local cipher = ciphers[self.bits]
     if self.inverted then
-        nettle.nettle_aes128_invert_key(self.context, self.context)
+        self.cipher.invert(self.context, self.context)
     end
-    if self.mode == "cbc" then
-        local len = ceil(#src / 16) * 16
+    if self.mode == "ctr" then
+        local len = #src
         local dst = ffi_new(uint8t, len)
+        local ctr = ffi_new(uint8t, 16)
+        ffi_copy(ctr, self.ctr, 16)
+        nettle.nettle_ctr_crypt(self.context, cipher.encrypt, 16, ctr, len, dst, src)
+        return ffi_str(dst, len)
+    end
+    local len = ceil(#src / 16) * 16
+    local dst = ffi_new(uint8t, len)
+    if self.mode == "cbc" then
         local iv = ffi_new(uint8t, len)
         ffi_copy(iv, self.iv, 16)
-        nettle.nettle_cbc_encrypt(self.context, nettle.nettle_aes128_encrypt, 16, iv, len, dst, src)
-        return ffi_str(dst, len)
-    elseif self.mode == "ctr" then
+        nettle.nettle_cbc_encrypt(self.context, cipher.encrypt, 16, iv, len, dst, src)
+    else
+        cipher.encrypt(self.context, len, dst, src)
+    end
+    return ffi_str(dst, len)
+end
+
+function aes:decrypt(src)
+    local cipher = ciphers[self.bits]
+    if not self.inverted and self.mode ~= "ctr" then
+        cipher.invert(self.context, self.context)
+    end
+    if self.mode == "ctr" then
         local len = #src
         local dst = ffi_new(uint8t, len)
         local ctr = ffi_new(uint8t, 16)
         ffi_copy(ctr, self.ctr, 16)
-        nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes128_encrypt, 16, ctr, len, dst, src)
-        return ffi_str(dst, len)
-    else
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len)
-        nettle.nettle_aes128_encrypt(self.context, len, dst, src)
+        nettle.nettle_ctr_crypt(self.context, cipher.encrypt, 16, ctr, len, dst, src)
         return ffi_str(dst, len)
     end
-end
-
-function aes128:decrypt(src)
-    if not self.inverted and self.mode ~= "ctr" then
-        nettle.nettle_aes128_invert_key(self.context, self.context)
-    end
+    local len = ceil(#src / 16) * 16
+    local dst = ffi_new(uint8t, len + 1)
     if self.mode == "cbc" then
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len + 1)
         local iv = ffi_new(uint8t, 16)
         ffi_copy(iv, self.iv, 16)
-        nettle.nettle_cbc_decrypt(self.context, nettle.nettle_aes128_decrypt, 16, iv, len, dst, src)
-        return ffi_str(dst)
-    elseif self.mode == "ctr" then
-        local len = #src
-        local dst = ffi_new(uint8t, len)
-        local ctr = ffi_new(uint8t, 16)
-        ffi_copy(ctr, self.ctr, 16)
-        nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes128_encrypt, 16, ctr, len, dst, src)
-        return ffi_str(dst, len)
+        nettle.nettle_cbc_decrypt(self.context, cipher.decrypt, 16, iv, len, dst, src)
     else
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len + 1)
-        nettle.nettle_aes128_decrypt(self.context, len, dst, src)
-        return ffi_str(dst)
+        cipher.decrypt(self.context, len, dst, src)
     end
-
-end
-
-local aes192 = {}
-aes192.__index = aes192
-
-function aes192.new(key, options)
-    options = options or {}
-    local self = setmetatable({
-        context  = ffi_new(ctx192),
-        inverted = false,
-        mode     = options.mode or "ecb",
-    }, aes192)
-    if self.mode == "cbc" then
-        self.iv = options.iv or ""
-    elseif self.mode == "ctr" then
-        self.ctr = options.ctr or ""
-    end
-    nettle.nettle_aes192_set_encrypt_key(self.context, key)
-    return self
-end
-
-function aes192:encrypt(src)
-    if self.inverted then
-        nettle.nettle_aes192_invert_key(self.context, self.context)
-    end
-    if self.mode == "cbc" then
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len)
-        local iv = ffi_new(uint8t, len)
-        ffi_copy(iv, self.iv, 16)
-        nettle.nettle_cbc_encrypt(self.context, nettle.nettle_aes192_encrypt, 16, iv, len, dst, src)
-        return ffi_str(dst, len)
-    elseif self.mode == "ctr" then
-        local len = #src
-        local dst = ffi_new(uint8t, len)
-        local ctr = ffi_new(uint8t, 16)
-        ffi_copy(ctr, self.ctr, 16)
-        nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes192_encrypt, 16, ctr, len, dst, src)
-        return ffi_str(dst, len)
-    else
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len)
-        nettle.nettle_aes192_encrypt(self.context, len, dst, src)
-        return ffi_str(dst, len)
-    end
-
-end
-
-function aes192:decrypt(src)
-    if not self.inverted and self.mode ~= "ctr" then
-        nettle.nettle_aes192_invert_key(self.context, self.context)
-    end
-    if self.mode == "cbc" then
-        local len = #src
-        local dst = ffi_new(uint8t, len + 1)
-        local iv = ffi_new(uint8t, 16)
-        ffi_copy(iv, self.iv, 16)
-        nettle.nettle_cbc_decrypt(self.context, nettle.nettle_aes192_decrypt, 16, iv, len, dst, src)
-        return ffi_str(dst)
-    elseif self.mode == "ctr" then
-        local len = #src
-        local dst = ffi_new(uint8t, len)
-        local ctr = ffi_new(uint8t, 16)
-        ffi_copy(ctr, self.ctr, 16)
-        nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes192_encrypt, 16, ctr, len, dst, src)
-        return ffi_str(dst, len)
-    else
-        local len = #src
-        local dst = ffi_new(uint8t, len + 1)
-        nettle.nettle_aes192_decrypt(self.context, len, dst, src)
-        return ffi_str(dst)
-    end
-
-end
-
-local aes256 = {}
-aes256.__index = aes256
-
-function aes256.new(key, options)
-    options = options or {}
-    local self = setmetatable({
-        context  = ffi_new(ctx256),
-        inverted = false,
-        mode     = options.mode or "ecb",
-    }, aes256)
-    if self.mode == "cbc" then
-        self.iv = options.iv or ""
-    elseif self.mode == "ctr" then
-        self.ctr = options.ctr or ""
-    end
-    nettle.nettle_aes256_set_encrypt_key(self.context, key)
-    return self
-end
-
-function aes256:encrypt(src)
-    if self.inverted then
-        nettle.nettle_aes256_invert_key(self.context, self.context)
-    end
-    if self.mode == "cbc" then
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len)
-        local iv = ffi_new(uint8t, len)
-        ffi_copy(iv, self.iv, 16)
-        nettle.nettle_cbc_encrypt(self.context, nettle.nettle_aes256_encrypt, 16, iv, len, dst, src)
-        return ffi_str(dst, len)
-    elseif self.mode == "ctr" then
-        local len = #src
-        local dst = ffi_new(uint8t, len)
-        local ctr = ffi_new(uint8t, 16)
-        ffi_copy(ctr, self.ctr, 16)
-        nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes256_encrypt, 16, ctr, len, dst, src)
-        return ffi_str(dst, len)
-    else
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len)
-        nettle.nettle_aes256_encrypt(self.context, len, dst, src)
-        return ffi_str(dst, len)
-    end
-end
-
-function aes256:decrypt(src)
-    if not self.inverted and self.mode ~= "ctr" then
-        nettle.nettle_aes256_invert_key(self.context, self.context)
-    end
-    if self.mode == "cbc" then
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len)
-        local iv = ffi_new(uint8t, 16)
-        ffi_copy(iv, self.iv, 16)
-        nettle.nettle_cbc_decrypt(self.context, nettle.nettle_aes256_decrypt, 16, iv, len, dst, src)
-        return ffi_str(dst)
-    elseif self.mode == "ctr" then
-        local len = #src
-        local dst = ffi_new(uint8t, len)
-        local ctr = ffi_new(uint8t, 16)
-        ffi_copy(ctr, self.ctr, 16)
-        nettle.nettle_ctr_crypt(self.context, nettle.nettle_aes256_encrypt, 16, ctr, len, dst, src)
-        return ffi_str(dst, len)
-    else
-        local len = ceil(#src / 16) * 16
-        local dst = ffi_new(uint8t, len + 1)
-        nettle.nettle_aes256_decrypt(self.context, len, dst, src)
-        return ffi_str(dst)
-    end
+    return ffi_str(dst)
 end
 
 return {
-    aes128 = aes128,
-    aes192 = aes192,
-    aes256 = aes256
+    aes128 = { new = function(key, options) return aes.new(128, key, options) end },
+    aes192 = { new = function(key, options) return aes.new(192, key, options) end },
+    aes256 = { new = function(key, options) return aes.new(256, key, options) end }
 }
