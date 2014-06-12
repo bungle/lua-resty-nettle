@@ -19,14 +19,6 @@ typedef struct hmac_md5_ctx {
 void nettle_hmac_md5_set_key(struct hmac_md5_ctx *ctx, size_t key_length, const uint8_t *key);
 void nettle_hmac_md5_update (struct hmac_md5_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_hmac_md5_digest (struct hmac_md5_ctx *ctx, size_t length, uint8_t *digest);
-typedef struct hmac_ripemd160_ctx {
-  struct ripemd160_ctx outer;
-  struct ripemd160_ctx inner;
-  struct ripemd160_ctx state;
-} HMAC_RIPEMD160_CTX;
-void nettle_hmac_ripemd160_set_key(struct hmac_ripemd160_ctx *ctx, size_t key_length, const uint8_t *key);
-void nettle_hmac_ripemd160_update (struct hmac_ripemd160_ctx *ctx, size_t length, const uint8_t *data);
-void nettle_hmac_ripemd160_digest (struct hmac_ripemd160_ctx *ctx, size_t length, uint8_t *digest);
 typedef struct hmac_sha1_ctx {
   struct sha1_ctx outer;
   struct sha1_ctx inner;
@@ -55,6 +47,14 @@ void nettle_hmac_sha384_digest (struct hmac_sha512_ctx *ctx, size_t length, uint
 void nettle_hmac_sha512_set_key(struct hmac_sha512_ctx *ctx, size_t key_length, const uint8_t *key);
 void nettle_hmac_sha512_update (struct hmac_sha512_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_hmac_sha512_digest (struct hmac_sha512_ctx *ctx, size_t length, uint8_t *digest);
+typedef struct hmac_ripemd160_ctx {
+  struct ripemd160_ctx outer;
+  struct ripemd160_ctx inner;
+  struct ripemd160_ctx state;
+} HMAC_RIPEMD160_CTX;
+void nettle_hmac_ripemd160_set_key(struct hmac_ripemd160_ctx *ctx, size_t key_length, const uint8_t *key);
+void nettle_hmac_ripemd160_update (struct hmac_ripemd160_ctx *ctx, size_t length, const uint8_t *data);
+void nettle_hmac_ripemd160_digest (struct hmac_ripemd160_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
 local uint8t = ffi_typeof("uint8_t[?]")
@@ -78,14 +78,6 @@ local hmacs = {
         setkey  = nettle.nettle_hmac_md5_set_key,
         update  = nettle.nettle_hmac_md5_update,
         digest  = nettle.nettle_hmac_md5_digest
-    },
-    ripemd160 = {
-        length  = 20,
-        context = ctx160,
-        buffer  = buf160,
-        setkey  = nettle.nettle_hmac_ripemd160_set_key,
-        update  = nettle.nettle_hmac_ripemd160_update,
-        digest  = nettle.nettle_hmac_ripemd160_digest
     },
     sha1 = {
         length  = 20,
@@ -126,6 +118,14 @@ local hmacs = {
         setkey  = nettle.nettle_hmac_sha512_set_key,
         update  = nettle.nettle_hmac_sha512_update,
         digest  = nettle.nettle_hmac_sha512_digest
+    },
+    ripemd160 = {
+        length  = 20,
+        context = ctx160,
+        buffer  = buf160,
+        setkey  = nettle.nettle_hmac_ripemd160_set_key,
+        update  = nettle.nettle_hmac_ripemd160_update,
+        digest  = nettle.nettle_hmac_ripemd160_digest
     }
 }
 
@@ -160,12 +160,12 @@ end
 
 return setmetatable({
     md5       = factory(hmacs.md5),
-    ripemd160 = factory(hmacs.ripemd160),
     sha1      = factory(hmacs.sha1),
     sha224    = factory(hmacs.sha224),
     sha256    = factory(hmacs.sha256),
     sha384    = factory(hmacs.sha384),
-    sha512    = factory(hmacs.sha512)
+    sha512    = factory(hmacs.sha512),
+    ripemd160 = factory(hmacs.ripemd160),
 }, { __call = function(_, algorithm, key, data)
     local mac = hmacs[algorithm:lower()]
     assert(mac, "The supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, and RIPEMD160.")
