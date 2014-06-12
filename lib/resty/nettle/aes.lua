@@ -1,4 +1,5 @@
 require "resty.nettle.types.gcm"
+require "resty.nettle.types.eax"
 
 local ffi        = require "ffi"
 local ffi_new    = ffi.new
@@ -7,6 +8,7 @@ local ffi_cdef   = ffi.cdef
 local ffi_copy   = ffi.copy
 local ffi_str    = ffi.string
 local ceil       = math.ceil
+local huge       = math.huge
 local nettle     = require "resty.nettle"
 
 ffi_cdef[[
@@ -28,6 +30,12 @@ void nettle_aes256_decrypt(const struct aes256_ctx *ctx, size_t length, uint8_t 
 void nettle_cbc_encrypt(const void *ctx, nettle_cipher_func *f, size_t block_size, uint8_t *iv, size_t length, uint8_t *dst, const uint8_t *src);
 void nettle_cbc_decrypt(const void *ctx, nettle_cipher_func *f, size_t block_size, uint8_t *iv, size_t length, uint8_t *dst, const uint8_t *src);
 void nettle_ctr_crypt(const void *ctx, nettle_cipher_func *f, size_t block_size, uint8_t *ctr, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_eax_aes128_set_key(struct eax_aes128_ctx *ctx, const uint8_t *key);
+void nettle_eax_aes128_set_nonce(struct eax_aes128_ctx *ctx, size_t length, const uint8_t *iv);
+void nettle_eax_aes128_update(struct eax_aes128_ctx *ctx, size_t length, const uint8_t *data);
+void nettle_eax_aes128_encrypt(struct eax_aes128_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_eax_aes128_decrypt(struct eax_aes128_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_eax_aes128_digest (struct eax_aes128_ctx *ctx, size_t length, uint8_t *digest);
 void nettle_gcm_aes128_set_key(struct gcm_aes128_ctx *ctx, const uint8_t *key);
 void nettle_gcm_aes128_update (struct gcm_aes128_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_gcm_aes128_set_iv (struct gcm_aes128_ctx *ctx, size_t length, const uint8_t *iv);
@@ -143,6 +151,17 @@ local ciphers = {
             context = ffi_typeof("AES256_CTX[1]")
         }
     },
+    eax = {
+        iv_size  = huge,
+        [128] = {
+            setkey  = nettle.nettle_eax_aes128_set_key,
+            setiv   = nettle.nettle_eax_aes128_set_nonce,
+            encrypt = nettle.nettle_eax_aes128_encrypt,
+            decrypt = nettle.nettle_eax_aes128_decrypt,
+            digest  = nettle.nettle_eax_aes128_digest,
+            context = ffi_typeof("EAX_AES128_CTX[1]")
+        }
+    },
     gcm = {
         iv_size  = 12,
         [128] = {
@@ -187,6 +206,9 @@ function aes.new(key, mode, iv)
     cipher.setkey(context, key)
     local iv_size = config.iv_size
     if iv_size then
+        if iv_size == huge then
+            iv_size = #iv
+        end
         assert(#iv == iv_size, "The AES-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits.")
         if cipher.setiv then
             cipher.setiv(context, iv_size, iv)
