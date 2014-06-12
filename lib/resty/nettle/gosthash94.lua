@@ -19,7 +19,15 @@ void nettle_gosthash94_digest(struct gosthash94_ctx *ctx, size_t length, uint8_t
 
 local ctx = ffi_typeof("GOSTHASH94_CTX[1]")
 local buf = ffi_new("uint8_t[?]", 32)
-local gosthash94 = {}
+local gosthash94 = setmetatable({}, {
+    __call = function(_, data)
+        local context = ffi_new(ctx)
+        nettle.nettle_gosthash94_init(context)
+        nettle.nettle_gosthash94_update(context, #data, data)
+        nettle.nettle_gosthash94_digest(context, 32, buf)
+        return ffi_str(buf, 32)
+    end
+})
 gosthash94.__index = gosthash94
 
 function gosthash94.new()

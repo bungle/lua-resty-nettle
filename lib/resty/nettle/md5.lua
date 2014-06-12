@@ -15,7 +15,15 @@ void nettle_md5_digest(struct md5_ctx *ctx, size_t length, uint8_t *digest);
 
 local ctx = ffi_typeof("MD5_CTX[1]")
 local buf = ffi_new("uint8_t[?]", 16)
-local md5 = {}
+local md5 = setmetatable({}, {
+    __call = function(_, data)
+        local context = ffi_new(ctx)
+        nettle.nettle_md5_init(context)
+        nettle.nettle_md5_update(context, #data, data)
+        nettle.nettle_md5_digest(context, 16, buf)
+        return ffi_str(buf, 16)
+    end
+})
 md5.__index = md5
 
 function md5.new()

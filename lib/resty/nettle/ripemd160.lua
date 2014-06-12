@@ -15,7 +15,15 @@ void nettle_ripemd160_digest(struct ripemd160_ctx *ctx, size_t length, uint8_t *
 
 local ctx = ffi_typeof("RIPEMD160_CTX[1]")
 local buf = ffi_new("uint8_t[?]", 20)
-local ripemd160 = {}
+local ripemd160 = setmetatable({}, {
+    __call = function(_, data)
+        local context = ffi_new(ctx)
+        nettle.nettle_ripemd160_init(context)
+        nettle.nettle_ripemd160_update(context, #data, data)
+        nettle.nettle_ripemd160_digest(context, 20, buf)
+        return ffi_str(buf, 20)
+    end
+})
 ripemd160.__index = ripemd160
 
 function ripemd160.new()

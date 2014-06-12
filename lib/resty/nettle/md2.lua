@@ -19,7 +19,15 @@ void nettle_md2_digest(struct md2_ctx *ctx, size_t length, uint8_t *digest);
 
 local ctx = ffi_typeof("MD2_CTX[1]")
 local buf = ffi_new("uint8_t[?]", 16)
-local md2 = {}
+local md2 = setmetatable({}, {
+    __call = function(_, data)
+        local context = ffi_new(ctx)
+        nettle.nettle_md2_init(context)
+        nettle.nettle_md2_update(context, #data, data)
+        nettle.nettle_md2_digest(context, 16, buf)
+        return ffi_str(buf, 16)
+    end
+})
 md2.__index = md2
 
 function md2.new()

@@ -70,130 +70,108 @@ local buf256 = ffi_new(uint8t, 32)
 local buf384 = ffi_new(uint8t, 48)
 local buf512 = ffi_new(uint8t, 64)
 
-local function hmac_sha256_update(self, data)
-    return nettle.nettle_hmac_sha256_update(self.context, #data, data)
-end
-
-local function hmac_sha512_update(self, data)
-    return nettle.nettle_hmac_sha512_update(self.context, #data, data)
-end
-
-local md5 = {}
-md5.__index = md5
-
-function md5.new(key)
-    local self = setmetatable({ context = ffi_new(ctxmd5) }, md5)
-    nettle.nettle_hmac_md5_set_key(self.context, #key, key)
-    return self
-end
-
-function md5:update(data)
-    return nettle.nettle_hmac_md5_update(self.context, #data, data)
-end
-
-function md5:digest()
-    nettle.nettle_hmac_md5_digest(self.context, 16, buf128)
-    return ffi_str(buf128, 16)
-end
-
-local ripemd160 = {}
-ripemd160.__index = ripemd160
-
-function ripemd160.new(key)
-    local self = setmetatable({ context = ffi_new(ctx160) }, ripemd160)
-    nettle.nettle_hmac_ripemd160_set_key(self.context, #key, key)
-    return self
-end
-
-function ripemd160:update(data)
-    return nettle.nettle_hmac_ripemd160_update(self.context, #data, data)
-end
-
-function ripemd160:digest()
-    nettle.nettle_hmac_ripemd160_digest(self.context, 20, buf160)
-    return ffi_str(buf160, 20)
-end
-
-local sha1 = {}
-sha1.__index = sha1
-
-function sha1.new(key)
-    local self = setmetatable({ context = ffi_new(ctxsha) }, sha1)
-    nettle.nettle_hmac_sha1_set_key(self.context, #key, key)
-    return self
-end
-
-function sha1:update(data)
-    return nettle.nettle_hmac_sha1_update(self.context, #data, data)
-end
-
-function sha1:digest()
-    nettle.nettle_hmac_sha1_digest(self.context, 20, buf160)
-    return ffi_str(buf160, 20)
-end
-
-local sha224 = { update = hmac_sha256_update }
-sha224.__index = sha224
-
-function sha224.new(key)
-    local self = setmetatable({ context = ffi_new(ctx256) }, sha224)
-    nettle.nettle_hmac_sha224_set_key(self.context, #key, key)
-    return self
-end
-
-function sha224:digest()
-    nettle.nettle_hmac_sha224_digest(self.context, 28, buf224)
-    return ffi_str(buf224, 28)
-end
-
-local sha256 = { update = hmac_sha256_update }
-sha256.__index = sha256
-
-function sha256.new(key)
-    local self = setmetatable({ context = ffi_new(ctx256) }, sha256)
-    nettle.nettle_hmac_sha256_set_key(self.context, #key, key)
-    return self
-end
-
-function sha256:digest()
-    nettle.nettle_hmac_sha256_digest(self.context, 32, buf256)
-    return ffi_str(buf256, 32)
-end
-
-local sha384 = { update = hmac_sha512_update }
-sha384.__index = sha384
-
-function sha384.new(key)
-    local self = setmetatable({ context = ffi_new(ctx512) }, sha384)
-    nettle.nettle_hmac_sha384_set_key(self.context, #key, key)
-    return self
-end
-
-function sha384:digest()
-    nettle.nettle_hmac_sha384_digest(self.context, 48, buf384)
-    return ffi_str(buf384, 48)
-end
-
-local sha512 = { update = hmac_sha512_update }
-sha512.__index = sha512
-
-function sha512.new(key)
-    local self = setmetatable({ context = ffi_new(ctx512) }, sha512)
-    nettle.nettle_hmac_sha512_set_key(self.context, #key, key)
-    return self
-end
-
-function sha512:digest()
-    nettle.nettle_hmac_sha512_digest(self.context, 64, buf512)
-    return ffi_str(buf512, 64)
-end
-
-return {
-    md5       = md5,
-    ripemd160 = ripemd160,
-    sha1      = sha1,
-    sha224    = sha224,
-    sha256    = sha256,
-    sha384    = sha384,
-    sha512    = sha512
+local hmacs = {
+    md5 = {
+        length  = 16,
+        context = ctxmd5,
+        buffer  = buf128,
+        setkey  = nettle.nettle_hmac_md5_set_key,
+        update  = nettle.nettle_hmac_md5_update,
+        digest  = nettle.nettle_hmac_md5_digest
+    },
+    ripemd160 = {
+        length  = 20,
+        context = ctx160,
+        buffer  = buf160,
+        setkey  = nettle.nettle_hmac_ripemd160_set_key,
+        update  = nettle.nettle_hmac_ripemd160_update,
+        digest  = nettle.nettle_hmac_ripemd160_digest
+    },
+    sha1 = {
+        length  = 20,
+        context = ctxsha,
+        buffer  = buf160,
+        setkey  = nettle.nettle_hmac_sha1_set_key,
+        update  = nettle.nettle_hmac_sha1_update,
+        digest  = nettle.nettle_hmac_sha1_digest
+    },
+    sha224 = {
+        length  = 28,
+        context = ctx256,
+        buffer  = buf224,
+        setkey  = nettle.nettle_hmac_sha224_set_key,
+        update  = nettle.nettle_hmac_sha256_update,
+        digest  = nettle.nettle_hmac_sha224_digest
+    },
+    sha256 = {
+        length  = 32,
+        context = ctx256,
+        buffer  = buf256,
+        setkey  = nettle.nettle_hmac_sha256_set_key,
+        update  = nettle.nettle_hmac_sha256_update,
+        digest  = nettle.nettle_hmac_sha256_digest
+    },
+    sha384 = {
+        length  = 48,
+        context = ctx512,
+        buffer  = buf384,
+        setkey  = nettle.nettle_hmac_sha384_set_key,
+        update  = nettle.nettle_hmac_sha512_update,
+        digest  = nettle.nettle_hmac_sha384_digest
+    },
+    sha512 = {
+        length  = 64,
+        context = ctx512,
+        buffer  = buf512,
+        setkey  = nettle.nettle_hmac_sha512_set_key,
+        update  = nettle.nettle_hmac_sha512_update,
+        digest  = nettle.nettle_hmac_sha512_digest
+    }
 }
+
+local hmac = {}
+hmac.__index = hmac
+
+function hmac:update(data)
+    return self.hmac.update(self.context, #data, data)
+end
+
+function hmac:digest()
+    local hmac = self.hmac
+    hmac.digest(self.context, hmac.length, hmac.buffer)
+    return ffi_str(hmac.buffer, hmac.length)
+end
+
+local function factory(mac)
+    return setmetatable({ new = function(key)
+        local ctx = ffi_new(mac.context)
+        mac.setkey(ctx, #key, key)
+        return setmetatable({ context = ctx, hmac = mac }, hmac)
+    end }, {
+        __call = function(_, key, data)
+            local ctx = ffi_new(mac.context)
+            mac.setkey(ctx, #key, key)
+            mac.update(ctx, #data, data)
+            mac.digest(ctx, mac.length, mac.buffer)
+            return ffi_str(mac.buffer, mac.length)
+        end
+    })
+end
+
+return setmetatable({
+    md5       = factory(hmacs.md5),
+    ripemd160 = factory(hmacs.ripemd160),
+    sha1      = factory(hmacs.sha1),
+    sha224    = factory(hmacs.sha224),
+    sha256    = factory(hmacs.sha256),
+    sha384    = factory(hmacs.sha384),
+    sha512    = factory(hmacs.sha512)
+}, { __call = function(_, algorithm, key, data)
+    local mac = hmacs[algorithm:lower()]
+    assert(mac, "The supported HMAC algorithms are " .. table.concat(hmacs, ", "):upper() .. ".")
+    local ctx = ffi_new(mac.context)
+    mac.setkey(ctx, #key, key)
+    mac.update(ctx, #data, data)
+    mac.digest(ctx, mac.length, mac.buffer)
+    return ffi_str(mac.buffer, mac.length)
+end })
