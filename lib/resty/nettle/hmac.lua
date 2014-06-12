@@ -168,7 +168,7 @@ return setmetatable({
     sha512    = factory(hmacs.sha512)
 }, { __call = function(_, algorithm, key, data)
     local mac = hmacs[algorithm:lower()]
-    assert(mac, "The supported HMAC algorithms are " .. table.concat(hmacs, ", "):upper() .. ".")
+    assert(mac, "The supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, and RIPEMD160.")
     local ctx = ffi_new(mac.context)
     mac.setkey(ctx, #key, key)
     mac.update(ctx, #data, data)
