@@ -1,4 +1,5 @@
 require "resty.nettle"
+require "resty.nettle.types.aes"
 
 local ffi        = require "ffi"
 local ffi_cdef   = ffi.cdef

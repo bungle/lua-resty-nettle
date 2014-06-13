@@ -1,3 +1,4 @@
+require "resty.nettle.types.aes"
 require "resty.nettle.types.gcm"
 require "resty.nettle.types.eax"
 
@@ -190,7 +191,7 @@ local ciphers = {
         }        
     }    
 }
-
+local dgt = ffi_new(uint8t, 16)
 local aes = {}
 aes.__index = aes
 
@@ -242,7 +243,6 @@ function aes:encrypt(src)
     elseif cipher.digest then
         local len = #src
         local dst = ffi_new(uint8t, len)
-        local dgt = ffi_new(uint8t, 16)
         cipher.encrypt(self.context, len, dst, src)
         cipher.digest(self.context, 16, dgt)
         return ffi_str(dst, len), ffi_str(dgt, 16)
@@ -274,7 +274,6 @@ function aes:decrypt(src)
     elseif cipher.digest then
         local len = #src
         local dst = ffi_new(uint8t, len)
-        local dgt = ffi_new(uint8t, 16)
         cipher.decrypt(self.context, len, dst, src)
         cipher.digest(self.context, 16, dgt)
         return ffi_str(dst, len), ffi_str(dgt, 16)
