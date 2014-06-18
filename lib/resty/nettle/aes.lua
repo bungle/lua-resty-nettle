@@ -253,7 +253,7 @@ function ccm:encrypt(src)
     local cipher  = self.cipher
     local context = self.context
     local iv      = self.iv
-    local ad      = self.ad
+    local ad      = self.ad or ""
     local lad     = #ad
     local len     = #src
     cipher.setiv(context, #iv, iv, lad, len, 16)
@@ -268,7 +268,7 @@ function ccm:decrypt(src)
     local cipher  = self.cipher
     local context = self.context
     local iv      = self.iv
-    local ad      = self.ad
+    local ad      = self.ad or ""
     local lad     = #ad
     local len     = #src
     cipher.setiv(context, #iv, iv, lad, len, 16)
