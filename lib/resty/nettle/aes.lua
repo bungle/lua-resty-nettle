@@ -294,6 +294,7 @@ function aes.new(key, mode, iv, ad)
     cipher.setkey(context, key)
     local iv_size = config.iv_size
     if iv_size then
+        iv = iv or ""
         if iv_size == huge then
             iv_size = #iv
         else
