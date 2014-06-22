@@ -25,7 +25,6 @@ local poly1305 = setmetatable({}, {
             nettle.nettle_poly1305_aes_set_nonce(context, #nonce, nonce)
         end
         nettle.nettle_poly1305_aes_update(context, #data, data)
-        nettle.nettle_ripemd160_digest(context, 20, buf)
         nettle.nettle_poly1305_aes_digest(context, 16, buf128)
         return ffi_str(buf128, 16)
     end
