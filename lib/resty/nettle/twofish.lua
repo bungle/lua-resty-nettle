@@ -33,7 +33,7 @@ local decrypt   = nettle.nettle_twofish_decrypt
 
 function twofish.new(key)
     local len = #key
-    assert(len == 16 or len == 24 or len == 32, "The TWOFISH supported key sizes are 128, 192 and 256 bits.")
+    assert(len == 16 or len == 24 or len == 32, "The TWOFISH supported key sizes are 128, 192, and 256 bits.")
     local ct = ffi_new(context)
     if len == 16 then
         setkey128(ct, key)
