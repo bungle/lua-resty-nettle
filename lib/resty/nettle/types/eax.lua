@@ -1,5 +1,4 @@
 require "resty.nettle"
-require "resty.nettle.types.aes"
 
 local ffi        = require "ffi"
 local ffi_cdef   = ffi.cdef
@@ -15,9 +14,4 @@ typedef struct eax_ctx {
   union nettle_block16 omac_message;
   union nettle_block16 ctr;
 } EAX_CTX;
-typedef struct eax_aes128_ctx {
-  struct eax_key key;
-  struct eax_ctx eax;
-  struct aes128_ctx cipher;
-} EAX_AES128_CTX;
 ]]

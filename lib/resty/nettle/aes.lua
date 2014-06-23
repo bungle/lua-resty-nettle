@@ -1,7 +1,4 @@
 require "resty.nettle.types.aes"
-require "resty.nettle.types.eax"
-require "resty.nettle.types.gcm"
-require "resty.nettle.types.ccm"
 
 local ffi        = require "ffi"
 local ffi_new    = ffi.new
