@@ -1,3 +1,4 @@
+require "resty.nettle.types.chacha"
 require "resty.nettle.types.poly1305"
 
 local ffi        = require "ffi"
@@ -8,9 +9,6 @@ local ffi_str    = ffi.string
 local nettle     = require "resty.nettle"
 
 ffi_cdef[[
-typedef struct chacha_ctx {
-  uint32_t state[16];
-};
 typedef struct chacha_poly1305_ctx {
   struct chacha_ctx chacha;
   struct poly1305_ctx poly1305;
@@ -42,7 +40,7 @@ local encrypt  = nettle.nettle_chacha_poly1305_encrypt
 local decrypt  = nettle.nettle_chacha_poly1305_decrypt
 local digest   = nettle.nettle_chacha_poly1305_digest
 
-function chacha_poly1305.new(key, nonce)
+function chacha_poly1305.new(key, nonce, ad)
     local kl = #key
     assert(kl == 32, "The ChaCha-Poly1305 supported key size is 256 bits.")
     local nl = #nonce
@@ -50,6 +48,9 @@ function chacha_poly1305.new(key, nonce)
     local ct = ffi_new(context)
     setkey(ct, key)
     setnonce(ct, nonce)
+    if ad then
+        update(ct, #ad, ad)
+    end
     return setmetatable({ context = ct }, chacha_poly1305)
 end
 
@@ -64,14 +65,11 @@ end
 
 function chacha_poly1305:decrypt(src)
     local len = #src
+    local ctx = self.context
     local dst = ffi_new(uint8t, len)
-    decrypt(self.context, len, dst, src)
-    digest(self.context, 16, dgt)
+    decrypt(ctx, len, dst, src)
+    digest(ctx, 16, dgt)
     return ffi_str(dst, len), ffi_str(dgt, 16)
-end
-
-function chacha_poly1305:update(data)
-    return update(self.context, #data, data)
 end
 
 return chacha_poly1305
