@@ -8,7 +8,7 @@ local nettle     = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct serpent_ctx {
-  uint32_t keys[33][4];  /* key schedule */
+  uint32_t keys[33][4];
 } SERPENT_CTX;
 void nettle_serpent_set_key(struct serpent_ctx *ctx, size_t length, const uint8_t *key);
 void nettle_serpent128_set_key(struct serpent_ctx *context, const uint8_t *key);
