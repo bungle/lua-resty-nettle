@@ -45,15 +45,19 @@ yarrow.__index = function(t, k)
     return rawget(getmetatable(t), k)
 end
 
-function yarrow.new()
+function yarrow.new(seed)
     local self = setmetatable({ context = ffi_new(ctx256) }, yarrow)
     nettle.nettle_yarrow256_init(self.context, 0, nil)
+    if seed then
+        self:seed(seed)
+    end
     return self
 end
 
 function yarrow:seed(data)
-    assert(#data > 31, "Seed data length should be at least 32 bytes, but it can be larger.")
-    nettle.nettle_yarrow256_seed(self.context, #data, data)
+    local len = #data
+    assert(len > 31, "Seed data length should be at least 32 bytes, but it can be larger.")
+    nettle.nettle_yarrow256_seed(self.context, len, data)
 end
 
 function yarrow:reseed(fast)
