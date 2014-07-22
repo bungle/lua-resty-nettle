@@ -32,104 +32,99 @@ local buf256 = ffi_new(uint8t, 32)
 local buf384 = ffi_new(uint8t, 48)
 local buf512 = ffi_new(uint8t, 64)
 
-local function sha256_update(self, data)
-    return nettle.nettle_sha256_update(self.context, #data, data)
-end
-
-local function sha512_update(self, data)
-    return nettle.nettle_sha512_update(self.context, #data, data)
-end
-
-local sha224 = { update = sha256_update }
-sha224.__index = sha224
-
-function sha224.new()
-    local self = setmetatable({ context = ffi_new(ctx256) }, sha224)
-    nettle.nettle_sha224_init(self.context)
-    return self
-end
-
-function sha224:digest()
-    nettle.nettle_sha224_digest(self.context, 28, buf224)
-    return ffi_str(buf224, 28)
-end
-
-local sha256 = { update = sha256_update }
-sha256.__index = sha256
-
-function sha256.new()
-    local self = setmetatable({ context = ffi_new(ctx256) }, sha256)
-    nettle.nettle_sha256_init(self.context)
-    return self
-end
-
-function sha256:digest()
-    nettle.nettle_sha256_digest(self.context, 32, buf256)
-    return ffi_str(buf256, 32)
-end
-
-local sha384 = { update = sha512_update }
-sha384.__index = sha384
-
-function sha384.new()
-    local self = setmetatable({ context = ffi_new(ctx512) }, sha384)
-    nettle.nettle_sha384_init(self.context)
-    return self
-end
-
-function sha384:digest()
-    nettle.nettle_sha384_digest(self.context, 48, buf384)
-    return ffi_str(buf384, 48)
-end
-
-local sha512 = { update = sha512_update }
-sha512.__index = sha512
-
-function sha512.new()
-    local self = setmetatable({ context = ffi_new(ctx512) }, sha512)
-    nettle.nettle_sha512_init(self.context)
-    return self
-end
-
-function sha512:digest()
-    nettle.nettle_sha512_digest(self.context, 64, buf512)
-    return ffi_str(buf512, 64)
-end
-
-local sha512_224 = { update = sha512_update }
-sha512_224.__index = sha512_224
-
-function sha512_224.new()
-    local self = setmetatable({ context = ffi_new(ctx512) }, sha512_224)
-    nettle.nettle_sha512_224_init(self.context)
-    return self
-end
-
-function sha512_224:digest()
-    nettle.nettle_sha512_224_digest(self.context, 28, buf224)
-    return ffi_str(buf224, 28)
-end
-
-local sha512_256 = { update = sha512_update }
-sha512_256.__index = sha512_256
-
-function sha512_256.new()
-    local self = setmetatable({ context = ffi_new(ctx512) }, sha512_256)
-    nettle.nettle_sha512_256_init(self.context)
-    return self
-end
-
-function sha512_256:digest()
-    nettle.nettle_sha512_256_digest(self.context, 32, buf256)
-    return ffi_str(buf256, 32)
-end
-
-return {
-    sha224     = sha224,
-    sha256     = sha256,
-    sha384     = sha384,
-    sha512     = sha512,
-    sha512_224 = sha512_224,
-    sha512_256 = sha512_256
+local hashes = {
+    sha224      = {
+        length  = 28,
+        context = ctx256,
+        buffer  = buf224,
+        init    = nettle.nettle_sha224_init,
+        update  = nettle.nettle_sha256_update,
+        digest  = nettle.nettle_sha224_digest
+    },
+    sha256      = {
+        length  = 32,
+        context = ctx256,
+        buffer  = buf256,
+        init    = nettle.nettle_sha256_init,
+        update  = nettle.nettle_sha256_update,
+        digest  = nettle.nettle_sha256_digest
+    },
+    sha384      = {
+        length  = 48,
+        context = ctx512,
+        buffer  = buf384,
+        init    = nettle.nettle_sha384_init,
+        update  = nettle.nettle_sha512_update,
+        digest  = nettle.nettle_sha384_digest
+    },
+    sha512      = {
+        length  = 64,
+        context = ctx512,
+        buffer  = buf512,
+        init    = nettle.nettle_sha512_init,
+        update  = nettle.nettle_sha512_update,
+        digest  = nettle.nettle_sha512_digest
+    },
+    sha512_224  = {
+        length  = 28,
+        context = ctx512,
+        buffer  = buf224,
+        init    = nettle.nettle_sha512_224_init,
+        update  = nettle.nettle_sha512_update,
+        digest  = nettle.nettle_sha512_224_digest
+    },
+    sha512_256  = {
+        length  = 32,
+        context = ctx512,
+        buffer  = buf256,
+        init    = nettle.nettle_sha512_256_init,
+        update  = nettle.nettle_sha512_update,
+        digest  = nettle.nettle_sha512_256_digest
+    }
 }
 
+local sha2 = {}
+sha2.__index = sha2
+
+function sha2:update(data)
+    return self.hash.update(self.context, #data, data)
+end
+
+function sha2:digest()
+    local hash = self.hash
+    hash.digest(self.context, hash.length, hash.buffer)
+    return ffi_str(hash.buffer, hash.length)
+end
+
+local function factory(hash)
+    return setmetatable({ new = function()
+        local ctx = ffi_new(hash.context)
+        hash.init(ctx)
+        return setmetatable({ context = ctx, hash = hash }, sha2)
+    end }, {
+        __call = function(_, data)
+            local ctx = ffi_new(hash.context)
+            hash.init(ctx)
+            hash.update(ctx, #data, data)
+            hash.digest(ctx, hash.length, hash.buffer)
+            return ffi_str(hash.buffer, hash.length)
+        end
+    })
+end
+
+return setmetatable({
+    sha224     = factory(hashes.sha224),
+    sha256     = factory(hashes.sha256),
+    sha384     = factory(hashes.sha384),
+    sha512     = factory(hashes.sha512),
+    sha512_224 = factory(hashes.sha512_224),
+    sha512_256 = factory(hashes.sha512_256)
+}, { __call = function(_, algorithm, data)
+    local hash = hashes[algorithm:lower()]
+    assert(hash, "The supported SHA2 algorithms are SHA224, SHA256, SHA384, SHA512, SHA512_224, and SHA512_256.")
+    local ctx = ffi_new(hash.context)
+    hash.init(ctx)
+    hash.update(ctx, #data, data)
+    hash.digest(ctx, hash.length, hash.buffer)
+    return ffi_str(hash.buffer, hash.length)
+end })

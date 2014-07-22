@@ -46,4 +46,5 @@ function arcfour:decrypt(src)
     crypt(self.context, len, dst, src)
     return ffi_str(dst, len)
 end
+
 return arcfour

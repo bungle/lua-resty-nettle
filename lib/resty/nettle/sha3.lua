@@ -53,82 +53,81 @@ local buf256 = ffi_new(uint8t, 32)
 local buf384 = ffi_new(uint8t, 48)
 local buf512 = ffi_new(uint8t, 64)
 
-local sha224 = {}
-sha224.__index = sha224
-
-function sha224.new()
-    local self = setmetatable({ context = ffi_new(ctx224) }, sha224)
-    nettle.nettle_sha3_224_init(self.context)
-    return self
-end
-
-function sha224:update(data)
-    return nettle.nettle_sha3_224_update(self.context, #data, data)
-end
-
-function sha224:digest()
-    nettle.nettle_sha3_224_digest(self.context, 28, buf224)
-    return ffi_str(buf224, 28)
-end
-
-local sha256 = {}
-sha256.__index = sha256
-
-function sha256.new()
-    local self = setmetatable({ context = ffi_new(ctx256) }, sha256)
-    nettle.nettle_sha3_256_init(self.context)
-    return self
-end
-
-function sha256:update(data)
-    return nettle.nettle_sha3_256_update(self.context, #data, data)
-end
-
-function sha256:digest()
-    nettle.nettle_sha3_256_digest(self.context, 32, buf256)
-    return ffi_str(buf256, 32)
-end
-
-local sha384 = {}
-sha384.__index = sha384
-
-function sha384.new()
-    local self = setmetatable({ context = ffi_new(ctx384) }, sha384)
-    nettle.nettle_sha3_384_init(self.context)
-    return self
-end
-
-function sha384:update(data)
-    return nettle.nettle_sha3_384_update(self.context, #data, data)
-end
-
-function sha384:digest()
-    nettle.nettle_sha3_384_digest(self.context, 48, buf384)
-    return ffi_str(buf384, 48)
-end
-
-local sha512 = {}
-sha512.__index = sha512
-
-function sha512.new()
-    local self = setmetatable({ context = ffi_new(ctx512) }, sha512)
-    nettle.nettle_sha3_512_init(self.context)
-    return self
-end
-
-function sha512:update(data)
-    return nettle.nettle_sha3_512_update(self.context, #data, data)
-end
-
-function sha512:digest()
-    nettle.nettle_sha3_512_digest(self.context, 64, buf512)
-    return ffi_str(buf512, 64)
-end
-
-return {
-    sha224     = sha224,
-    sha256     = sha256,
-    sha384     = sha384,
-    sha512     = sha512
+local hashes = {
+    [224]       = {
+        length  = 28,
+        context = ctx224,
+        buffer  = buf224,
+        init    = nettle.nettle_sha3_224_init,
+        update  = nettle.nettle_sha3_224_update,
+        digest  = nettle.nettle_sha3_224_digest
+    },
+    [256]       = {
+        length  = 32,
+        context = ctx256,
+        buffer  = buf256,
+        init    = nettle.nettle_sha3_256_init,
+        update  = nettle.nettle_sha3_256_update,
+        digest  = nettle.nettle_sha3_256_digest
+    },
+    [384]       = {
+        length  = 48,
+        context = ctx384,
+        buffer  = buf384,
+        init    = nettle.nettle_sha3_384_init,
+        update  = nettle.nettle_sha3_384_update,
+        digest  = nettle.nettle_sha3_384_digest
+    },
+    [512]       = {
+        length  = 64,
+        context = ctx512,
+        buffer  = buf512,
+        init    = nettle.nettle_sha3_512_init,
+        update  = nettle.nettle_sha3_512_update,
+        digest  = nettle.nettle_sha3_512_digest
+    }
 }
 
+local sha3 = {}
+sha3.__index = sha3
+
+function sha3:update(data)
+    return self.hash.update(self.context, #data, data)
+end
+
+function sha3:digest()
+    local hash = self.hash
+    hash.digest(self.context, hash.length, hash.buffer)
+    return ffi_str(hash.buffer, hash.length)
+end
+
+local function factory(hash)
+    return setmetatable({ new = function()
+        local ctx = ffi_new(hash.context)
+        hash.init(ctx)
+        return setmetatable({ context = ctx, hash = hash }, sha3)
+    end }, {
+        __call = function(_, data)
+            local ctx = ffi_new(hash.context)
+            hash.init(ctx)
+            hash.update(ctx, #data, data)
+            hash.digest(ctx, hash.length, hash.buffer)
+            return ffi_str(hash.buffer, hash.length)
+        end
+    })
+end
+
+return setmetatable({
+    sha224     = factory(hashes[224]),
+    sha256     = factory(hashes[256]),
+    sha384     = factory(hashes[384]),
+    sha512     = factory(hashes[512])
+}, { __call = function(_, bits, data)
+    local hash = hashes[bits]
+    assert(hash, "The supported SHA3 algorithm output sizes are 224, 256, 384, and 512 bits")
+    local ctx = ffi_new(hash.context)
+    hash.init(ctx)
+    hash.update(ctx, #data, data)
+    hash.digest(ctx, hash.length, hash.buffer)
+    return ffi_str(hash.buffer, hash.length)
+end })

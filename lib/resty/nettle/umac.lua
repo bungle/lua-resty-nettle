@@ -92,93 +92,94 @@ local bufu64 = ffi_new(uint8t, 8)
 local bufu96 = ffi_new(uint8t, 12)
 local buf128 = ffi_new(uint8t, 16)
 
-local umac32 = {}
-umac32.__index = umac32
-
-function umac32.new(key, nonce)
-    local self = setmetatable({ context = ffi_new(ctxu32) }, umac32)
-    nettle.nettle_umac32_set_key(self.context, key)
-    if nonce then
-        nettle.nettle_umac32_set_nonce(self.context, #nonce, nonce)
-    end
-    return self
-end
-
-function umac32:update(data)
-    return nettle.nettle_umac32_update(self.context, #data, data)
-end
-
-function umac32:digest()
-    nettle.nettle_umac32_digest(self.context, 4, bufu32)
-    return ffi_str(bufu32, 4)
-end
-
-local umac64 = {}
-umac64.__index = umac64
-
-function umac64.new(key, nonce)
-    local self = setmetatable({ context = ffi_new(ctxu64) }, umac64)
-    nettle.nettle_umac64_set_key(self.context, key)
-    if nonce then
-        nettle.nettle_umac64_set_nonce(self.context, #nonce, nonce)
-    end
-    return self
-end
-
-function umac64:update(data)
-    return nettle.nettle_umac64_update(self.context, #data, data)
-end
-
-function umac64:digest()
-    nettle.nettle_umac64_digest(self.context, 8, bufu64)
-    return ffi_str(bufu64, 8)
-end
-
-local umac96 = {}
-umac96.__index = umac96
-
-function umac96.new(key, nonce)
-    local self = setmetatable({ context = ffi_new(ctxu96) }, umac96)
-    nettle.nettle_umac96_set_key(self.context, key)
-    if nonce then
-        nettle.nettle_umac96_set_nonce(self.context, #nonce, nonce)
-    end
-    return self
-end
-
-function umac96:update(data)
-    return nettle.nettle_umac96_update(self.context, #data, data)
-end
-
-function umac96:digest()
-    nettle.nettle_umac96_digest(self.context, 12, bufu96)
-    return ffi_str(bufu96, 12)
-end
-
-local umac128 = {}
-umac128.__index = umac128
-
-function umac128.new(key, nonce)
-    local self = setmetatable({ context = ffi_new(ctx128) }, umac128)
-    nettle.nettle_umac128_set_key(self.context, key)
-    if nonce then
-        nettle.nettle_umac128_set_nonce(self.context, #nonce, nonce)
-    end
-    return self
-end
-
-function umac128:update(data)
-    return nettle.nettle_umac128_update(self.context, #data, data)
-end
-
-function umac128:digest()
-    nettle.nettle_umac128_digest(self.context, 16, buf128)
-    return ffi_str(buf128, 16)
-end
-
-return {
-    umac32  = umac32,
-    umac64  = umac64,
-    umac96  = umac96,
-    umac128  = umac128
+local umacs = {
+    [32]         = {
+        length   = 4,
+        context  = ctxu32,
+        buffer   = bufu32,
+        setkey   = nettle.nettle_umac32_set_key,
+        setnonce = nettle.nettle_umac32_set_nonce,
+        update   = nettle.nettle_umac32_update,
+        digest   = nettle.nettle_umac32_digest
+    },
+    [64]         = {
+        length   = 8,
+        context  = ctxu64,
+        buffer   = bufu64,
+        setkey   = nettle.nettle_umac64_set_key,
+        setnonce = nettle.nettle_umac64_set_nonce,
+        update   = nettle.nettle_umac64_update,
+        digest   = nettle.nettle_umac64_digest
+    },
+    [96]         = {
+        length   = 12,
+        context  = ctxu96,
+        buffer   = bufu96,
+        setkey   = nettle.nettle_umac96_set_key,
+        setnonce = nettle.nettle_umac96_set_nonce,
+        update   = nettle.nettle_umac96_update,
+        digest   = nettle.nettle_umac96_digest
+    },
+    [128]        = {
+        length   = 16,
+        context  = ctx128,
+        buffer   = buf128,
+        setkey   = nettle.nettle_umac128_set_key,
+        setnonce = nettle.nettle_umac128_set_nonce,
+        update   = nettle.nettle_umac128_update,
+        digest   = nettle.nettle_umac128_digest
+    }
 }
+
+local umac = {}
+umac.__index = umac
+
+function umac:update(data)
+    return self.umac.update(self.context, #data, data)
+end
+
+function umac:digest()
+    local umac = self.umac
+    umac.digest(self.context, umac.length, umac.buffer)
+    return ffi_str(umac.buffer, umac.length)
+end
+
+local function factory(mac)
+    return setmetatable({ new = function(key, nonce)
+        local ctx = ffi_new(mac.context)
+        mac.setkey(ctx, key)
+        if nonce then
+            mac.setnonce(ctx, #nonce, nonce)
+        end
+        return setmetatable({ context = ctx, umac = mac }, umac)
+    end }, {
+        __call = function(_, key, nonce, data)
+            local ctx = ffi_new(mac.context)
+            mac.setkey(ctx, key)
+            if nonce then
+                mac.setnonce(ctx, #nonce, nonce)
+            end
+            mac.update(ctx, #data, data)
+            mac.digest(ctx, mac.length, mac.buffer)
+            return ffi_str(mac.buffer, mac.length)
+        end
+    })
+end
+
+return setmetatable({
+    umac32  = factory(umacs[32]),
+    umac64  = factory(umacs[64]),
+    umac96  = factory(umacs[96]),
+    umac128 = factory(umacs[128])
+}, { __call = function(_, bits, key, nonce, data)
+    local mac = umacs[bits]
+    assert(mac, "The supported UMAC algorithm output sizes are 32, 64, 96, and 128 bits")
+    local ctx = ffi_new(mac.context)
+    mac.setkey(ctx, key)
+    if nonce then
+        mac.setnonce(ctx, #nonce, nonce)
+    end
+    mac.update(ctx, #data, data)
+    mac.digest(ctx, mac.length, mac.buffer)
+    return ffi_str(mac.buffer, mac.length)
+end })
