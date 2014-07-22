@@ -8,10 +8,10 @@ All the bindings that do not depend on [GMP](https://gmplib.org/) are ready to u
 
 ## License
 
-`lua-resty-cjson` uses two clause BSD license.
+`lua-resty-nettle` uses two clause BSD license.
 
 ```
-Copyright (c) 2013, Aapo Talvensaari
+Copyright (c) 2014, Aapo Talvensaari
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
