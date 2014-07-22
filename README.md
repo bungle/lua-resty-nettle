@@ -4,7 +4,7 @@ LuaJIT FFI bindings for [Nettle](http://www.lysator.liu.se/~nisse/nettle/nettle.
 
 ## Status
 
-All the bindings that do not depend on gmp are ready to use. The gmp depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms). 
+All the bindings that do not depend on gmp are ready to use. The gmp depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms) (i.e. RSA, DSA, and ECDSA). I will be adding documentation shortly.
 
 ## License
 
