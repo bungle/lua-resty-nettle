@@ -1,6 +1,10 @@
 # lua-resty-nettle
 
-LuaJIT FFI bindings for [Nettle](http://www.lysator.liu.se/~nisse/nettle/nettle.html) (a low-level cryptographic library) (WIP) 
+LuaJIT FFI bindings for [Nettle](http://www.lysator.liu.se/~nisse/nettle/nettle.html) (a low-level cryptographic library)
+
+## Status
+
+All the bindings that do not depend on gmp are ready to use. The gmp depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms). 
 
 ## License
 
