@@ -92,6 +92,20 @@ s512_224:update('et')
 local dgst = s512_224:digest()
 ```
 
+#### SHA-512/256
+
+```lua
+local hash = require "resty.nettle.sha2"
+local dgst = hash('sha512_256', 'test')
+-- or
+local dgst = hash.sha512_265('test')
+-- or
+local s512_256 = hash.sha512_256.new()
+s512_256:update('te')
+s512_256:update('et')
+local dgst = s512_256:digest()
+```
+
 ## License
 
 `lua-resty-nettle` uses two clause BSD license.
