@@ -172,6 +172,35 @@ s512:update('et')
 local dgst = s512:digest()
 ```
 
+### Legacy Hash Functions
+
+The hash functions in this section all have some known weaknesses, and should be avoided for new applications. These hash functions are mainly useful for compatibility with old applications and protocols. Some are still considered safe as building blocks for particular constructions, e.g., there seems to be no known attacks against HMAC-SHA1 or even HMAC-MD5. In some important cases, use of a “legacy” hash function does not in itself make the application insecure; if a known weakness is relevant depends on how the hash function is used, and on the threat model.
+
+#### MD5
+
+MD5 is a message digest function constructed by Ronald Rivest, and described in RFC 1321. It outputs message digests of 128 bits, or 16 octets.
+
+#### MD2
+
+MD2 is another hash function of Ronald Rivest's, described in RFC 1319. It outputs message digests of 128 bits, or 16 octets.
+
+#### MD4
+
+MD4 is a predecessor of MD5, described in RFC 1320. Like MD5, it is constructed by Ronald Rivest. It outputs message digests of 128 bits, or 16 octets. Use of MD4 is not recommended, but it is sometimes needed for compatibility with existing applications and protocols.
+
+#### RIPEMD160
+
+RIPEMD160 is a hash function designed by Hans Dobbertin, Antoon Bosselaers, and Bart Preneel, as a strengthened version of RIPEMD (which, like MD4 and MD5, fails the collision-resistance requirement). It produces message digests of 160 bits, or 20 octets.
+
+#### SHA-1
+
+SHA1 is a hash function specified by NIST (The U.S. National Institute for Standards and Technology). It outputs hash values of 160 bits, or 20 octets.
+
+#### GOSTHASH94
+
+The GOST94 or GOST R 34.11-94 hash algorithm is a Soviet-era algorithm used in Russian government standards (see RFC 4357). It outputs message digests of 256 bits, or 32 octets.
+
+
 ## License
 
 `lua-resty-nettle` uses two clause BSD license.
