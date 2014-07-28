@@ -60,11 +60,11 @@ function yarrow:seed(data)
     nettle.nettle_yarrow256_seed(self.context, len, data)
 end
 
-function yarrow:reseed(fast)
-    fast = fast ~= false
-    if fast then
-        return nettle.nettle_yarrow256_fast_reseed(self.context)
-    end
+function yarrow:fast_reseed()
+    return nettle.nettle_yarrow256_fast_reseed(self.context)
+end
+
+function yarrow:slow_reseed()
     return nettle.nettle_yarrow256_slow_reseed(self.context)
 end
 
