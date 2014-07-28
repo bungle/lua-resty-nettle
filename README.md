@@ -20,10 +20,9 @@ SHA256 is a member of the SHA2 family. It outputs hash values of 256 bits, or 32
 local hash = require "resty.nettle.sha2"
 local dgst = hash('sha256', 'test')
 -- or
-local s256 = hash.new()
-local dgst = s256('test')
+local dgst = hash.sha256('test')
 -- or
-local s256 = hash.new()
+local s256 = hash.sha256.new()
 s256:update('te')
 s256:update('et')
 local dgst = s256:digest()
@@ -37,10 +36,9 @@ SHA224 is a variant of SHA256, with a different initial state, and with the outp
 local hash = require "resty.nettle.sha2"
 local dgst = hash('sha224', 'test')
 -- or
-local s224 = hash.new()
-local dgst = s224('test')
+local dgst = hash.sha224('test')
 -- or
-local s224 = hash.new()
+local s224 = hash.sha224..new()
 s224:update('te')
 s224:update('et')
 local dgst = s224:digest()
@@ -54,13 +52,44 @@ SHA512 is a larger sibling to SHA256, with a very similar structure but with bot
 local hash = require "resty.nettle.sha2"
 local dgst = hash('sha512', 'test')
 -- or
-local s512 = hash.new()
-local dgst = s512('test')
+local dgst = hash.sha512('test')
 -- or
-local s512 = hash.new()
+local s512 = hash.sha512.new()
 s512:update('te')
 s512:update('et')
 local dgst = s512:digest()
+```
+
+### SHA-384, SHA-512/224,  and SHA-512/256
+
+Several variants of SHA512 have been defined, with a different initial state, and with the output truncated to shorter length than 512 bits. Naming is a bit confused, these algorithms are call SHA-512/224, SHA-512/256 and SHA384, for output sizes of 224, 256 and 384 bits, respectively. 
+
+#### SHA-384
+
+```lua
+local hash = require "resty.nettle.sha2"
+local dgst = hash('sha384', 'test')
+-- or
+local dgst = hash.sha384('test')
+-- or
+local s384 = hash.sha384.new()
+s512:update('te')
+s512:update('et')
+local dgst = s384:digest()
+```
+
+#### SHA-512/224
+
+```lua
+local hash = require "resty.nettle.sha2"
+local dgst = hash('sha512_224', 'test')
+-- or
+local dgst = hash.sha512_224('test')
+-- or
+local s512_224 = hash.sha512_224.new()
+s512_224:update('te')
+s512_224:update('et')
+local dgst = s512_224:digest()
 ```
 
 ## License
