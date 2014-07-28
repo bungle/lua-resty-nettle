@@ -44,7 +44,7 @@ s224:update('et')
 local dgst = s224:digest()
 ```
 
-### SHA-512
+#### SHA-512
 
 SHA512 is a larger sibling to SHA256, with a very similar structure but with both the output and the internal variables of twice the size. The internal variables are 64 bits rather than 32, making it significantly slower on 32-bit computers. It outputs hash values of 512 bits, or 64 octets.
 
@@ -60,11 +60,11 @@ s512:update('et')
 local dgst = s512:digest()
 ```
 
-### SHA-384, SHA-512/224,  and SHA-512/256
+#### SHA-384, SHA-512/224,  and SHA-512/256
 
 Several variants of SHA512 have been defined, with a different initial state, and with the output truncated to shorter length than 512 bits. Naming is a bit confused, these algorithms are call SHA-512/224, SHA-512/256 and SHA384, for output sizes of 224, 256 and 384 bits, respectively. 
 
-#### SHA-384
+##### SHA-384
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -78,7 +78,7 @@ s512:update('et')
 local dgst = s384:digest()
 ```
 
-#### SHA-512/224
+##### SHA-512/224
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -92,7 +92,7 @@ s512_224:update('et')
 local dgst = s512_224:digest()
 ```
 
-#### SHA-512/256
+##### SHA-512/256
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -106,7 +106,7 @@ s512_256:update('et')
 local dgst = s512_256:digest()
 ```
 
-### SHA3-224
+#### SHA3-224
 
 The SHA3 hash functions were specified by NIST in response to weaknesses in SHA1, and doubts about SHA2 hash functions which structurally are very similar to SHA1. SHA3 is a result of a competition, where the winner, also known as Keccak, was designed by Guido Bertoni, Joan Daemen, Michaël Peeters and Gilles Van Assche. It is structurally very different from all widely used earlier hash functions. Like SHA2, there are several variants, with output sizes of 224, 256, 384 and 512 bits (28, 32, 48 and 64 octets, respectively).
 
@@ -124,7 +124,7 @@ s224:update('et')
 local dgst = s224:digest()
 ```
 
-### SHA3-256
+#### SHA3-256
 
 This is SHA3 with 256-bit output size, and possibly the most useful of the SHA3 hash functions.
 
@@ -140,7 +140,7 @@ s256:update('et')
 local dgst = s256:digest()
 ```
 
-### SHA3-384
+#### SHA3-384
 
 This is SHA3 with 384-bit output size.
 
@@ -156,7 +156,7 @@ s384:update('et')
 local dgst = s384:digest()
 ```
 
-### SHA3-512
+#### SHA3-512
 
 This is SHA3 with 512-bit output size.
 
