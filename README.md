@@ -118,13 +118,59 @@ local dgst = hash(224, 'test')
 -- or
 local dgst = hash.sha224('test')
 -- or
-local s384 = hash.sha224.new()
-s512:update('te')
-s512:update('et')
+local s224 = hash.sha224.new()
+s224:update('te')
+s224:update('et')
 local dgst = s224:digest()
 ```
 
+### SHA3-256
 
+This is SHA3 with 256-bit output size, and possibly the most useful of the SHA3 hash functions.
+
+```lua
+local hash = require "resty.nettle.sha3"
+local dgst = hash(256, 'test')
+-- or
+local dgst = hash.sha256('test')
+-- or
+local s256 = hash.sha256.new()
+s256:update('te')
+s256:update('et')
+local dgst = s256:digest()
+```
+
+### SHA3-384
+
+This is SHA3 with 384-bit output size.
+
+```lua
+local hash = require "resty.nettle.sha3"
+local dgst = hash(384, 'test')
+-- or
+local dgst = hash.sha384('test')
+-- or
+local s384 = hash.sha384.new()
+s384:update('te')
+s384:update('et')
+local dgst = s384:digest()
+```
+
+### SHA3-512
+
+This is SHA3 with 512-bit output size.
+
+```lua
+local hash = require "resty.nettle.sha3"
+local dgst = hash(512, 'test')
+-- or
+local dgst = hash.sha512('test')
+-- or
+local s512 = hash.sha512.new()
+s512:update('te')
+s512:update('et')
+local dgst = s512:digest()
+```
 
 ## License
 
