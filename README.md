@@ -26,7 +26,41 @@ local dgst = s256('test')
 local s256 = hash.new()
 s256:update('te')
 s256:update('et')
-local dgst = ss256:digest()
+local dgst = s256:digest()
+```
+
+#### SHA-224
+
+SHA224 is a variant of SHA256, with a different initial state, and with the output truncated to 224 bits, or 28 octets.
+
+```lua
+local hash = require "resty.nettle.sha2"
+local dgst = hash('sha224', 'test')
+-- or
+local s224 = hash.new()
+local dgst = s224('test')
+-- or
+local s224 = hash.new()
+s224:update('te')
+s224:update('et')
+local dgst = s224:digest()
+```
+
+### SHA-512
+
+SHA512 is a larger sibling to SHA256, with a very similar structure but with both the output and the internal variables of twice the size. The internal variables are 64 bits rather than 32, making it significantly slower on 32-bit computers. It outputs hash values of 512 bits, or 64 octets.
+
+```lua
+local hash = require "resty.nettle.sha2"
+local dgst = hash('sha512', 'test')
+-- or
+local s512 = hash.new()
+local dgst = s512('test')
+-- or
+local s512 = hash.new()
+s512:update('te')
+s512:update('et')
+local dgst = s512:digest()
 ```
 
 ## License
