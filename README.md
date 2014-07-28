@@ -6,6 +6,29 @@ LuaJIT FFI bindings for [Nettle](http://www.lysator.liu.se/~nisse/nettle/nettle.
 
 All the bindings that do not depend on [GMP](https://gmplib.org/) are ready to use. The [GMP](https://gmplib.org/) depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms) (i.e. RSA, DSA, and ECDSA). I will be adding documentation shortly.
 
+## Hash Functions
+
+### Recommended Hash Functions
+
+The following hash functions have no known weaknesses, and are suitable for new applications. The SHA2 family of hash functions were specified by NIST, intended as a replacement for SHA1.
+
+#### SHA-256
+
+SHA256 is a member of the SHA2 family. It outputs hash values of 256 bits, or 32 octets.
+
+```lua
+local hash = require "resty.nettle.sha2"
+local dgst = hash('sha256', 'test')
+-- or
+local s256 = hash.new()
+local dgst = s256('test')
+-- or
+local s256 = hash.new()
+s256:update('te')
+s256:update('et')
+local dgst = ss256:digest()
+```
+
 ## License
 
 `lua-resty-nettle` uses two clause BSD license.
