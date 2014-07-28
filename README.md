@@ -276,6 +276,48 @@ SERPENT is one of the AES finalists, designed by Ross Anderson, Eli Biham and La
 
 Another AES finalist, this one designed by Bruce Schneier and others.
 
+## Cipher Modes
+
+### Cipher Block Chaining (CBC)
+### Counter Mode (CTR)
+
+## Authenticated Encryption with Associated Data
+
+### EAX
+### Galois Counter Mode (GCM)
+### Counter with CBC-MAC Mode (CCM)
+### ChaCha-Poly1305
+
+## Keyed Hash Functions
+
+### HMAC
+
+#### HMAC-MD5
+#### HMAC-RIPEMD160
+#### HMAC-SHA1
+#### HMAC-SHA256
+#### HMAC-SHA512
+
+### UMAC
+### Poly1305
+
+## Key Derivation Functions
+
+### PBKDF2
+
+#### PBKDF2-HMAC-SHA1
+#### PBKDF2-HMAC-SHA256
+
+
+## Randomness
+
+### Yarrow
+
+## ASCII Encoding
+
+### Base64
+### Base16
+
 
 
 
