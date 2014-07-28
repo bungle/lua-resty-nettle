@@ -4,7 +4,7 @@ LuaJIT FFI bindings for [Nettle](http://www.lysator.liu.se/~nisse/nettle/nettle.
 
 ## Status
 
-All the bindings that do not depend on [GMP](https://gmplib.org/) are ready to use. The [GMP](https://gmplib.org/) depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms) (i.e. RSA, DSA, and ECDSA). I will be adding documentation shortly.
+All the bindings that do not depend on [GMP](https://gmplib.org/) are ready to use. The [GMP](https://gmplib.org/) depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms) (i.e. RSA, DSA, and ECDSA). Much of the documentation here is copied from [Nettle's documentation](http://www.lysator.liu.se/~nisse/nettle/nettle.html), but I have included Lua examples to it. I will be adding more documentation shortly.
 
 ## Hash Functions
 
@@ -105,6 +105,26 @@ s512_256:update('te')
 s512_256:update('et')
 local dgst = s512_256:digest()
 ```
+
+### SHA3-224
+
+The SHA3 hash functions were specified by NIST in response to weaknesses in SHA1, and doubts about SHA2 hash functions which structurally are very similar to SHA1. SHA3 is a result of a competition, where the winner, also known as Keccak, was designed by Guido Bertoni, Joan Daemen, Michaël Peeters and Gilles Van Assche. It is structurally very different from all widely used earlier hash functions. Like SHA2, there are several variants, with output sizes of 224, 256, 384 and 512 bits (28, 32, 48 and 64 octets, respectively).
+
+Nettle's implementation of SHA3 should be considered experimental. It is based on the design from the competition. Unfortunately, it is likely that when the standard is finalized, there will be small changes making Nettle's current implementation incompatible with the standard. Nettle's implementation may need incompatible changes to track standardization. Latest standard draft, at the time of writing, is at http://csrc.nist.gov/publications/drafts/fips-202/fips_202_draft.pdf.
+
+```lua
+local hash = require "resty.nettle.sha3"
+local dgst = hash(224, 'test')
+-- or
+local dgst = hash.sha224('test')
+-- or
+local s384 = hash.sha224.new()
+s512:update('te')
+s512:update('et')
+local dgst = s224:digest()
+```
+
+
 
 ## License
 
