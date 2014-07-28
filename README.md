@@ -64,7 +64,7 @@ local dgst = s512:digest()
 
 Several variants of SHA512 have been defined, with a different initial state, and with the output truncated to shorter length than 512 bits. Naming is a bit confused, these algorithms are call SHA-512/224, SHA-512/256 and SHA384, for output sizes of 224, 256 and 384 bits, respectively. 
 
-##### SHA-384
+#### SHA-384
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -78,7 +78,7 @@ s512:update('et')
 local dgst = s384:digest()
 ```
 
-##### SHA-512/224
+#### SHA-512/224
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -92,7 +92,7 @@ s512_224:update('et')
 local dgst = s512_224:digest()
 ```
 
-##### SHA-512/256
+#### SHA-512/256
 
 ```lua
 local hash = require "resty.nettle.sha2"
