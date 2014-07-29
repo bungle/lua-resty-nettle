@@ -204,17 +204,17 @@ The GOST94 or GOST R 34.11-94 hash algorithm is a Soviet-era algorithm used in R
 
 A cipher is a function that takes a message or plaintext and a secret key and transforms it to a ciphertext. Given only the ciphertext, but not the key, it should be hard to find the plaintext. Given matching pairs of plaintext and ciphertext, it should be hard to find the key.
 
-### AES
+#### AES
 
 AES is a block cipher, specified by NIST as a replacement for the older DES standard. The standard is the result of a competition between cipher designers. The winning design, also known as RIJNDAEL, was constructed by Joan Daemen and Vincent Rijnmen.
 
 Like all the AES candidates, the winning design uses a block size of 128 bits, or 16 octets, and three possible key-size, 128, 192 and 256 bits (16, 24 and 32 octets) being the allowed key sizes. It does not have any weak keys.
 
-### ARCFOUR
+#### ARCFOUR
 
 ARCFOUR is a stream cipher, also known under the trade marked name RC4, and it is one of the fastest ciphers around. A problem is that the key setup of ARCFOUR is quite weak, you should never use keys with structure, keys that are ordinary passwords, or sequences of keys like “secret:1”, “secret:2”... If you have keys that don't look like random bit strings, and you want to use ARCFOUR, always hash the key before feeding it to ARCFOUR. Furthermore, the initial bytes of the generated key stream leak information about the key; for this reason, it is recommended to discard the first 512 bytes of the key stream.
 
-### ARCTWO
+#### ARCTWO
 
 ARCTWO (also known as the trade marked name RC2) is a block cipher specified in RFC 2268. Nettle also include a variation of the ARCTWO set key operation that lack one step, to be compatible with the reverse engineered RC2 cipher description, as described in a Usenet post to sci.crypt by Peter Gutmann.
 
@@ -222,31 +222,31 @@ ARCTWO uses a block size of 64 bits, and variable key-size ranging from 1 to 128
 
 We do not recommend the use of ARCTWO; the Nettle implementation is provided primarily for interoperability with existing applications and standards.
 
-### BLOWFISH
+#### BLOWFISH
 
 BLOWFISH is a block cipher designed by Bruce Schneier. It uses a block size of 64 bits (8 octets), and a variable key size, up to 448 bits. It has some weak keys.
 
-### Camellia
+#### Camellia
 
 Camellia is a block cipher developed by Mitsubishi and Nippon Telegraph and Telephone Corporation, described in RFC3713. It is recommended by some Japanese and European authorities as an alternative to AES, and it is one of the selected algorithms in the New European Schemes for Signatures, Integrity and Encryption (NESSIE) project. The algorithm is patented. The implementation in Nettle is derived from the implementation released by NTT under the GNU LGPL (v2.1 or later), and relies on the implicit patent license of the LGPL. There is also a statement of royalty-free licensing for Camellia at http://www.ntt.co.jp/news/news01e/0104/010417.html, but this statement has some limitations which seem problematic for free software.
 
 Camellia uses a the same block size and key sizes as AES: The block size is 128 bits (16 octets), and the supported key sizes are 128, 192, and 256 bits. The variants with 192 and 256 bit keys are identical, except for the key setup.
 
-### CAST128
+#### CAST128
 
 CAST-128 is a block cipher, specified in RFC 2144. It uses a 64 bit (8 octets) block size, and a variable key size of up to 128 bits.
 
-### ChaCha
+#### ChaCha
 
 ChaCha is a variant of the stream cipher Salsa20, also designed by D. J. Bernstein. For more information on Salsa20, see below.
 
-### DES
+#### DES
 
 DES is the old Data Encryption Standard, specified by NIST. It uses a block size of 64 bits (8 octets), and a key size of 56 bits. However, the key bits are distributed over 8 octets, where the least significant bit of each octet may be used for parity. A common way to use DES is to generate 8 random octets in some way, then set the least significant bit of each octet to get odd parity, and initialize DES with the resulting key.
 
 The key size of DES is so small that keys can be found by brute force, using specialized hardware or lots of ordinary work stations in parallel. One shouldn't be using plain DES at all today, if one uses DES at all one should be using "triple DES", see DES3 below.
 
-### DES3
+#### DES3
 
 The inadequate key size of DES has already been mentioned. One way to increase the key size is to pipe together several DES boxes with independent keys. It turns out that using two DES ciphers is not as secure as one might think, even if the key size of the combination is a respectable 112 bits.
 
@@ -258,7 +258,7 @@ DES3 has a key size of 168 bits, but just like plain DES, useless parity bits ar
 
 Naturally, it's simple to implement triple-DES on top of Nettle's DES functions.
 
-### Salsa20
+#### Salsa20
 
 Salsa20 is a fairly recent stream cipher designed by D. J. Bernstein. It is built on the observation that a cryptographic hash function can be used for encryption: Form the hash input from the secret key and a counter, xor the hash output and the first block of the plaintext, then increment the counter to process the next block (similar to CTR mode, see see CTR). Bernstein defined an encryption algorithm, Snuffle, in this way to ridicule United States export restrictions which treated hash functions as nice and harmless, but ciphers as dangerous munitions.
 
@@ -268,58 +268,55 @@ Caution: The hash function used in Salsa20 is not directly applicable for use as
 
 When using Salsa20 to process a message, one specifies both a key and a nonce, the latter playing a similar role to the initialization vector (IV) used with CBC or CTR mode. One can use the same key for several messages, provided one uses a unique random iv for each message. The iv is 64 bits (8 octets). The block counter is initialized to zero for each message, and is also 64 bits (8 octets).
 
-### SERPENT
+#### SERPENT
 
 SERPENT is one of the AES finalists, designed by Ross Anderson, Eli Biham and Lars Knudsen. Thus, the interface and properties are similar to AES'. One peculiarity is that it is quite pointless to use it with anything but the maximum key size, smaller keys are just padded to larger ones.
 
-### TWOFISH
+#### TWOFISH
 
 Another AES finalist, this one designed by Bruce Schneier and others.
 
 ## Cipher Modes
 
-### Cipher Block Chaining (CBC)
-### Counter Mode (CTR)
+#### Cipher Block Chaining (CBC)
+#### Counter Mode (CTR)
 
 ## Authenticated Encryption with Associated Data
 
-### EAX
-### Galois Counter Mode (GCM)
-### Counter with CBC-MAC Mode (CCM)
-### ChaCha-Poly1305
+#### EAX
+#### Galois Counter Mode (GCM)
+#### Counter with CBC-MAC Mode (CCM)
+#### ChaCha-Poly1305
 
 ## Keyed Hash Functions
 
-### HMAC
+#### HMAC
 
-#### HMAC-MD5
-#### HMAC-RIPEMD160
-#### HMAC-SHA1
-#### HMAC-SHA256
-#### HMAC-SHA512
+##### HMAC-MD5
+##### HMAC-RIPEMD160
+##### HMAC-SHA1
+##### HMAC-SHA256
+##### HMAC-SHA512
 
-### UMAC
-### Poly1305
+#### UMAC
+#### Poly1305
 
 ## Key Derivation Functions
 
-### PBKDF2
+#### PBKDF2
 
-#### PBKDF2-HMAC-SHA1
-#### PBKDF2-HMAC-SHA256
+##### PBKDF2-HMAC-SHA1
+##### PBKDF2-HMAC-SHA256
 
 
 ## Randomness
 
-### Yarrow
+#### Yarrow
 
 ## ASCII Encoding
 
-### Base64
-### Base16
-
-
-
+#### Base64
+#### Base16
 
 ## License
 
