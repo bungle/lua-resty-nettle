@@ -24,7 +24,7 @@ local dgst = hash.sha256('test')
 -- or
 local s256 = hash.sha256.new()
 s256:update('te')
-s256:update('et')
+s256:update('st')
 local dgst = s256:digest()
 ```
 
@@ -40,7 +40,7 @@ local dgst = hash.sha224('test')
 -- or
 local s224 = hash.sha224..new()
 s224:update('te')
-s224:update('et')
+s224:update('st')
 local dgst = s224:digest()
 ```
 
@@ -56,7 +56,7 @@ local dgst = hash.sha512('test')
 -- or
 local s512 = hash.sha512.new()
 s512:update('te')
-s512:update('et')
+s512:update('st')
 local dgst = s512:digest()
 ```
 
@@ -74,7 +74,7 @@ local dgst = hash.sha384('test')
 -- or
 local s384 = hash.sha384.new()
 s512:update('te')
-s512:update('et')
+s512:update('st')
 local dgst = s384:digest()
 ```
 
@@ -88,7 +88,7 @@ local dgst = hash.sha512_224('test')
 -- or
 local s512_224 = hash.sha512_224.new()
 s512_224:update('te')
-s512_224:update('et')
+s512_224:update('st')
 local dgst = s512_224:digest()
 ```
 
@@ -102,7 +102,7 @@ local dgst = hash.sha512_265('test')
 -- or
 local s512_256 = hash.sha512_256.new()
 s512_256:update('te')
-s512_256:update('et')
+s512_256:update('st')
 local dgst = s512_256:digest()
 ```
 
@@ -120,7 +120,7 @@ local dgst = hash.sha224('test')
 -- or
 local s224 = hash.sha224.new()
 s224:update('te')
-s224:update('et')
+s224:update('st')
 local dgst = s224:digest()
 ```
 
@@ -136,7 +136,7 @@ local dgst = hash.sha256('test')
 -- or
 local s256 = hash.sha256.new()
 s256:update('te')
-s256:update('et')
+s256:update('st')
 local dgst = s256:digest()
 ```
 
@@ -152,7 +152,7 @@ local dgst = hash.sha384('test')
 -- or
 local s384 = hash.sha384.new()
 s384:update('te')
-s384:update('et')
+s384:update('st')
 local dgst = s384:digest()
 ```
 
@@ -168,7 +168,7 @@ local dgst = hash.sha512('test')
 -- or
 local s512 = hash.sha512.new()
 s512:update('te')
-s512:update('et')
+s512:update('st')
 local dgst = s512:digest()
 ```
 
