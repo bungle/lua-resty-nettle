@@ -98,7 +98,7 @@ local dgst = s512_224:digest()
 local hash = require "resty.nettle.sha2"
 local dgst = hash('sha512_256', 'test')
 -- or
-local dgst = hash.sha512_265('test')
+local dgst = hash.sha512_256('test')
 -- or
 local s512_256 = hash.sha512_256.new()
 s512_256:update('te')
