@@ -1,15 +1,13 @@
 require "resty.nettle.types.hash"
-local ffi      = require "ffi"
-local nettle   = require "resty.nettle"
-local ffi_str  = ffi.string
-local ffi_new  = ffi.new
+local ffi     = require "ffi"
+local nettle  = require "resty.nettle"
+local ffi_str = ffi.string
 
 local hashes = {}
 
 do
-    local null = ffi_new("void * ")
     local i, hs = 0, nettle.nettle_hashes
-    while hs[i] ~= null do
+    while hs[i] ~= nil do
         local hash = {
             name         = ffi_str(hs[i].name),
             context_size = tonumber(hs[i].context_size),

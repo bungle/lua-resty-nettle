@@ -1,15 +1,13 @@
 require "resty.nettle.types.cipher"
-local ffi      = require "ffi"
-local nettle   = require "resty.nettle"
-local ffi_str  = ffi.string
-local ffi_new  = ffi.new
+local ffi     = require "ffi"
+local nettle  = require "resty.nettle"
+local ffi_str = ffi.string
 
 local ciphers = {}
 
 do
-    local null = ffi_new("void * ")
     local i, cs = 0, nettle.nettle_ciphers
-    while cs[i] ~= null do
+    while cs[i] ~= nil do
         local cipher = {
             name         = ffi_str(cs[i].name),
             context_size = tonumber(cs[i].context_size),
