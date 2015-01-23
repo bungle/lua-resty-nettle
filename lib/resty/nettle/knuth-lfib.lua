@@ -23,6 +23,14 @@ local ctx = ffi_typeof("KNUTH_LFIB_CTX[1]")
 local knuth = {}
 knuth.__index = knuth
 
+knuth.func = nettle.nettle_knuth_lfib_random
+
+function knuth.context(seed)
+    local context = ffi_new(ctx)
+    nettle.nettle_knuth_lfib_init(context, seed or 0)
+    return context
+end
+
 function knuth.new(seed)
     local self = setmetatable({ context = ffi_new(ctx) }, knuth)
     nettle.nettle_knuth_lfib_init(self.context, seed or 0)
