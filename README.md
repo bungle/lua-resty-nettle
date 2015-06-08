@@ -323,7 +323,7 @@ Another AES finalist, this one designed by Bruce Schneier and others.
 `lua-resty-nettle` uses two clause BSD license.
 
 ```
-Copyright (c) 2014, Aapo Talvensaari
+Copyright (c) 2014 – 2015, Aapo Talvensaari
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
