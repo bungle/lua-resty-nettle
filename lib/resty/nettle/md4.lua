@@ -6,7 +6,6 @@ local ffi_str    = ffi.string
 local nettle     = require "resty.nettle"
 
 ffi_cdef[[
-/* FIXME: Identical to md5_ctx */
 typedef struct md4_ctx {
   uint32_t state[16];
   uint64_t count;

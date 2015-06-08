@@ -7,6 +7,7 @@ local ffi_typeof = ffi.typeof
 local ffi_cdef   = ffi.cdef
 local ffi_str    = ffi.string
 local nettle     = require "resty.nettle"
+local knuth      = require "resty.nettle.knuth-lfib"
 
 ffi_cdef[[
 enum yarrow_pool_id { YARROW_FAST = 0, YARROW_SLOW = 1 };
@@ -35,7 +36,7 @@ void nettle_yarrow256_slow_reseed(struct yarrow256_ctx *ctx);
 local uint8t = ffi_typeof("uint8_t[?]")
 local ctx256 = ffi_typeof("YARROW256_CTX[1]")
 
-local yarrow = {}
+local yarrow = { func = nettle.nettle_yarrow256_random }
 yarrow.__index = function(t, k)
     if k == "seeded" then
         return nettle.nettle_yarrow256_is_seeded(t.context) == 1
@@ -43,6 +44,18 @@ yarrow.__index = function(t, k)
         return nettle.nettle_yarrow256_needed_sources(t.context)
     end
     return rawget(getmetatable(t), k)
+end
+
+function yarrow.context(seed)
+    local context = ffi_new(ctx256)
+    nettle.nettle_yarrow256_init(context, 0, nil)
+    if not seed then
+        seed = knuth.new():random(32)
+    end
+    local len = #seed
+    assert(len > 31, "Seed data length should be at least 32 bytes, but it can be larger.")
+    nettle.nettle_yarrow256_seed(context, len, seed)
+    return context
 end
 
 function yarrow.new(seed)

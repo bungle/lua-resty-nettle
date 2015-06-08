@@ -20,10 +20,8 @@ local uint8t  = ffi_typeof("uint8_t[?]")
 local uint32t = ffi_typeof("uint32_t[?]")
 local ctx = ffi_typeof("KNUTH_LFIB_CTX[1]")
 
-local knuth = {}
+local knuth = { func = nettle.nettle_knuth_lfib_random }
 knuth.__index = knuth
-
-knuth.func = nettle.nettle_knuth_lfib_random
 
 function knuth.context(seed)
     local context = ffi_new(ctx)
