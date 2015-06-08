@@ -4,7 +4,7 @@ LuaJIT FFI bindings for [Nettle](http://www.lysator.liu.se/~nisse/nettle/nettle.
 
 ## Status
 
-All the bindings that do not depend on [GMP](https://gmplib.org/) are ready to use. The [GMP](https://gmplib.org/) depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms) (i.e. RSA, DSA, and ECDSA). Much of the documentation here is copied from [Nettle's documentation](http://www.lysator.liu.se/~nisse/nettle/nettle.html), but I have included Lua examples to it. I will be adding more documentation shortly.
+All the bindings that do not depend on [GMP](https://gmplib.org/) are ready to use. The [GMP](https://gmplib.org/) depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms) (i.e. RSA, DSA, and ECDSA), and ONLY the RSA functions have some support right now, although the APIs might change. Much of the documentation here is copied from [Nettle's documentation](http://www.lysator.liu.se/~nisse/nettle/nettle.html), but I have included Lua examples to it. I will be adding more documentation shortly.
 
 ## Hash Functions
 
