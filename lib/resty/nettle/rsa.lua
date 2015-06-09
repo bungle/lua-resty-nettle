@@ -106,7 +106,7 @@ local keypair = {}
 function keypair:__index(n)
     if n == "sexp" then
         local b = buffer.new()
-        hogweed.nettle_rsa_keypair_to_sexp(b, self.algorithm, self.public.context, self.private.context)
+        hogweed.nettle_rsa_keypair_to_sexp(b, nil, self.public.context, self.private.context)
         return ffi_str(b.contents, b.size)
     else
         return rawget(keypair, n)
