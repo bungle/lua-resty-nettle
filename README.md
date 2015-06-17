@@ -308,10 +308,15 @@ Another AES finalist, this one designed by Bruce Schneier and others.
 ##### PBKDF2-HMAC-SHA1
 ##### PBKDF2-HMAC-SHA256
 
+## Asymmentric Encryption (aka Public Key Encryption)
+
+#### RSA (only preliminary support for now)
+#### DSA (not implemented yet)
 
 ## Randomness
 
 #### Yarrow
+#### Knuth LFIB (a "lagged fibonacci" pseudorandomness generator)
 
 ## ASCII Encoding
 
