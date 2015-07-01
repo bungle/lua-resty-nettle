@@ -109,15 +109,17 @@ local base64 = setmetatable({ encoder = encoder, decoder = decoder }, {
 })
 
 function base64.encode(src, urlsafe)
-    local len = #src
-    local dln = (len + 2) / 3 * 4
-    local dst = ffi_new(uint8t, dln)
+    local ctx = ffi_new(ctxenc)
     if urlsafe then
-        nettle.nettle_base64url_encode_raw(dst, len, src)
+        nettle.nettle_base64url_encode_init(ctx)
     else
-        nettle.nettle_base64_encode_raw(dst, len, src)
+        nettle.nettle_base64_encode_init(ctx)
     end
-    return ffi_str(dst, dln)
+    local len = #src
+    local dln = (len * 8 + 4) / 6
+    local dst = ffi_new(uint8t, dln)
+    dst = ffi_str(dst, nettle.nettle_base64_encode_update(ctx, dst, len, src))
+    return dst .. ffi_str(buf24, nettle.nettle_base64_encode_final(ctx, buf24))
 end
 
 function base64.decode(src, urlsafe)
