@@ -1,4 +1,4 @@
-require "resty.nettle.types.cbc"
+require "resty.nettle.types.des"
 
 local ffi        = require "ffi"
 local ffi_new    = ffi.new
@@ -10,12 +10,6 @@ local ceil       = math.ceil
 local nettle     = require "resty.nettle"
 
 ffi_cdef[[
-typedef struct des_ctx {
-  uint32_t key[32];
-} DES_CTX;
-typedef struct des3_ctx {
-  struct des_ctx des[3];
-} DES3_CTX;
 int  nettle_des_set_key(struct des_ctx *ctx, const uint8_t *key);
 void nettle_des_encrypt(const struct des_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
 void nettle_des_decrypt(const struct des_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
@@ -49,6 +43,17 @@ local ciphers = {
                 encrypt = nettle.nettle_des_encrypt,
                 decrypt = nettle.nettle_des_decrypt
             }
+        },
+        ctr = {
+            iv_size = 8,
+            context = ffi_typeof("DES_CTX[1]"),
+            setkey  = nettle.nettle_des_set_key,
+            encrypt = nettle.nettle_ctr_crypt,
+            decrypt = nettle.nettle_ctr_crypt,
+            cipher  = {
+                encrypt = nettle.nettle_des_encrypt,
+                decrypt = nettle.nettle_des_encrypt
+            }
         }
     },
     des3 = {
@@ -68,6 +73,17 @@ local ciphers = {
                 encrypt = nettle.nettle_des3_encrypt,
                 decrypt = nettle.nettle_des3_decrypt
             }
+        },
+        ctr = {
+            iv_size = 8,
+            context = ffi_typeof("DES3_CTX[1]"),
+            setkey  = nettle.nettle_des3_set_key,
+            encrypt = nettle.nettle_ctr_crypt,
+            decrypt = nettle.nettle_ctr_crypt,
+            cipher  = {
+                encrypt = nettle.nettle_des3_encrypt,
+                decrypt = nettle.nettle_des3_encrypt
+            }
         }
     }
 }
@@ -83,7 +99,7 @@ function des.new(key, mode, iv)
     end
     mode = (mode or "ecb"):lower()
     cipher = cipher[mode]
-    assert(cipher, "The DES/DES3 supported modes are currently ECB, and CBC.")
+    assert(cipher, "The DES/DES3 supported modes are currently ECB, CBC, and CTR.")
     local iv_size = cipher.iv_size
     if iv_size then
         assert(#iv == iv_size, "The DES-/DES3-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits.")
