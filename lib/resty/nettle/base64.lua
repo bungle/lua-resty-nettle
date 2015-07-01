@@ -15,15 +15,17 @@ typedef struct base64_decode_ctx {
   unsigned bits;
   unsigned padding;
 } BASE64_DECODE_CTX;
-void   nettle_base64_encode_init  (struct base64_encode_ctx *ctx);
-size_t nettle_base64_encode_single(struct base64_encode_ctx *ctx, uint8_t *dst, uint8_t src);
-size_t nettle_base64_encode_update(struct base64_encode_ctx *ctx, uint8_t *dst, size_t length, const uint8_t *src);
-size_t nettle_base64_encode_final (struct base64_encode_ctx *ctx, uint8_t *dst);
-void   nettle_base64_encode_raw(uint8_t *dst, size_t length, const uint8_t *src);
-void   nettle_base64_decode_init(struct base64_decode_ctx *ctx);
-int    nettle_base64_decode_single(struct base64_decode_ctx *ctx, uint8_t *dst, uint8_t src);
-int    nettle_base64_decode_update(struct base64_decode_ctx *ctx, size_t *dst_length, uint8_t *dst, size_t src_length, const uint8_t *src);
-int    nettle_base64_decode_final (struct base64_decode_ctx *ctx);
+void   nettle_base64_encode_init   (struct base64_encode_ctx *ctx);
+void   nettle_base64url_encode_init(struct base64_encode_ctx *ctx);
+size_t nettle_base64_encode_single (struct base64_encode_ctx *ctx, uint8_t *dst, uint8_t src);
+size_t nettle_base64_encode_update (struct base64_encode_ctx *ctx, uint8_t *dst, size_t length, const uint8_t *src);
+size_t nettle_base64_encode_final  (struct base64_encode_ctx *ctx, uint8_t *dst);
+void   nettle_base64_encode_raw    (uint8_t *dst, size_t length, const uint8_t *src);
+void   nettle_base64_decode_init   (struct base64_decode_ctx *ctx);
+void   nettle_base64url_decode_init(struct base64_decode_ctx *ctx);
+int    nettle_base64_decode_single (struct base64_decode_ctx *ctx, uint8_t *dst, uint8_t src);
+int    nettle_base64_decode_update (struct base64_decode_ctx *ctx, size_t *dst_length, uint8_t *dst, size_t src_length, const uint8_t *src);
+int    nettle_base64_decode_final  (struct base64_decode_ctx *ctx);
 ]]
 local ctxenc = ffi_typeof("BASE64_ENCODE_CTX[1]")
 local ctxdec = ffi_typeof("BASE64_DECODE_CTX[1]")
@@ -37,9 +39,13 @@ local buf24  = ffi_new(uint8t, 3)
 local encoder = {}
 encoder.__index = encoder
 
-function encoder.new()
+function encoder.new(urlsafe)
     local ctx = ffi_new(ctxenc)
-    nettle.nettle_base64_encode_init(ctx)
+    if urlsafe then
+        nettle.nettle_base64url_encode_init(ctx)
+    else
+        nettle.nettle_base64_encode_init(ctx)
+    end
     return setmetatable({ context = ctx }, encoder)
 end
 
@@ -64,9 +70,13 @@ end
 local decoder = {}
 decoder.__index = decoder
 
-function decoder.new()
+function decoder.new(urlsafe)
     local ctx = ffi_new(ctxdec)
-    nettle.nettle_base64_decode_init(ctx)
+    if urlsafe then
+        nettle.nettle_base64url_decode_init(ctx)
+    else
+        nettle.nettle_base64_decode_init(ctx)
+    end
     return setmetatable({ context = ctx }, decoder)
 end
 
@@ -88,21 +98,37 @@ function decoder:final()
     return (assert(nettle.nettle_base64_decode_final(self.context) == 1, "Base64 final padding is incorrect."))
 end
 
-local base64 = { encoder = encoder, decoder = decoder }
+local base64 = setmetatable({ encoder = encoder, decoder = decoder }, {
+    __call = function(_, src)
+        local len = #src
+        local dln = (len + 2) / 3 * 4
+        local dst = ffi_new(uint8t, dln)
+        nettle.nettle_base64_encode_raw(dst, len, src)
+        return ffi_str(dst, dln)
+    end
+})
 
-function base64.encode(src)
+function base64.encode(src, urlsafe)
     local len = #src
     local dln = (len + 2) / 3 * 4
     local dst = ffi_new(uint8t, dln)
-    nettle.nettle_base64_encode_raw(dst, len, src)
+    if urlsafe then
+        nettle.nettle_base64url_encode_raw(dst, len, src)
+    else
+        nettle.nettle_base64_encode_raw(dst, len, src)
+    end
     return ffi_str(dst, dln)
 end
 
-function base64.decode(src)
+function base64.decode(src, urlsafe)
     local ctx = ffi_new(ctxdec)
     local len = #src
     local dst = ffi_new(uint8t, (len + 1) * 6 / 8)
-    nettle.nettle_base64_decode_init(ctx)
+    if urlsafe then
+        nettle.nettle_base64url_decode_init(ctx)
+    else
+        nettle.nettle_base64_decode_init(ctx)
+    end
     nettle.nettle_base64_decode_update(ctx, length, dst, len, src)
     assert(nettle.nettle_base64_decode_final(ctx) == 1, "Base64 final padding is incorrect.")
     return ffi_str(dst, length[0])
