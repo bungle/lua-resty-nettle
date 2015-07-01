@@ -1,3 +1,5 @@
+require "resty.nettle.types.cbc"
+require "resty.nettle.types.ctr"
 require "resty.nettle.types.eax"
 require "resty.nettle.types.gcm"
 require "resty.nettle.types.ccm"
