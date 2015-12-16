@@ -1,3 +1,5 @@
+-- TODO: THIS IS NOT DONE, IT DOESN'T WORK YET.
+
 require "resty.nettle"
 
 local ffi          = require "ffi"
