@@ -19,7 +19,7 @@ uint8_t * nettle_buffer_space(struct nettle_buffer *buffer, size_t length);
 int       nettle_buffer_copy(struct nettle_buffer *dst, const struct nettle_buffer *src);
 ]]
 
-local buf = ffi_typeof("NETTLE_BUFFER")
+local buf = ffi_typeof "NETTLE_BUFFER"
 local buffer = {}
 
 function buffer.new()

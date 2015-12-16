@@ -1,9 +1,12 @@
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local assert       = assert
+local tonumber     = tonumber
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct base64_encode_ctx {
@@ -27,11 +30,11 @@ int    nettle_base64_decode_single (struct base64_decode_ctx *ctx, uint8_t *dst,
 int    nettle_base64_decode_update (struct base64_decode_ctx *ctx, size_t *dst_length, uint8_t *dst, size_t src_length, const uint8_t *src);
 int    nettle_base64_decode_final  (struct base64_decode_ctx *ctx);
 ]]
-local ctxenc = ffi_typeof("BASE64_ENCODE_CTX[1]")
-local ctxdec = ffi_typeof("BASE64_DECODE_CTX[1]")
+local ctxenc = ffi_typeof "BASE64_ENCODE_CTX[1]"
+local ctxdec = ffi_typeof "BASE64_DECODE_CTX[1]"
 
-local length = ffi_new("size_t[1]")
-local uint8t = ffi_typeof("uint8_t[?]")
+local length = ffi_new "size_t[1]"
+local uint8t = ffi_typeof "uint8_t[?]"
 local buf8   = ffi_new(uint8t, 1)
 local buf16  = ffi_new(uint8t, 2)
 local buf24  = ffi_new(uint8t, 3)

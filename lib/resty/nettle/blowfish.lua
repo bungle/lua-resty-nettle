@@ -1,10 +1,12 @@
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local ceil       = math.ceil
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local ceil         = math.ceil
+local assert       = assert
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct blowfish_ctx {
@@ -17,12 +19,12 @@ void nettle_blowfish_encrypt(const struct blowfish_ctx *ctx, size_t length, uint
 void nettle_blowfish_decrypt(const struct blowfish_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
+local uint8t = ffi_typeof "uint8_t[?]"
 
 local blowfish = {}
 blowfish.__index = blowfish
 
-local context = ffi_typeof("BLOWFISH_CTX[1]")
+local context = ffi_typeof "BLOWFISH_CTX[1]"
 local setkey  = nettle.nettle_blowfish_set_key
 local encrypt = nettle.nettle_blowfish_encrypt
 local decrypt = nettle.nettle_blowfish_decrypt

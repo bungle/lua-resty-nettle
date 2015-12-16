@@ -1,7 +1,7 @@
 require "resty.nettle.types.aes"
 
-local ffi        = require "ffi"
-local ffi_cdef   = ffi.cdef
+local ffi      = require "ffi"
+local ffi_cdef = ffi.cdef
 
 ffi_cdef[[
 typedef struct poly1305_ctx {

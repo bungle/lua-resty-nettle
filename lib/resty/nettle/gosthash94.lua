@@ -1,9 +1,10 @@
-local nettle     = require "resty.nettle"
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
+local nettle       = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local setmetatable = setmetatable
 
 ffi_cdef[[
 typedef struct gosthash94_ctx {
@@ -17,7 +18,7 @@ void nettle_gosthash94_update(struct gosthash94_ctx *ctx, size_t length, const u
 void nettle_gosthash94_digest(struct gosthash94_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local ctx = ffi_typeof("GOSTHASH94_CTX[1]")
+local ctx = ffi_typeof "GOSTHASH94_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 32)
 local gosthash94 = setmetatable({}, {
     __call = function(_, data)

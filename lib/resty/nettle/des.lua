@@ -1,13 +1,15 @@
 require "resty.nettle.types.des"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_copy   = ffi.copy
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local ceil       = math.ceil
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_copy     = ffi.copy
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local ceil         = math.ceil
+local assert       = assert
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 int  nettle_des_set_key(struct des_ctx *ctx, const uint8_t *key);
@@ -20,7 +22,7 @@ void nettle_des3_encrypt(const struct des3_ctx *ctx, size_t length, uint8_t *dst
 void nettle_des3_decrypt(const struct des3_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
+local uint8t = ffi_typeof "uint8_t[?]"
 
 local des = {}
 des.__index = des
@@ -28,14 +30,14 @@ des.__index = des
 local ciphers = {
     des = {
         ecb = {
-            context = ffi_typeof("DES_CTX[1]"),
+            context = ffi_typeof "DES_CTX[1]",
             setkey  = nettle.nettle_des_set_key,
             encrypt = nettle.nettle_des_encrypt,
             decrypt = nettle.nettle_des_decrypt
         },
         cbc = {
             iv_size = 8,
-            context = ffi_typeof("DES_CTX[1]"),
+            context = ffi_typeof "DES_CTX[1]",
             setkey  = nettle.nettle_des_set_key,
             encrypt = nettle.nettle_cbc_encrypt,
             decrypt = nettle.nettle_cbc_decrypt,
@@ -46,7 +48,7 @@ local ciphers = {
         },
         ctr = {
             iv_size = 8,
-            context = ffi_typeof("DES_CTX[1]"),
+            context = ffi_typeof "DES_CTX[1]",
             setkey  = nettle.nettle_des_set_key,
             encrypt = nettle.nettle_ctr_crypt,
             decrypt = nettle.nettle_ctr_crypt,
@@ -58,14 +60,14 @@ local ciphers = {
     },
     des3 = {
         ecb = {
-            context = ffi_typeof("DES3_CTX[1]"),
+            context = ffi_typeof "DES3_CTX[1]",
             setkey  = nettle.nettle_des3_set_key,
             encrypt = nettle.nettle_des3_encrypt,
             decrypt = nettle.nettle_des3_decrypt
         },
         cbc = {
             iv_size = 8,
-            context = ffi_typeof("DES3_CTX[1]"),
+            context = ffi_typeof "DES3_CTX[1]",
             setkey  = nettle.nettle_des3_set_key,
             encrypt = nettle.nettle_cbc_encrypt,
             decrypt = nettle.nettle_cbc_decrypt,
@@ -76,7 +78,7 @@ local ciphers = {
         },
         ctr = {
             iv_size = 8,
-            context = ffi_typeof("DES3_CTX[1]"),
+            context = ffi_typeof "DES3_CTX[1]",
             setkey  = nettle.nettle_des3_set_key,
             encrypt = nettle.nettle_ctr_crypt,
             decrypt = nettle.nettle_ctr_crypt,

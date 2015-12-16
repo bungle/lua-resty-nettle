@@ -4,8 +4,8 @@ require "resty.nettle.types.eax"
 require "resty.nettle.types.gcm"
 require "resty.nettle.types.ccm"
 
-local ffi        = require "ffi"
-local ffi_cdef   = ffi.cdef
+local ffi      = require "ffi"
+local ffi_cdef = ffi.cdef
 
 ffi_cdef[[
 typedef struct aes128_ctx {

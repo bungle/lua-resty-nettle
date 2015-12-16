@@ -1,11 +1,13 @@
 require "resty.nettle.types.aes"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local assert       = assert
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct umac32_ctx {
@@ -82,11 +84,11 @@ void nettle_umac96_digest(struct umac96_ctx *ctx, size_t length, uint8_t *digest
 void nettle_umac128_digest(struct umac128_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
-local ctxu32 = ffi_typeof("UMAC32_CTX[1]")
-local ctxu64 = ffi_typeof("UMAC64_CTX[1]")
-local ctxu96 = ffi_typeof("UMAC96_CTX[1]")
-local ctx128 = ffi_typeof("UMAC128_CTX[1]")
+local uint8t = ffi_typeof "uint8_t[?]"
+local ctxu32 = ffi_typeof "UMAC32_CTX[1]"
+local ctxu64 = ffi_typeof "UMAC64_CTX[1]"
+local ctxu96 = ffi_typeof "UMAC96_CTX[1]"
+local ctx128 = ffi_typeof "UMAC128_CTX[1]"
 local bufu32 = ffi_new(uint8t, 4)
 local bufu64 = ffi_new(uint8t, 8)
 local bufu96 = ffi_new(uint8t, 12)

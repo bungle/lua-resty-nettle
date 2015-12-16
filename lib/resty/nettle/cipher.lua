@@ -1,7 +1,8 @@
 require "resty.nettle.types.cipher"
-local ffi     = require "ffi"
-local nettle  = require "resty.nettle"
-local ffi_str = ffi.string
+local ffi      = require "ffi"
+local nettle   = require "resty.nettle"
+local ffi_str  = ffi.string
+local tonumber = tonumber
 
 local ciphers = {}
 

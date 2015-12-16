@@ -3,12 +3,14 @@ require "resty.nettle.types.ripemd160"
 require "resty.nettle.types.sha1"
 require "resty.nettle.types.sha2"
 
-local nettle     = require "resty.nettle"
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
+local nettle       = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local assert       = assert
+local setmetatable = setmetatable
 
 ffi_cdef[[
 typedef struct hmac_md5_ctx {
@@ -57,12 +59,12 @@ void nettle_hmac_ripemd160_update (struct hmac_ripemd160_ctx *ctx, size_t length
 void nettle_hmac_ripemd160_digest (struct hmac_ripemd160_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
-local ctxmd5 = ffi_typeof("HMAC_MD5_CTX[1]")
-local ctx160 = ffi_typeof("HMAC_RIPEMD160_CTX[1]")
-local ctxsha = ffi_typeof("HMAC_SHA1_CTX[1]")
-local ctx256 = ffi_typeof("HMAC_SHA256_CTX[1]")
-local ctx512 = ffi_typeof("HMAC_SHA512_CTX[1]")
+local uint8t = ffi_typeof "uint8_t[?]"
+local ctxmd5 = ffi_typeof "HMAC_MD5_CTX[1]"
+local ctx160 = ffi_typeof "HMAC_RIPEMD160_CTX[1]"
+local ctxsha = ffi_typeof "HMAC_SHA1_CTX[1]"
+local ctx256 = ffi_typeof "HMAC_SHA256_CTX[1]"
+local ctx512 = ffi_typeof "HMAC_SHA512_CTX[1]"
 local buf128 = ffi_new(uint8t, 16)
 local buf160 = ffi_new(uint8t, 20)
 local buf224 = ffi_new(uint8t, 28)

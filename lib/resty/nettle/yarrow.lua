@@ -1,13 +1,17 @@
 require "resty.nettle.types.aes"
 require "resty.nettle.types.sha2"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local nettle     = require "resty.nettle"
-local knuth      = require "resty.nettle.knuth-lfib"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local assert       = assert
+local rawget       = rawget
+local getmetatable = getmetatable
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
+local knuth        = require "resty.nettle.knuth-lfib"
 
 ffi_cdef[[
 enum yarrow_pool_id { YARROW_FAST = 0, YARROW_SLOW = 1 };
@@ -33,8 +37,8 @@ void nettle_yarrow256_fast_reseed(struct yarrow256_ctx *ctx);
 void nettle_yarrow256_slow_reseed(struct yarrow256_ctx *ctx);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
-local ctx256 = ffi_typeof("YARROW256_CTX[1]")
+local uint8t = ffi_typeof "uint8_t[?]"
+local ctx256 = ffi_typeof "YARROW256_CTX[1]"
 
 local yarrow = { func = nettle.nettle_yarrow256_random }
 yarrow.__index = function(t, k)

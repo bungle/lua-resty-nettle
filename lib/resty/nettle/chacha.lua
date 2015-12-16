@@ -1,11 +1,13 @@
 require "resty.nettle.types.chacha"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local assert       = assert
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_chacha_set_key(struct chacha_ctx *ctx, const uint8_t *key);
@@ -13,12 +15,12 @@ void nettle_chacha_set_nonce(struct chacha_ctx *ctx, const uint8_t *nonce);
 void nettle_chacha_crypt(struct chacha_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
+local uint8t = ffi_typeof "uint8_t[?]"
 
 local chacha = {}
 chacha.__index = chacha
 
-local context  = ffi_typeof("CHACHA_CTX[1]")
+local context  = ffi_typeof "CHACHA_CTX[1]"
 local setkey   = nettle.nettle_chacha_set_key
 local setnonce = nettle.nettle_chacha_set_nonce
 local crypt    = nettle.nettle_chacha_crypt

@@ -1,7 +1,7 @@
 require "resty.nettle.types.cipher"
 require "resty.nettle.types.hash"
-local ffi        = require "ffi"
-local ffi_cdef   = ffi.cdef
+local ffi      = require "ffi"
+local ffi_cdef = ffi.cdef
 
 ffi_cdef[[
 typedef void nettle_crypt_func(void *ctx, size_t length, uint8_t *dst, const uint8_t *src);

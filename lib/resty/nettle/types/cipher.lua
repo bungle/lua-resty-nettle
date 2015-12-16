@@ -1,5 +1,5 @@
-local ffi        = require "ffi"
-local ffi_cdef   = ffi.cdef
+local ffi      = require "ffi"
+local ffi_cdef = ffi.cdef
 
 ffi_cdef[[
 typedef void nettle_set_key_func(void *ctx, const uint8_t *key);

@@ -3,17 +3,21 @@ require "resty.nettle.types.md5"
 require "resty.nettle.types.sha1"
 require "resty.nettle.types.sha2"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_load   = ffi.load
-local ffi_cdef   = ffi.cdef
-local ffi_typeof = ffi.typeof
-local ffi_str    = ffi.string
-local gmp        = require "resty.nettle.gmp"
-local buffer     = require "resty.nettle.buffer"
-local yarrow     = require "resty.nettle.yarrow"
-local knuth      = require "resty.nettle.knuth-lfib"
-local hogweed    = ffi_load "hogweed"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_load     = ffi.load
+local ffi_cdef     = ffi.cdef
+local ffi_typeof   = ffi.typeof
+local ffi_str      = ffi.string
+local assert       = assert
+local rawget       = rawget
+local tonumber     = tonumber
+local setmetatable = setmetatable
+local gmp          = require "resty.nettle.gmp"
+local buffer       = require "resty.nettle.buffer"
+local yarrow       = require "resty.nettle.yarrow"
+local knuth        = require "resty.nettle.knuth-lfib"
+local hogweed      = ffi_load "hogweed"
 
 ffi_cdef[[
 typedef struct rsa_public_key {
@@ -61,8 +65,8 @@ int  nettle_rsa_keypair_from_sexp(struct rsa_public_key *pub, struct rsa_private
 ]]
 local size = ffi_new "size_t[1]"
 local buf = ffi_typeof "uint8_t[?]"
-local pub = ffi_typeof("RSA_PUBLIC_KEY[1]")
-local pri = ffi_typeof("RSA_PRIVATE_KEY[1]")
+local pub = ffi_typeof "RSA_PUBLIC_KEY[1]"
+local pri = ffi_typeof "RSA_PRIVATE_KEY[1]"
 
 local public = {}
 public.__index = public
@@ -153,7 +157,7 @@ function rsa.new(pub, pri)
     return setmetatable({ public = pub, private = pri }, rsa)
 end
 
-function rsa:encrypt(plain, rc, rf, seed)
+function rsa:encrypt(plain, r, seed)
     local encrypted = gmp.context()
     local rf, rc
     if r == "knuth-lfib" or r == "knuth" then

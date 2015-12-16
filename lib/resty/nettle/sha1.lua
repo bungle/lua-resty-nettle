@@ -1,11 +1,12 @@
 require "resty.nettle.types.sha1"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_sha1_init(struct sha1_ctx *ctx);
@@ -13,7 +14,7 @@ void nettle_sha1_update(struct sha1_ctx *ctx, size_t length, const uint8_t *data
 void nettle_sha1_digest(struct sha1_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local ctx = ffi_typeof("SHA1_CTX[1]")
+local ctx = ffi_typeof "SHA1_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 20)
 local sha1 = setmetatable({}, {
     __call = function(_, data)

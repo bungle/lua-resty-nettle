@@ -10,7 +10,7 @@ void nettle_pbkdf2_hmac_sha1(size_t key_length, const uint8_t *key, unsigned ite
 void nettle_pbkdf2_hmac_sha256(size_t key_length, const uint8_t *key, unsigned iterations, size_t salt_length, const uint8_t *salt, size_t length, uint8_t *dst);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
+local uint8t = ffi_typeof "uint8_t[?]"
 local pbkdf2 = {}
 
 function pbkdf2.hmac_sha1(key, iterations, salt, len)

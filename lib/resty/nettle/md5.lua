@@ -1,11 +1,12 @@
 require "resty.nettle.types.md5"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_md5_init(struct md5_ctx *ctx);
@@ -13,7 +14,7 @@ void nettle_md5_update(struct md5_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_md5_digest(struct md5_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local ctx = ffi_typeof("MD5_CTX[1]")
+local ctx = ffi_typeof "MD5_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 16)
 local md5 = setmetatable({}, {
     __call = function(_, data)

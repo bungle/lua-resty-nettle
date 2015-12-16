@@ -1,12 +1,14 @@
 require "resty.nettle.types.chacha"
 require "resty.nettle.types.poly1305"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local assert       = assert
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct chacha_poly1305_ctx {
@@ -26,13 +28,13 @@ void nettle_chacha_poly1305_decrypt(struct chacha_poly1305_ctx *ctx, size_t leng
 void nettle_chacha_poly1305_digest(struct chacha_poly1305_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
+local uint8t = ffi_typeof "uint8_t[?]"
 local dgt    = ffi_new(uint8t, 16)
 
 local chacha_poly1305 = {}
 chacha_poly1305.__index = chacha_poly1305
 
-local context  = ffi_typeof("CHACHA_POLY1305[1]")
+local context  = ffi_typeof "CHACHA_POLY1305[1]"
 local setkey   = nettle.nettle_chacha_poly1305_set_key
 local setnonce = nettle.nettle_chacha_poly1305_set_nonce
 local update   = nettle.nettle_chacha_poly1305_update

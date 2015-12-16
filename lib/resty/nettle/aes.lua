@@ -1,14 +1,17 @@
 require "resty.nettle.types.aes"
 
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_copy   = ffi.copy
-local ffi_str    = ffi.string
-local ceil       = math.ceil
-local huge       = math.huge
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_copy     = ffi.copy
+local ffi_str      = ffi.string
+local ceil         = math.ceil
+local huge         = math.huge
+local type         = type
+local assert       = assert
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_aes128_set_encrypt_key(struct aes128_ctx *ctx, const uint8_t *key);
@@ -70,7 +73,7 @@ void nettle_ccm_aes256_decrypt(struct ccm_aes256_ctx *ctx, size_t length, uint8_
 void nettle_ccm_aes256_digest(struct ccm_aes256_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
+local uint8t = ffi_typeof "uint8_t[?]"
 
 local ciphers = {
     ecb = {
@@ -79,21 +82,21 @@ local ciphers = {
             invert  = nettle.nettle_aes128_invert_key,
             encrypt = nettle.nettle_aes128_encrypt,
             decrypt = nettle.nettle_aes128_decrypt,
-            context = ffi_typeof("AES128_CTX[1]")
+            context = ffi_typeof "AES128_CTX[1]"
         },
         [192] = {
             setkey  = nettle.nettle_aes192_set_encrypt_key,
             invert  = nettle.nettle_aes192_invert_key,
             encrypt = nettle.nettle_aes192_encrypt,
             decrypt = nettle.nettle_aes192_decrypt,
-            context = ffi_typeof("AES192_CTX[1]")
+            context = ffi_typeof "AES192_CTX[1]"
         },
         [256] = {
             setkey  = nettle.nettle_aes256_set_encrypt_key,
             invert  = nettle.nettle_aes256_invert_key,
             encrypt = nettle.nettle_aes256_encrypt,
             decrypt = nettle.nettle_aes256_decrypt,
-            context = ffi_typeof("AES256_CTX[1]")
+            context = ffi_typeof "AES256_CTX[1]"
         }
     },
     cbc = {
@@ -107,7 +110,7 @@ local ciphers = {
                 encrypt = nettle.nettle_aes128_encrypt,
                 decrypt = nettle.nettle_aes128_decrypt
             },
-            context = ffi_typeof("AES128_CTX[1]")
+            context = ffi_typeof "AES128_CTX[1]"
         },
         [192] = {
             setkey  = nettle.nettle_aes192_set_encrypt_key,
@@ -118,7 +121,7 @@ local ciphers = {
                 encrypt = nettle.nettle_aes192_encrypt,
                 decrypt = nettle.nettle_aes192_decrypt
             },
-            context = ffi_typeof("AES192_CTX[1]")
+            context = ffi_typeof "AES192_CTX[1]"
         },
         [256] = {
             setkey  = nettle.nettle_aes256_set_encrypt_key,
@@ -129,7 +132,7 @@ local ciphers = {
                 encrypt = nettle.nettle_aes256_encrypt,
                 decrypt = nettle.nettle_aes256_decrypt
             },
-            context = ffi_typeof("AES256_CTX[1]")
+            context = ffi_typeof "AES256_CTX[1]"
         }
     },
     ctr = {
@@ -142,7 +145,7 @@ local ciphers = {
                 encrypt = nettle.nettle_aes128_encrypt,
                 decrypt = nettle.nettle_aes128_encrypt
             },
-            context = ffi_typeof("AES128_CTX[1]")
+            context = ffi_typeof "AES128_CTX[1]"
         },
         [192] = {
             setkey  = nettle.nettle_aes192_set_encrypt_key,
@@ -152,7 +155,7 @@ local ciphers = {
                 encrypt = nettle.nettle_aes192_encrypt,
                 decrypt = nettle.nettle_aes192_encrypt
             },
-            context = ffi_typeof("AES192_CTX[1]")
+            context = ffi_typeof "AES192_CTX[1]"
         },
         [256] = {
             setkey  = nettle.nettle_aes256_set_encrypt_key,
@@ -162,7 +165,7 @@ local ciphers = {
                 encrypt = nettle.nettle_aes256_encrypt,
                 decrypt = nettle.nettle_aes256_encrypt
             },
-            context = ffi_typeof("AES256_CTX[1]")
+            context = ffi_typeof "AES256_CTX[1]"
         }
     },
     eax = {
@@ -174,7 +177,7 @@ local ciphers = {
             encrypt = nettle.nettle_eax_aes128_encrypt,
             decrypt = nettle.nettle_eax_aes128_decrypt,
             digest  = nettle.nettle_eax_aes128_digest,
-            context = ffi_typeof("EAX_AES128_CTX[1]")
+            context = ffi_typeof "EAX_AES128_CTX[1]"
         }
     },
     gcm = {
@@ -186,7 +189,7 @@ local ciphers = {
             encrypt = nettle.nettle_gcm_aes128_encrypt,
             decrypt = nettle.nettle_gcm_aes128_decrypt,
             digest  = nettle.nettle_gcm_aes128_digest,
-            context = ffi_typeof("GCM_AES128_CTX[1]")
+            context = ffi_typeof "GCM_AES128_CTX[1]"
         },
         [192] = {
             setkey  = nettle.nettle_gcm_aes192_set_key,
@@ -195,7 +198,7 @@ local ciphers = {
             encrypt = nettle.nettle_gcm_aes192_encrypt,
             decrypt = nettle.nettle_gcm_aes192_decrypt,
             digest  = nettle.nettle_gcm_aes192_digest,
-            context = ffi_typeof("GCM_AES192_CTX[1]")
+            context = ffi_typeof "GCM_AES192_CTX[1]"
         },
         [256] = {
             setkey  = nettle.nettle_gcm_aes256_set_key,
@@ -204,7 +207,7 @@ local ciphers = {
             encrypt = nettle.nettle_gcm_aes256_encrypt,
             decrypt = nettle.nettle_gcm_aes256_decrypt,
             digest  = nettle.nettle_gcm_aes256_digest,
-            context = ffi_typeof("GCM_AES256_CTX[1]")
+            context = ffi_typeof "GCM_AES256_CTX[1]"
         }        
     },
     ccm = {
@@ -216,7 +219,7 @@ local ciphers = {
             encrypt = nettle.nettle_ccm_aes128_encrypt,
             decrypt = nettle.nettle_ccm_aes128_decrypt,
             digest  = nettle.nettle_ccm_aes128_digest,
-            context = ffi_typeof("CCM_AES128_CTX[1]")
+            context = ffi_typeof "CCM_AES128_CTX[1]"
         },
         [192] = {
             setkey  = nettle.nettle_ccm_aes192_set_key,
@@ -225,7 +228,7 @@ local ciphers = {
             encrypt = nettle.nettle_ccm_aes192_encrypt,
             decrypt = nettle.nettle_ccm_aes192_decrypt,
             digest  = nettle.nettle_ccm_aes192_digest,
-            context = ffi_typeof("CCM_AES192_CTX[1]")
+            context = ffi_typeof "CCM_AES192_CTX[1]"
         },
         [256] = {
             setkey  = nettle.nettle_ccm_aes256_set_key,
@@ -234,7 +237,7 @@ local ciphers = {
             encrypt = nettle.nettle_ccm_aes256_encrypt,
             decrypt = nettle.nettle_ccm_aes256_decrypt,
             digest  = nettle.nettle_ccm_aes256_digest,
-            context = ffi_typeof("CCM_AES256_CTX[1]")
+            context = ffi_typeof "CCM_AES256_CTX[1]"
         }        
     }
 }

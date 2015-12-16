@@ -1,10 +1,12 @@
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_typeof = ffi.typeof
-local ffi_cdef   = ffi.cdef
-local ffi_str    = ffi.string
-local ceil       = math.ceil
-local nettle     = require "resty.nettle"
+local ffi          = require "ffi"
+local ffi_new      = ffi.new
+local ffi_typeof   = ffi.typeof
+local ffi_cdef     = ffi.cdef
+local ffi_str      = ffi.string
+local ceil         = math.ceil
+local assert       = assert
+local setmetatable = setmetatable
+local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct cast128_ctx {
@@ -18,12 +20,12 @@ void nettle_cast128_encrypt(const struct cast128_ctx *ctx, size_t length, uint8_
 void nettle_cast128_decrypt(const struct cast128_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
 ]]
 
-local uint8t = ffi_typeof("uint8_t[?]")
+local uint8t = ffi_typeof "uint8_t[?]"
 
 local cast128 = {}
 cast128.__index = cast128
 
-local context   = ffi_typeof("CAST128_CTX[1]")
+local context   = ffi_typeof "CAST128_CTX[1]"
 local setkey    = nettle.nettle_cast5_set_key
 local setkey128 = nettle.nettle_cast128_set_key
 local encrypt   = nettle.nettle_cast128_encrypt

@@ -1,7 +1,7 @@
 require "resty.nettle.types.gcm"
 
-local ffi        = require "ffi"
-local ffi_cdef   = ffi.cdef
+local ffi      = require "ffi"
+local ffi_cdef = ffi.cdef
 
 ffi_cdef[[
 typedef struct camellia128_ctx {

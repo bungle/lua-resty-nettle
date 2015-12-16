@@ -1,7 +1,9 @@
 require "resty.nettle.types.hash"
-local ffi     = require "ffi"
-local nettle  = require "resty.nettle"
-local ffi_str = ffi.string
+
+local ffi      = require "ffi"
+local nettle   = require "resty.nettle"
+local tonumber = tonumber
+local ffi_str  = ffi.string
 
 local hashes = {}
 

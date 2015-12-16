@@ -8,6 +8,7 @@ local ffi_load   = ffi.load
 local ffi_cdef   = ffi.cdef
 local ffi_typeof = ffi.typeof
 local type       = type
+local assert     = assert
 local gmp        = ffi_load "gmp"
 
 ffi_cdef[[
@@ -19,8 +20,8 @@ int    __gmpz_set_str (mpz_t rop, const char *str, int base);
 void   __gmpz_set_ui (mpz_t, unsigned long int iv);
 ]]
 
-local ctx = ffi_typeof("mpz_t")
-local chr = ffi_typeof("char[?]")
+local ctx = ffi_typeof "mpz_t"
+local chr = ffi_typeof "char[?]"
 
 local mpz = {}
 mpz.__index = mpz
@@ -47,7 +48,7 @@ end
 function mpz.set(op, value, base)
     local t = type(value)
     if t == "string" then
-        return gmp.__gmpz_set_str(op, str, base or 16)
+        return gmp.__gmpz_set_str(op, value, base or 16)
     elseif t == "number" then
         return gmp.__gmpz_set_ui(op, value)
     end
