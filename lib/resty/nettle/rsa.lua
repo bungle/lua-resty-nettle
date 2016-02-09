@@ -62,6 +62,7 @@ void nettle_rsa_compute_root(const struct rsa_private_key *key, mpz_t x, const m
 int  nettle_rsa_generate_keypair(struct rsa_public_key *pub, struct rsa_private_key *key, void *random_ctx, nettle_random_func *random, void *progress_ctx, nettle_progress_func *progress, unsigned n_size, unsigned e_size);
 int  nettle_rsa_keypair_to_sexp(struct nettle_buffer *buffer, const char *algorithm_name, const struct rsa_public_key *pub, const struct rsa_private_key *priv);
 int  nettle_rsa_keypair_from_sexp(struct rsa_public_key *pub, struct rsa_private_key *priv, unsigned limit, size_t length, const uint8_t *expr);
+int  nettle_rsa_keypair_from_der(struct rsa_public_key *pub, struct rsa_private_key *priv, unsigned limit, size_t length, const uint8_t *data);
 ]]
 local size = ffi_new "size_t[1]"
 local buf = ffi_typeof "uint8_t[?]"
@@ -140,7 +141,15 @@ function keypair.new(n, e, r, p, seed)
         private = prx
     }, keypair)
 end
-
+function keypair.der(data)
+    local pux = public.new()
+    local prx = private.new()
+    assert(hogweed.nettle_rsa_keypair_from_der(pux.context, prx.context, 0, #data, data) == 1)
+    return setmetatable({
+        public  = pux,
+        private = prx
+    }, keypair)
+end
 local rsa = { keypair = keypair, key = { public = public, private = private } }
 rsa.__index = rsa
 
