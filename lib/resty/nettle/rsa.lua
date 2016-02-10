@@ -88,6 +88,14 @@ function public:prepare()
     return tonumber(hogweed.nettle_rsa_public_key_prepare(self.context))
 end
 
+function public:e(base)
+    return gmp.string(self.context[0].e, base)
+end
+
+function public:n(base)
+    return gmp.string(self.context[0].n, base)
+end
+
 local private = {}
 private.__index = private
 
