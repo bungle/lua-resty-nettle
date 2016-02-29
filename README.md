@@ -6,6 +6,998 @@ LuaJIT FFI bindings for [Nettle](http://www.lysator.liu.se/~nisse/nettle/nettle.
 
 All the bindings that do not depend on [GMP](https://gmplib.org/) are ready to use. The [GMP](https://gmplib.org/) depended functionality is the [public-key algorithms](http://www.lysator.liu.se/~nisse/nettle/nettle.html#Public_002dkey-algorithms) (i.e. RSA, DSA, and ECDSA), and ONLY the RSA functions have some support right now, although the APIs might change. Much of the documentation here is copied from [Nettle's documentation](http://www.lysator.liu.se/~nisse/nettle/nettle.html), but I have included Lua examples to it. I will be adding more documentation shortly.
 
+## Synopsis
+
+```lua
+local function hex(str, spacer)
+    return (string.gsub(str, "(.)", function (c)
+        return string.format("%02X%s", string.byte(c), spacer or "")
+    end))
+end
+
+do
+    local md2 = require "resty.nettle.md2"
+    print("md2      ", #md2(""), hex(md2("")))
+    local hash = md2.new()
+    hash:update("")
+    print("md2     ", #hash:digest(), hex(hash:digest()))
+end
+
+do
+    local md4 = require "resty.nettle.md4"
+    print("md4      ", #md4(""), hex(md4("")))
+    local hash = md4.new()
+    hash:update("")
+    print("md4      ", #hash:digest(), hex(hash:digest()))
+end
+
+do
+    local md5 = require "resty.nettle.md5"
+    print("md5      ", #md5(""), hex(md5("")))
+    local hash = md5.new()
+    hash:update("")
+    print("md5      ", #hash:digest(), hex(hash:digest()))
+end
+
+do
+    local ripemd160 = require "resty.nettle.ripemd160"
+    local hash = ripemd160.new()
+    hash:update("")
+    print("ripemd160", #hash:digest(), hex(hash:digest()))
+end
+
+do
+    local gosthash94 = require "resty.nettle.gosthash94"
+    local hash = gosthash94.new()
+    hash:update("")
+    print("gosthash94", #hash:digest(), hex(hash:digest()))
+end
+
+do
+    local sha1 = require "resty.nettle.sha1"
+    print("sha1      ", #sha1(""), hex(sha1("")))
+    local hash = sha1.new()
+    hash:update("")
+    print("sha1     ", #hash:digest(), hex(hash:digest()))
+end
+
+do
+    local sha1 = require "resty.nettle.sha1"
+    print("sha1      ", #sha1(""), hex(sha1("")))
+    local hash = sha1.new()
+    hash:update("")
+    print("sha1     ", #hash:digest(), hex(hash:digest()))
+end
+
+do
+    local sha2 = require "resty.nettle.sha2"
+
+    local hash = sha2.sha224.new()
+    hash:update("")
+    print("sha224      ", #hash:digest(), hex(hash:digest()))
+    print("sha224      ", #sha2.sha224(""), hex(sha2.sha224("")))
+
+    local hash = sha2.sha256.new()
+    hash:update("")
+    print("sha256      ", #hash:digest(), hex(hash:digest()))
+    print("sha256      ", #sha2.sha256(""), hex(sha2.sha256("")))
+
+    local hash = sha2.sha384.new()
+    hash:update("")
+    print("sha384      ", #hash:digest(), hex(hash:digest()))
+    print("sha384      ", #sha2.sha384(""), hex(sha2.sha384("")))
+
+    local hash = sha2.sha512.new()
+    hash:update("")
+    print("sha512      ", #hash:digest(), hex(hash:digest()))
+    print("sha512      ", #sha2.sha512(""), hex(sha2.sha512("")))
+
+    local hash = sha2.sha512_224.new()
+    hash:update("")
+    print("sha512_224", #hash:digest(), hex(hash:digest()))
+    print("sha512_224", #sha2.sha512_224(""), hex(sha2.sha512_224("")))
+
+    local hash = sha2.sha512_256.new()
+    hash:update("")
+    print("sha512_256", #hash:digest(), hex(hash:digest()))
+    print("sha512_256", #sha2.sha512_256(""), hex(sha2.sha512_256("")))
+end
+
+do
+    local sha3 = require "resty.nettle.sha3"
+
+    local hash = sha3.sha224.new()
+    hash:update("")
+    print("sha3 224", #hash:digest(), hex(hash:digest()))
+
+    local hash = sha3.sha256.new()
+    hash:update("")
+    print("sha3 256", #hash:digest(), hex(hash:digest()))
+
+    local hash = sha3.sha384.new()
+    hash:update("")
+    print("sha3 384", #hash:digest(), hex(hash:digest()))
+
+    local hash = sha3.sha512.new()
+    hash:update("")
+    print("sha3 512", #hash:digest(), hex(hash:digest()))
+end
+
+do
+    local hmac = require "resty.nettle.hmac"
+    print("hmac md5", #hmac("md5", "a", "a"), hex(hmac("md5", "a", "a")))
+    print("hmac md5", #hmac.md5("a", "a"), hex(hmac.md5("a", "a")))
+    local hash = hmac.md5.new("a")
+    hash:update("a")
+    local dgst = hash:digest()
+    print("hmac md5", #dgst, hex(dgst))
+
+    local hash = hmac.ripemd160.new("a")
+    hash:update("a")
+    local dgst = hash:digest()
+    print("hmac ripemd160", #dgst, hex(dgst))
+
+    local hash = hmac.sha1.new("a")
+    hash:update("a")
+    local dgst = hash:digest()
+    print("hmac sha1", #dgst, hex(dgst))
+
+    local hash = hmac.sha224.new("a")
+    hash:update("a")
+    local dgst = hash:digest()
+    print("hmac sha224", #dgst, hex(dgst))
+
+    local hash = hmac.sha256.new("a")
+    hash:update("a")
+    local dgst = hash:digest()
+    print("hmac sha256", #dgst, hex(dgst))
+  
+    local hash = hmac.sha384.new("a")
+    hash:update("a")
+    local dgst = hash:digest()
+    print("hmac sha384", #dgst, hex(dgst))
+
+    local hash = hmac.sha512.new("a")
+    hash:update("a")
+    local dgst = hash:digest()
+    print("hmac sha512", #dgst, hex(dgst))
+end
+
+do
+    local umac = require "resty.nettle.umac"
+    local hash = umac.umac32.new("umac32")
+    hash:update("")
+    local dgst = hash:digest()
+    print("umac32     ", #dgst, hex(dgst))
+
+    local hash = umac.umac64.new("umac64")
+    hash:update("")
+    local dgst = hash:digest()
+    print("umac64     ", #dgst, hex(dgst))
+
+    local hash = umac.umac96.new("umac96")
+    hash:update("")
+    local dgst = hash:digest()
+    print("umac96     ", #dgst, hex(dgst))
+
+    local hash = umac.umac128.new("umac128")
+    hash:update("")
+    local dgst = hash:digest()
+    print("umac128     ", #dgst, hex(dgst))
+end
+
+do
+    local poly = require "resty.nettle.poly1305"
+    local hash = poly.new("poly")
+    hash:update("")
+    local dgst = hash:digest()
+    print("poly1305    ", #dgst, hex(dgst))
+end
+
+do
+    local pbkdf2 = require "resty.nettle.pbkdf2"
+    local hmac = pbkdf2.hmac_sha1("password", 1, "salt", 20)
+    print("pbkdf2 sha1", #hmac, hex(hmac))
+    local hmac = pbkdf2.hmac_sha256("pass\0word", 4096, "sa\0lt", 32)
+    print("pbkdf2 sha256", #hmac, hex(hmac))
+end
+
+print()
+
+do
+    local aes = require "resty.nettle.aes"
+    local aes128 = aes.new("testtesttesttest")
+    local ciphertext = aes128:encrypt("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    print("aes128 encrypt", #ciphertext, hex(ciphertext))
+    local aes128 = aes.new("testtesttesttest")
+    local plaintext = aes128:decrypt(ciphertext)
+    print("aes128 decrypt", #plaintext, plaintext)
+
+    print()
+
+    local aes128 = aes.new("testtesttesttest", "cbc", "testtesttesttest")
+    local ciphertext = aes128:encrypt("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    print("aes128 cbc enc", #ciphertext, hex(ciphertext))
+    local aes128 = aes.new("testtesttesttest", "cbc", "testtesttesttest")
+    local plaintext = aes128:decrypt(ciphertext)
+    print("aes128 cbc dec", #plaintext, plaintext)
+
+    print()
+
+    local aes128 = aes.new("testtesttesttest", "ctr", "testtesttesttest")
+    local ciphertext = aes128:encrypt("a")
+    print("aes128 ctr enc", #ciphertext, hex(ciphertext))
+    local aes128 = aes.new("testtesttesttest", "ctr", "testtesttesttest")
+    local plaintext = aes128:decrypt(ciphertext)
+    print("aes128 ctr dec", #plaintext, plaintext)
+
+    print()
+
+    local aes128 = aes.new("testtesttesttest", "eax", "testtesttest")
+    local ciphertext, digest = aes128:encrypt("a")
+    print("aes128 eax enc", #ciphertext, hex(ciphertext))
+    print("aes128 eax dgst", #digest, hex(digest))
+    local aes128 = aes.new("testtesttesttest", "eax", "testtesttest")
+    local plaintext, digest = aes128:decrypt(ciphertext)
+    print("aes128 eax dec", #plaintext, plaintext)
+    print("aes128 eax dgst", #digest, hex(digest))
+
+    print()
+
+    local aes128 = aes.new("testtesttesttest", "gcm", "testtesttest")
+    local ciphertext, digest = aes128:encrypt("a")
+    print("aes128 gcm enc", #ciphertext, hex(ciphertext))
+    print("aes128 gcm dgst", #digest, hex(digest))
+    local aes128 = aes.new("testtesttesttest", "gcm", "testtesttest")
+    local plaintext, digest = aes128:decrypt(ciphertext)
+    print("aes128 gcm dec", #plaintext, plaintext)
+    print("aes128 gcm dgst", #digest, hex(digest))
+
+    print()
+
+    local aes128 = aes.new("testtesttesttest", "ccm", "testtesttest")
+    local ciphertext, digest = aes128:encrypt("a")
+    print("aes128 ccm enc", #ciphertext, hex(ciphertext))
+    print("aes128 ccm dgst", #digest, hex(digest))
+    local aes128 = aes.new("testtesttesttest", "ccm", "testtesttest")
+    local plaintext, digest = aes128:decrypt(ciphertext)
+    print("aes128 ccm dec", #plaintext, plaintext)
+    print("aes128 ccm dgst", #digest, hex(digest))
+
+    print()
+
+    local aes192 = aes.new("testtesttesttesttesttest")
+    local ciphertext = aes192:encrypt("a")
+    print("aes192 encrypt", #ciphertext, hex(ciphertext))
+    local aes192 = aes.new("testtesttesttesttesttest")
+    local plaintext = aes192:decrypt(ciphertext)
+    print("aes192 decrypt", #plaintext, plaintext)
+    
+    print()
+
+    local aes192 = aes.new("testtesttesttesttesttest", "cbc", "testtesttesttest")
+    local ciphertext = aes192:encrypt("a")
+    print("aes192 cbc enc", #ciphertext, hex(ciphertext))
+    local aes192 = aes.new("testtesttesttesttesttest", "cbc", "testtesttesttest")
+    local plaintext = aes192:decrypt(ciphertext)
+    print("aes192 cbc dec", #plaintext, plaintext)
+
+    print()
+
+    local aes192 = aes.new("testtesttesttesttesttest", "ctr", "testtesttesttest")
+    local ciphertext = aes192:encrypt("a")
+    print("aes192 ctr enc", #ciphertext, hex(ciphertext))
+    local aes192 = aes.new("testtesttesttesttesttest", "ctr", "testtesttesttest")
+    local plaintext = aes192:decrypt(ciphertext)
+    print("aes192 ctr dec", #plaintext, plaintext)
+
+    print()
+
+    local aes192 = aes.new("testtesttesttesttesttest", "gcm", "testtesttest")
+    local ciphertext, digest = aes192:encrypt("a")
+    print("aes192 gcm enc", #ciphertext, hex(ciphertext))
+    print("aes192 gcm dgst", #digest, hex(digest))
+    local aes192 = aes.new("testtesttesttesttesttest", "gcm", "testtesttest")
+    local plaintext, digest = aes192:decrypt(ciphertext)
+    print("aes192 gcm dec", #plaintext, plaintext)
+    print("aes192 gcm dgst", #digest, hex(digest))
+
+    print()
+
+    local aes192 = aes.new("testtesttesttesttesttest", "ccm", "testtesttest")
+    local ciphertext, digest = aes192:encrypt("a")
+    print("aes192 ccm enc", #ciphertext, hex(ciphertext))
+    print("aes192 ccm dgst", #digest, hex(digest))
+    local aes192 = aes.new("testtesttesttesttesttest", "ccm", "testtesttest")
+    local plaintext, digest = aes192:decrypt(ciphertext)
+    print("aes192 ccm dec", #plaintext, plaintext)
+    print("aes192 ccm dgst", #digest, hex(digest))
+
+    print()
+    
+    local aes256 = aes.new("testtesttesttesttesttesttesttest")
+    local ciphertext = aes256:encrypt("a")
+    print("aes256 encrypt", #ciphertext, hex(ciphertext))
+    local aes256 = aes.new("testtesttesttesttesttesttesttest")
+    local plaintext = aes256:decrypt(ciphertext)
+    print("aes256 decrypt", #plaintext, plaintext)
+
+    print()
+
+    local aes256 = aes.new("testtesttesttesttesttesttesttest", "cbc", "testtesttesttest")
+    local ciphertext = aes256:encrypt("a")
+    print("aes256 cbc enc", #ciphertext, hex(ciphertext))
+    local aes256 = aes.new("testtesttesttesttesttesttesttest", "cbc", "testtesttesttest")
+    local plaintext = aes256:decrypt(ciphertext)
+    print("aes256 cbc dec", #plaintext, plaintext)
+
+    print()
+
+    local aes256 = aes.new("testtesttesttesttesttesttesttest", "ctr", "testtesttesttest")
+    local ciphertext = aes256:encrypt("a")
+    print("aes256 ctr enc", #ciphertext, hex(ciphertext))
+    local aes256 = aes.new("testtesttesttesttesttesttesttest", "ctr", "testtesttesttest")
+    local plaintext = aes256:decrypt(ciphertext)
+    print("aes256 ctr dec", #plaintext, plaintext)
+
+    print()
+
+    local aes256 = aes.new("testtesttesttesttesttesttesttest", "gcm", "testtesttest", "testtesttesttest1asdasdasdasdasdasdasdasdasdasdasdasdasdasdasd")
+    local ciphertext, digest = aes256:encrypt("a")
+    print("aes256 gcm enc", #ciphertext, hex(ciphertext))
+    print("aes256 gcm dgst", #digest, hex(digest))
+    local aes256 = aes.new("testtesttesttesttesttesttesttest", "gcm", "testtesttest", "testtesttesttest1asdasdasdasdasdasdasdasdasdasdasdasdasdasdasd")
+    local plaintext, digest = aes256:decrypt(ciphertext)
+    print("aes256 gcm dec", #plaintext, plaintext)
+    print("aes256 gcm dgst", #digest, hex(digest))
+
+    print()
+
+    local aes256 = aes.new("testtesttesttesttesttesttesttest", "ccm", "testtesttest", "testtesttesttest1asdasdasdasdasdasdasdasdasdasdasdasdasdasdasd")
+    local ciphertext, digest = aes256:encrypt("a")
+    print("aes256 ccm enc", #ciphertext, hex(ciphertext))
+    print("aes256 ccm dgst", #digest, hex(digest))
+    local aes256 = aes.new("testtesttesttesttesttesttesttest", "ccm", "testtesttest", "testtesttesttest1asdasdasdasdasdasdasdasdasdasdasdasdasdasdasd")
+    local plaintext, digest = aes256:decrypt(ciphertext)
+    print("aes256 ccm dec", #plaintext, plaintext)
+    print("aes256 ccm dgst", #digest, hex(digest))
+end
+
+print()
+
+do
+    local camellia = require "resty.nettle.camellia"
+    local camellia128 = camellia.new("testtesttesttest")
+    local ciphertext = camellia128:encrypt("a")
+    print("cam128 encrypt", #ciphertext, hex(ciphertext))
+    local camellia128 = camellia.new("testtesttesttest")
+    local plaintext = camellia128:decrypt(ciphertext)
+    print("cam128 decrypt", #plaintext, plaintext)
+
+    print()
+
+    local camellia128 = camellia.new("testtesttesttest", "gcm", "testtesttest")
+    local ciphertext, digest = camellia128:encrypt("a")
+    print("cam128 gcm enc", #ciphertext, hex(ciphertext))
+    print("cam128 gcm dgst", #digest, hex(digest))
+    local camellia128 = camellia.new("testtesttesttest", "gcm", "testtesttest")
+    local plaintext, digest = camellia128:decrypt(ciphertext)
+    print("cam128 gcm dec", #plaintext, plaintext)
+    print("cam128 gcm dgst", #digest, hex(digest))
+
+    print()
+
+    local camellia192 = camellia.new("testtesttesttesttesttest")
+    local ciphertext = camellia192:encrypt("a")
+    print("cam192 encrypt", #ciphertext, hex(ciphertext))
+    local camellia192 = camellia.new("testtesttesttesttesttest")
+    local plaintext = camellia192:decrypt(ciphertext)
+    print("cam192 decrypt", #plaintext, plaintext)
+
+    print()
+
+    local camellia256 = camellia.new("testtesttesttesttesttesttesttest")
+    local ciphertext = camellia256:encrypt("a")
+    print("cam256 encrypt", #ciphertext, hex(ciphertext))
+    local camellia256 = camellia.new("testtesttesttesttesttesttesttest")
+    local plaintext = camellia256:decrypt(ciphertext)
+    print("cam256 decrypt", #plaintext, plaintext)
+
+    print()
+
+    local camellia256 = camellia.new("testtesttesttesttesttesttesttest", "gcm", "testtesttest", "testtesttesttest1asdasdasdasdasdasdasdasdasdasdasdasdasdasdasd")
+    local ciphertext, digest = camellia256:encrypt("a")
+    print("cam256 gcm enc", #ciphertext, hex(ciphertext))
+    print("cam256 gcm dgst", #digest, hex(digest))
+    local camellia256 = camellia.new("testtesttesttesttesttesttesttest", "gcm", "testtesttest", "testtesttesttest1asdasdasdasdasdasdasdasdasdasdasdasdasdasdasd")
+    local plaintext, digest = camellia256:decrypt(ciphertext)
+    print("cam256 gcm dec", #plaintext, plaintext)
+    print("cam256 gcm dgst", #digest, hex(digest))
+end
+
+print()
+
+do
+    local arcfour = require "resty.nettle.arcfour"
+    local af = arcfour.new("testtesttesttest")
+    local ciphertext = af:encrypt("a")
+    print("ARCFOUR encrypt", #ciphertext, hex(ciphertext))
+    local af = arcfour.new("testtesttesttest")
+    local plaintext = af:decrypt(ciphertext)
+    print("ARCFOUR decrypt", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local blowfish = require "resty.nettle.blowfish"
+    local bf = blowfish.new("testtesttesttest")
+    local ciphertext = bf:encrypt("a")
+    print("BLOWFISH enc", #ciphertext, hex(ciphertext))
+    local bf = blowfish.new("testtesttesttest")
+    local plaintext = bf:decrypt(ciphertext)
+    print("BLOWFISH dec", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local twofish = require "resty.nettle.twofish"
+    local tf = twofish.new("testtesttesttest")
+    local ciphertext = tf:encrypt("a")
+    print("TWOFISH enc", #ciphertext, hex(ciphertext))
+    local tf = twofish.new("testtesttesttest")
+    local plaintext = tf:decrypt(ciphertext)
+    print("TWOFISH dec", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local serpent = require "resty.nettle.serpent"
+    local sp = serpent.new("testtesttesttest")
+    local ciphertext = sp:encrypt("a")
+    print("SERPENT enc", #ciphertext, hex(ciphertext))
+    local sp = serpent.new("testtesttesttest")
+    local plaintext = sp:decrypt(ciphertext)
+    print("SERPENT dec", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local cast128 = require "resty.nettle.cast128"
+    local ct = cast128.new("testtesttesttest")
+    local ciphertext = ct:encrypt("a")
+    print("CAST128 enc", #ciphertext, hex(ciphertext))
+    local ct = cast128.new("testtesttesttest")
+    local plaintext = ct:decrypt(ciphertext)
+    print("CAST128 dec", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local chacha = require "resty.nettle.chacha"
+    local cc = chacha.new("testtesttesttesttesttesttesttest", "testtest")
+    local ciphertext = cc:encrypt("a")
+    print("ChaCha enc", #ciphertext, hex(ciphertext))
+    local cc = chacha.new("testtesttesttesttesttesttesttest", "testtest")
+    local plaintext = cc:decrypt(ciphertext)
+    print("ChaCha dec", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local salsa20 = require "resty.nettle.salsa20"
+    local ss = salsa20.new("testtesttesttest", "testtest")
+    local ciphertext = ss:encrypt("a")
+    print("Salsa20 128 enc", #ciphertext, hex(ciphertext))
+    local ss = salsa20.new("testtesttesttest", "testtest")
+    local plaintext = ss:decrypt(ciphertext)
+    print("Salsa20 128 dec", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local salsa20 = require "resty.nettle.salsa20"
+    local ss = salsa20.new("testtesttesttesttesttesttesttest", "testtest")
+    local ciphertext = ss:encrypt("a")
+    print("Salsa20 256 enc", #ciphertext, hex(ciphertext))
+    local ss = salsa20.new("testtesttesttesttesttesttesttest", "testtest")
+    local plaintext = ss:decrypt(ciphertext)
+    print("Salsa20 256 dec", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local salsa20 = require "resty.nettle.salsa20"
+    local ss = salsa20.new("testtesttesttest", "testtest", 12)
+    local ciphertext = ss:encrypt("a")
+    print("Sal20r12 128 e", #ciphertext, hex(ciphertext))
+    local ss = salsa20.new("testtesttesttest", "testtest", 12)
+    local plaintext = ss:decrypt(ciphertext)
+    print("Sal20r12 128 d", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local salsa20 = require "resty.nettle.salsa20"
+    local ss = salsa20.new("testtesttesttesttesttesttesttest", "testtest", 12)
+    local ciphertext = ss:encrypt("a")
+    print("Sal20r12 256 e", #ciphertext, hex(ciphertext))
+    local ss = salsa20.new("testtesttesttesttesttesttesttest", "testtest", 12)
+    local plaintext = ss:decrypt(ciphertext)
+    print("Sal20r12 256 d", #plaintext, plaintext)
+end
+
+print()
+
+do
+    local chacha_poly1305 = require "resty.nettle.chacha-poly1305"
+    local cp = chacha_poly1305.new("testtesttesttesttesttesttesttest", "testtesttesttest", "testtest")
+    local ciphertext, digest = cp:encrypt("a")
+    print("cc-p1305 enc", #ciphertext, hex(ciphertext))
+    print("cc-p1305 dgst", #digest, hex(digest))
+    local cp = chacha_poly1305.new("testtesttesttesttesttesttesttest", "testtesttesttest", "testtest")
+    local plaintext, digest = cp:decrypt(ciphertext)
+    print("cc-p1305 dec", #plaintext, plaintext)
+    print("cc-p1305 dgst", #digest, hex(digest))
+end
+
+print()
+
+do
+    local des = require "resty.nettle.des"
+    print("DES check   ", "testtest", des.check_parity("testtest"))
+    print("DES fix     ", "testtest", des.fix_parity("testtest"))
+    print("DES check   ", des.fix_parity("testtest"), des.check_parity(des.fix_parity("testtest")))
+end
+
+print()
+
+do
+    local des = require "resty.nettle.des"
+    local ds, wk = des.new("testtest")
+    local ciphertext = ds:encrypt("a")
+    print("DES enc     ", wk, #ciphertext, hex(ciphertext))
+    local ds, wk = des.new("testtest")
+    local plaintext = ds:decrypt(ciphertext)
+    print("DES dec     ", wk, #plaintext, plaintext)
+end
+
+print()
+
+do
+    local des = require "resty.nettle.des"
+    local ds, wk = des.new("testtest", "cbc", "kalakala")
+    local ciphertext = ds:encrypt("testtestkalakala")
+    print("DES cbc enc ", wk, #ciphertext, hex(ciphertext))
+    local ds, wk = des.new("testtest", "cbc", "kalakala")
+    local plaintext = ds:decrypt(ciphertext)
+    print("DES cbc dec ", wk, #plaintext, plaintext)
+end
+
+print()
+
+do
+    local des = require "resty.nettle.des"
+    local ds, wk = des.new("testtest", "ctr", "kalakala")
+    local ciphertext = ds:encrypt("testtestkalakala")
+    print("DES ctr enc ", wk, #ciphertext, hex(ciphertext))
+    local ds, wk = des.new("testtest", "ctr", "kalakala")
+    local plaintext = ds:decrypt(ciphertext)
+    print("DES ctr dec ", wk, #plaintext, plaintext)
+end
+
+print()
+
+do
+    local des = require "resty.nettle.des"
+    print("DES3 check   ", "testtestkalakalatesttest", des.check_parity("testtestkalakalatesttest"))
+    print("DES3 fix     ", "testtestkalakalatesttest", des.fix_parity("testtestkalakalatesttest"))
+    print("DES3 check   ", des.fix_parity("testtestkalakalatesttest"), des.check_parity(des.fix_parity("testtestkalakalatesttest")))
+end
+
+print()
+
+do
+    local des = require "resty.nettle.des"
+    local ds, wk = des.new("testtestkalakalatesttest")
+    local ciphertext = ds:encrypt("a")
+    print("DES3 enc     ", wk, #ciphertext, hex(ciphertext))
+    local ds, wk = des.new("testtestkalakalatesttest")
+    local plaintext = ds:decrypt(ciphertext)
+    print("DES3 dec     ", wk, #plaintext, plaintext)
+end
+
+print()
+
+do
+    local des = require "resty.nettle.des"
+    local ds, wk = des.new("testtestkalakalatesttest", "cbc", "kalakala")
+    local ciphertext = ds:encrypt("testtestkalakala")
+    print("DES3 cbc enc", wk, #ciphertext, hex(ciphertext))
+    local ds, wk = des.new("testtestkalakalatesttest", "cbc", "kalakala")
+    local plaintext = ds:decrypt(ciphertext)
+    print("DES3 cbc dec", wk, #plaintext, plaintext)
+end
+
+print()
+
+do
+    local des = require "resty.nettle.des"
+    local ds, wk = des.new("testtestkalakalatesttest", "ctr", "kalakala")
+    local ciphertext = ds:encrypt("testtestkalakala")
+    print("DES3 ctr enc", wk, #ciphertext, hex(ciphertext))
+    local ds, wk = des.new("testtestkalakalatesttest", "ctr", "kalakala")
+    local plaintext = ds:decrypt(ciphertext)
+    print("DES3 ctr dec", wk, #plaintext, plaintext)
+end
+
+print()
+
+do
+    local base64 = require "resty.nettle.base64"
+    local encoded = base64.encode("testtesttesttest")
+    print("BASE64 enc", #encoded, encoded)
+    local decoded = base64.decode(encoded)
+    print("BASE64 dec", #decoded, decoded)
+
+    print()
+
+    local encoded = base64.encode("testtesttesttest+&", true)
+    print("BASE64 enc-url", #encoded, encoded)
+    local decoded = base64.decode(encoded, true)
+    print("BASE64 dec-url", #decoded, decoded)
+
+    print()
+    
+    local base64enc = base64.encoder.new()
+    print(base64enc:single("t"))
+    print(base64enc:single("e"))
+    print(base64enc:single("s"))
+    print(base64enc:single("t"))
+    print(base64enc:update("test"))
+    print(base64enc:single("t"))
+    print(base64enc:single("e"))
+    print(base64enc:single("s"))
+    print(base64enc:single("t"))
+    print(base64enc:update("test"))
+    print(base64enc:final())
+
+    print()
+
+    local base64dec = base64.decoder.new()
+    print(base64dec:single("d"))
+    print(base64dec:single("G"))
+    print(base64dec:single("V"))
+    print(base64dec:single("z"))
+    print(base64dec:single("d"))
+    print(base64dec:update("HRlc3"))
+    print(base64dec:single("R"))
+    print(base64dec:single("0"))
+    print(base64dec:single("Z"))
+    print(base64dec:single("X"))
+    print(base64dec:single("N"))
+    print(base64dec:single("0"))
+    print(base64dec:update("dGVzdA=="))
+    print(base64dec:final())
+end
+
+print()
+
+do
+    local base16 = require "resty.nettle.base16"
+    local encoded = base16.encode("testtesttesttest")
+    print("BASE16 enc", #encoded, encoded)
+    local decoded = base16.decode(encoded)
+    print("BASE16 dec", #decoded, decoded)
+
+    print()
+
+    local base16enc = base16.encoder.new()
+    print(base16enc:single("t"))
+    print(base16enc:single("e"))
+    print(base16enc:single("s"))
+    print(base16enc:single("t"))
+    print(base16enc:update("test"))
+    print(base16enc:single("t"))
+    print(base16enc:single("e"))
+    print(base16enc:single("s"))
+    print(base16enc:single("t"))
+    print(base16enc:update("test"))
+
+    print()
+
+    local base16dec = base16.decoder.new()
+    print(base16dec:single("7"))
+    print(base16dec:single("4"))
+    print(base16dec:single("6"))
+    print(base16dec:single("5"))
+    print(base16dec:single("7"))
+    print(base16dec:single("3"))
+    print(base16dec:single("7"))
+    print(base16dec:single("4"))
+    print(base16dec:update("74657374"))
+    print(base16dec:single("7"))
+    print(base16dec:single("4"))
+    print(base16dec:single("6"))
+    print(base16dec:single("5"))
+    print(base16dec:single("7"))
+    print(base16dec:single("3"))
+    print(base16dec:single("7"))
+    print(base16dec:single("4"))
+    print(base16dec:update("74657374"))
+    print(base16dec:final())
+end
+
+print()
+
+do
+    local yarrow = require "resty.nettle.yarrow"
+    local y = yarrow.new()
+    print(y.sources)
+    print(y.seeded)
+    y:seed("testtesttesttesttesttesttesttest")
+    print(y.seeded)
+
+    print(hex(y:random(30)))
+    print(hex(y:random(30)))
+
+    y:fast_reseed()
+
+    print(hex(y:random(30)))
+
+    y:slow_reseed()
+    print(hex(y:random(30)))
+end
+
+print()
+
+do
+    local knuth = require "resty.nettle.knuth-lfib"
+    local k = knuth.new()
+    print(k:number())
+    print(k:number())
+    print(hex(k:random(10)))
+    local t = k:array(10)
+    print(t)
+    print(table.concat(t, '|'))
+end
+
+print()
+
+do
+    local hash = require "resty.nettle.hash"
+    local hashes = hash.hashes
+    for _, h in ipairs(hashes) do
+        print(h.name, h.context_size, h.block_size, h.init, h.update, h.digest)
+    end
+end
+
+print()
+
+do
+    local cipher = require "resty.nettle.cipher"
+    local ciphers = cipher.ciphers
+    for _, c in ipairs(ciphers) do
+        print(c.name, c.context_size, c.block_size, c.key_size, c.set_encrypt_key, c.set_decrypt_key, c.encrypt, c.decrypt)
+    end
+end
+
+print()
+
+do
+    local aead = require "resty.nettle.aead"
+    local aeads = aead.aeads
+    for _, a in ipairs(aeads) do
+        print(a.name, a.context_size, a.block_size, a.key_size, a.nonce_size, a.set_encrypt_key, a.set_decrypt_key, a.set_nonce, a.update, a.encrypt, a.decrypt, a.digest)
+    end
+end
+```
+
+The above should output this:
+
+```text
+md2      	    16	8350E5A3E24C153DF2275C9F80692773
+md2     	    16	8350E5A3E24C153DF2275C9F80692773
+md4      	    16	31D6CFE0D16AE931B73C59D7E0C089C0
+md4      	    16	31D6CFE0D16AE931B73C59D7E0C089C0
+md5      	    16	D41D8CD98F00B204E9800998ECF8427E
+md5      	    16	D41D8CD98F00B204E9800998ECF8427E
+ripemd160	    20	9C1185A5C5E9FC54612808977EE8F548B2258D31
+gosthash94	    32	CE85B99CC46752FFFEE35CAB9A7B0278ABB4C2D2055CFF685AF4912C49490F8D
+sha1      	    20	DA39A3EE5E6B4B0D3255BFEF95601890AFD80709
+sha1        	20	DA39A3EE5E6B4B0D3255BFEF95601890AFD80709
+sha224      	28	D14A028C2A3A2BC9476102BB288234C415A2B01F828EA62AC5B3E42F
+sha224      	28	D14A028C2A3A2BC9476102BB288234C415A2B01F828EA62AC5B3E42F
+sha256      	32	E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855
+sha256      	32	E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855
+sha384      	48	38B060A751AC96384CD9327EB1B1E36A21FDB71114BE07434C0CC7BF63F6E1DA274EDEBFE76F65FBD51AD2F14898B95B
+sha384      	48	38B060A751AC96384CD9327EB1B1E36A21FDB71114BE07434C0CC7BF63F6E1DA274EDEBFE76F65FBD51AD2F14898B95B
+sha512      	64	CF83E1357EEFB8BDF1542850D66D8007D620E4050B5715DC83F4A921D36CE9CE47D0D13C5D85F2B0FF8318D2877EEC2F63B931BD47417A81A538327AF927DA3E
+sha512      	64	CF83E1357EEFB8BDF1542850D66D8007D620E4050B5715DC83F4A921D36CE9CE47D0D13C5D85F2B0FF8318D2877EEC2F63B931BD47417A81A538327AF927DA3E
+sha512_224	    28	6ED0DD02806FA89E25DE060C19D3AC86CABB87D6A0DDD05C333B84F4
+sha512_224	    28	6ED0DD02806FA89E25DE060C19D3AC86CABB87D6A0DDD05C333B84F4
+sha512_256  	32	C672B8D1EF56ED28AB87C3622C5114069BDD3AD7B8F9737498D0C01ECEF0967A
+sha512_256	    32	C672B8D1EF56ED28AB87C3622C5114069BDD3AD7B8F9737498D0C01ECEF0967A
+sha3 224    	28	F71837502BA8E10837BDD8D365ADB85591895602FC552B48B7390ABD
+sha3 256	    32	C5D2460186F7233C927E7DB2DCC703C0E500B653CA82273B7BFAD8045D85A470
+sha3 384    	48	2C23146A63A29ACF99E73B88F8C24EAA7DC60AA771780CCC006AFBFA8FE2479B2DD2B21362337441AC12B515911957FF
+sha3 512	    64	0EAB42DE4C3CEB9235FC91ACFFE746B29C29A8C366B7C60E4E67C466F36A4304C00FA9CAF9D87976BA469BCBE06713B435F091EF2769FB160CDAB33D3670680E
+hmac md5    	16	06F30DC9049F859EA0CCB39FDC8FD5C2
+hmac md5    	16	06F30DC9049F859EA0CCB39FDC8FD5C2
+hmac md5    	16	06F30DC9049F859EA0CCB39FDC8FD5C2
+hmac ripemd160	20	ECB2E5CA0EEFFD84F5566B5DE1D037EF1F9689EF
+hmac sha1   	20	3902ED847FF28930B5F141ABFA8B471681253673
+hmac sha224 	28	7A5027C4F3A358A76D943D6D83A8242675FE96E2D30A526FE9E19629
+hmac sha256 	32	3ECF5388E220DA9E0F919485DEB676D8BEE3AEC046A779353B463418511EE622
+hmac sha384 	48	724C212553F366248BC76017E812C8ACC85B94FEC2F396C2A925BCC2571F7AB29FEDEE6B3B3013BBF9DE7B89549D5A69
+hmac sha512 	64	FC8C80E6B943CD07ECCECF01BC6038BAE68EBB6FA2E1E62B44753D7C177AF7A46B089DF349A19F7622A22312C76906CA9C984E1446D3AB86A98FDFA1425341C5
+umac32      	4	D262065C
+umac64      	8	C11564AD8F2D885E
+umac96      	12	70C9A3F2BB7E0D993B808AE1
+umac128     	16	18693CE486CF228E6B1B62EF304BFBC4
+poly1305    	16	879E865A98C8CDE7C899D9A3A243EDB9
+pbkdf2 sha1 	20	0C60C80F961F0E71F3A9B524AF6012062FE037A6
+pbkdf2 sha256	32	89B69D0516F829893C696226650A86878C029AC13EE276509D5AE58B6466A724
+
+aes128 encrypt	32	2EBEA9810D3056A2159BBE45A72429692EBEA9810D3056A2159BBE45A7242969
+aes128 decrypt	32	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+aes128 cbc enc	32	D3D069910C09DFC1675562A0EC9D8B204DD27DB3413D24D994F7300DD331135A
+aes128 cbc dec	32	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+aes128 ctr enc	1	64
+aes128 ctr dec	1	a
+
+aes128 eax enc	1	73
+aes128 eax dgst	16	B4D34C46BFCA2E729FECC7638F9A6199
+aes128 eax dec	1	a
+aes128 eax dgst	16	B4D34C46BFCA2E729FECC7638F9A6199
+
+aes128 gcm enc	1	BB
+aes128 gcm dgst	16	18D5F5CCECB218322F21005BCBFF16E0
+aes128 gcm dec	1	a
+aes128 gcm dgst	16	18D5F5CCECB218322F21005BCBFF16E0
+
+aes128 ccm enc	1	6E
+aes128 ccm dgst	16	415B65935A4B546B9E81C988B9C68E53
+aes128 ccm dec	1	a
+aes128 ccm dgst	16	415B65935A4B546B9E81C988B9C68E53
+
+aes192 encrypt	16	942EA398ADD92EBD9DB5574B9E2EA2FC
+aes192 decrypt	1	a
+
+aes192 cbc enc	16	9D08DD73316880D2ADA9629BC1906F46
+aes192 cbc dec	1	a
+
+aes192 ctr enc	1	98
+aes192 ctr dec	1	a
+
+aes192 gcm enc	1	1B
+aes192 gcm dgst	16	8F616E7FF9A858FBDC2C1C4C302C4747
+aes192 gcm dec	1	a
+aes192 gcm dgst	16	8F616E7FF9A858FBDC2C1C4C302C4747
+
+aes192 ccm enc	1	CD
+aes192 ccm dgst	16	0D19B5B3D3B637D240B48BDE79395B94
+aes192 ccm dec	1	a
+aes192 ccm dgst	16	0D19B5B3D3B637D240B48BDE79395B94
+
+aes256 encrypt	16	CF2B7DF795FCEEEEAA39CEBBA3D692BC
+aes256 decrypt	1	a
+
+aes256 cbc enc	16	CA906181C0F3457CDAAAAF9D94109337
+aes256 cbc dec	1	a
+
+aes256 ctr enc	1	70
+aes256 ctr dec	1	a
+
+aes256 gcm enc	1	3B
+aes256 gcm dgst	16	EFB12AF268F64A602779EAE2F8C2FA03
+aes256 gcm dec	1	a
+aes256 gcm dgst	16	EFB12AF268F64A602779EAE2F8C2FA03
+
+aes256 ccm enc	1	A1
+aes256 ccm dgst	16	B743659EF6F2FB95C77870FE3F9BD297
+aes256 ccm dec	1	a
+aes256 ccm dgst	16	B743659EF6F2FB95C77870FE3F9BD297
+
+cam128 encrypt	16	9928767CA4A4D7C7EA11A14B0E0EC626
+cam128 decrypt	1	a
+
+cam128 gcm enc	1	E0
+cam128 gcm dgst	16	AF2E1CC47D3D31CCC3EA63F417DF35DD
+cam128 gcm dec	1	a
+cam128 gcm dgst	16	AF2E1CC47D3D31CCC3EA63F417DF35DD
+
+cam192 encrypt	16	A29A12EE9785F75C2A3C62D1EB981604
+cam192 decrypt	1	a
+
+cam256 encrypt	16	6EB7D0ACB7AA626F8F6F54C705512D79
+cam256 decrypt	1	a
+
+cam256 gcm enc	1	A0
+cam256 gcm dgst	16	6B1891EE8E1F20FA49788E75A8F9447F
+cam256 gcm dec	1	a
+cam256 gcm dgst	16	6B1891EE8E1F20FA49788E75A8F9447F
+
+ARCFOUR encrypt	1	CF
+ARCFOUR decrypt	1	a
+
+BLOWFISH enc	8	821C2FA4533A2FD2
+BLOWFISH dec	1	a
+
+TWOFISH enc	    16	835DD521513944F098F0399BAD0F7379
+TWOFISH dec	    1	a
+
+SERPENT enc 	16	37694A1E1136E4A7E9C1583CBA2525A0
+SERPENT dec 	1	a
+
+CAST128 enc	    8	FA80BC104398019E
+CAST128 dec	    1	a
+
+ChaCha enc	    1	E2
+ChaCha dec  	1	a
+
+Salsa20 128 enc	1	27
+Salsa20 128 dec	1	a
+
+Salsa20 256 enc	1	2B
+Salsa20 256 dec	1	a
+
+Sal20r12 128 e	1	C1
+Sal20r12 128 d	1	a
+
+Sal20r12 256 e	1	E8
+Sal20r12 256 d	1	a
+
+cc-p1305 enc	1	35
+cc-p1305 dgst	16	94BECC3FD052F18D657B4F18521C0409
+cc-p1305 dec	1	a
+cc-p1305 dgst	16	94BECC3FD052F18D657B4F18521C0409
+
+DES check   	testtest	false
+DES fix     	testtest	udsuudsu
+DES check   	udsuudsu	true
+
+DES enc     	false	8	236BF47A8D784246
+DES dec     	false	1	a
+
+DES cbc enc 	false	16	3840F08DBAD6CD6DE2AF46AF2656BE48
+DES cbc dec 	false	16	testtestkalakala
+
+DES ctr enc 	false	16	AEC72E5671C9D82D343F9F721F668701
+DES ctr dec 	false	16	testtestkalakala
+
+DES3 check   	testtestkalakalatesttest	false
+DES3 fix     	testtestkalakalatesttest	udsuudsukamakamaudsuudsu
+DES3 check   	udsuudsukamakamaudsuudsu	true
+
+DES3 enc     	false	8	95D3D64AEA12A4B5
+DES3 dec     	false	1	a
+
+DES3 cbc enc	false	16	C668BD2F4C1154F638A5995EC10EF184
+DES3 cbc dec	false	16	testtestkalakala
+
+DES3 ctr enc	false	16	BDD1394B141DE724ADB714DEC4D8E30F
+DES3 ctr dec	false	16	testtestkalakala
+
+BASE64 enc	    24	dGVzdHRlc3R0ZXN0dGVzdA==
+BASE64 dec	    16	testtesttesttest
+
+BASE64 enc-url	24	dGVzdHRlc3R0ZXN0dGVzdCsm
+BASE64 dec-url	18	testtesttesttest+&
+
+... rest is truncated
+```
+
 ## Hash Functions
 
 ### Recommended Hash Functions
