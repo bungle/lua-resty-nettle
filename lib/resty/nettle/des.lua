@@ -125,17 +125,22 @@ function des.fix_parity(src)
     return ffi_str(dst, len)
 end
 
-function des:encrypt(src)
+function des:encrypt(src, zeropad)
     local cipher  = self.cipher
     local context = self.context
     local len = ceil(#src / 8) * 8
+    local s
+    if zeropad then
+        s = ffi_new(uint8t, len)
+        ffi_copy(s, src, #src)
+    end
     local dst = ffi_new(uint8t, len)
     if self.iv then
         local iv = ffi_new(uint8t, 8)
         ffi_copy(iv, self.iv, 8)
-        cipher.encrypt(context, cipher.cipher.encrypt, 8, iv, len, dst, src)
+        cipher.encrypt(context, cipher.cipher.encrypt, 8, iv, len, dst, s or src)
     else
-        cipher.encrypt(context, len, dst, src)
+        cipher.encrypt(context, len, dst, s or src)
     end
     return ffi_str(dst, len)
 end
