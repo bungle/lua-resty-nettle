@@ -129,18 +129,18 @@ function des:encrypt(src, zeropad)
     local cipher  = self.cipher
     local context = self.context
     local len = ceil(#src / 8) * 8
-    local s
     if zeropad then
-        s = ffi_new(uint8t, len)
+        local s = ffi_new(uint8t, len)
         ffi_copy(s, src, #src)
+        src = s
     end
     local dst = ffi_new(uint8t, len)
     if self.iv then
         local iv = ffi_new(uint8t, 8)
         ffi_copy(iv, self.iv, 8)
-        cipher.encrypt(context, cipher.cipher.encrypt, 8, iv, len, dst, s or src)
+        cipher.encrypt(context, cipher.cipher.encrypt, 8, iv, len, dst, src)
     else
-        cipher.encrypt(context, len, dst, s or src)
+        cipher.encrypt(context, len, dst, src)
     end
     return ffi_str(dst, len)
 end
