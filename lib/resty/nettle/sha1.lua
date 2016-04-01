@@ -17,10 +17,10 @@ void nettle_sha1_digest(struct sha1_ctx *ctx, size_t length, uint8_t *digest);
 local ctx = ffi_typeof "SHA1_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 20)
 local sha1 = setmetatable({}, {
-    __call = function(_, data)
+    __call = function(_, data, len)
         local context = ffi_new(ctx)
         nettle.nettle_sha1_init(context)
-        nettle.nettle_sha1_update(context, #data, data)
+        nettle.nettle_sha1_update(context, len or #data, data)
         nettle.nettle_sha1_digest(context, 20, buf)
         return ffi_str(buf, 20)
     end
@@ -33,8 +33,8 @@ function sha1.new()
     return self
 end
 
-function sha1:update(data)
-    return nettle.nettle_sha1_update(self.context, #data, data)
+function sha1:update(data, len)
+    return nettle.nettle_sha1_update(self.context, len or #data, data)
 end
 
 function sha1:digest()

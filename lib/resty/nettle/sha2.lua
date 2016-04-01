@@ -88,8 +88,8 @@ local hashes = {
 local sha2 = {}
 sha2.__index = sha2
 
-function sha2:update(data)
-    return self.hash.update(self.context, #data, data)
+function sha2:update(data, len)
+    return self.hash.update(self.context, len or #data, data)
 end
 
 function sha2:digest()
@@ -104,10 +104,10 @@ local function factory(hash)
         hash.init(ctx)
         return setmetatable({ context = ctx, hash = hash }, sha2)
     end }, {
-        __call = function(_, data)
+        __call = function(_, data, len)
             local ctx = ffi_new(hash.context)
             hash.init(ctx)
-            hash.update(ctx, #data, data)
+            hash.update(ctx, len or #data, data)
             hash.digest(ctx, hash.length, hash.buffer)
             return ffi_str(hash.buffer, hash.length)
         end
@@ -121,12 +121,12 @@ return setmetatable({
     sha512     = factory(hashes.sha512),
     sha512_224 = factory(hashes.sha512_224),
     sha512_256 = factory(hashes.sha512_256)
-}, { __call = function(_, algorithm, data)
+}, { __call = function(_, algorithm, data, len)
     local hash = hashes[algorithm:lower()]
     assert(hash, "The supported SHA2 algorithms are SHA224, SHA256, SHA384, SHA512, SHA512_224, and SHA512_256.")
     local ctx = ffi_new(hash.context)
     hash.init(ctx)
-    hash.update(ctx, #data, data)
+    hash.update(ctx, len or #data, data)
     hash.digest(ctx, hash.length, hash.buffer)
     return ffi_str(hash.buffer, hash.length)
 end })

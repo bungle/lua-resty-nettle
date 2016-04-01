@@ -134,8 +134,8 @@ local hmacs = {
 local hmac = {}
 hmac.__index = hmac
 
-function hmac:update(data)
-    return self.hmac.update(self.context, #data, data)
+function hmac:update(data, len)
+    return self.hmac.update(self.context, len or #data, data)
 end
 
 function hmac:digest()
@@ -150,10 +150,10 @@ local function factory(mac)
         mac.setkey(ctx, #key, key)
         return setmetatable({ context = ctx, hmac = mac }, hmac)
     end }, {
-        __call = function(_, key, data)
+        __call = function(_, key, data, len)
             local ctx = ffi_new(mac.context)
             mac.setkey(ctx, #key, key)
-            mac.update(ctx, #data, data)
+            mac.update(ctx, len or #data, data)
             mac.digest(ctx, mac.length, mac.buffer)
             return ffi_str(mac.buffer, mac.length)
         end
@@ -168,12 +168,12 @@ return setmetatable({
     sha384    = factory(hmacs.sha384),
     sha512    = factory(hmacs.sha512),
     ripemd160 = factory(hmacs.ripemd160),
-}, { __call = function(_, algorithm, key, data)
+}, { __call = function(_, algorithm, key, data, len)
     local mac = hmacs[algorithm:lower()]
     assert(mac, "The supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, and RIPEMD160.")
     local ctx = ffi_new(mac.context)
     mac.setkey(ctx, #key, key)
-    mac.update(ctx, #data, data)
+    mac.update(ctx, len or #data, data)
     mac.digest(ctx, mac.length, mac.buffer)
     return ffi_str(mac.buffer, mac.length)
 end })

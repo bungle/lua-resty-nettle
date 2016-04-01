@@ -93,8 +93,8 @@ local hashes = {
 local sha3 = {}
 sha3.__index = sha3
 
-function sha3:update(data)
-    return self.hash.update(self.context, #data, data)
+function sha3:update(data, len)
+    return self.hash.update(self.context, len or #data, data)
 end
 
 function sha3:digest()
@@ -109,10 +109,10 @@ local function factory(hash)
         hash.init(ctx)
         return setmetatable({ context = ctx, hash = hash }, sha3)
     end }, {
-        __call = function(_, data)
+        __call = function(_, data, len)
             local ctx = ffi_new(hash.context)
             hash.init(ctx)
-            hash.update(ctx, #data, data)
+            hash.update(ctx, len or #data, data)
             hash.digest(ctx, hash.length, hash.buffer)
             return ffi_str(hash.buffer, hash.length)
         end
@@ -124,12 +124,12 @@ return setmetatable({
     sha256     = factory(hashes[256]),
     sha384     = factory(hashes[384]),
     sha512     = factory(hashes[512])
-}, { __call = function(_, bits, data)
+}, { __call = function(_, bits, data, len)
     local hash = hashes[bits]
     assert(hash, "The supported SHA3 algorithm output sizes are 224, 256, 384, and 512 bits")
     local ctx = ffi_new(hash.context)
     hash.init(ctx)
-    hash.update(ctx, #data, data)
+    hash.update(ctx, len or #data, data)
     hash.digest(ctx, hash.length, hash.buffer)
     return ffi_str(hash.buffer, hash.length)
 end })

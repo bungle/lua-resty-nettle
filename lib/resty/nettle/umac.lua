@@ -136,8 +136,8 @@ local umacs = {
 local umac = {}
 umac.__index = umac
 
-function umac:update(data)
-    return self.umac.update(self.context, #data, data)
+function umac:update(data, len)
+    return self.umac.update(self.context, len or #data, data)
 end
 
 function umac:digest()
@@ -155,13 +155,13 @@ local function factory(mac)
         end
         return setmetatable({ context = ctx, umac = mac }, umac)
     end }, {
-        __call = function(_, key, nonce, data)
+        __call = function(_, key, nonce, data, len)
             local ctx = ffi_new(mac.context)
             mac.setkey(ctx, key)
             if nonce then
                 mac.setnonce(ctx, #nonce, nonce)
             end
-            mac.update(ctx, #data, data)
+            mac.update(ctx, len or #data, data)
             mac.digest(ctx, mac.length, mac.buffer)
             return ffi_str(mac.buffer, mac.length)
         end
@@ -173,7 +173,7 @@ return setmetatable({
     umac64  = factory(umacs[64]),
     umac96  = factory(umacs[96]),
     umac128 = factory(umacs[128])
-}, { __call = function(_, bits, key, nonce, data)
+}, { __call = function(_, bits, key, nonce, data, len)
     local mac = umacs[bits]
     assert(mac, "The supported UMAC algorithm output sizes are 32, 64, 96, and 128 bits")
     local ctx = ffi_new(mac.context)
@@ -181,7 +181,7 @@ return setmetatable({
     if nonce then
         mac.setnonce(ctx, #nonce, nonce)
     end
-    mac.update(ctx, #data, data)
+    mac.update(ctx, len or #data, data)
     mac.digest(ctx, mac.length, mac.buffer)
     return ffi_str(mac.buffer, mac.length)
 end })

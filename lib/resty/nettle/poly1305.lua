@@ -19,13 +19,13 @@ local ctxply = ffi_typeof "POLY1305_AES_CTX[1]"
 local buf128 = ffi_new("uint8_t[?]", 16)
 
 local poly1305 = setmetatable({}, {
-    __call = function(_, key, nonce, data)
+    __call = function(_, key, nonce, data, len)
         local context = ffi_new(ctxply)
         nettle.nettle_poly1305_aes_set_key(context, key)
         if nonce then
             nettle.nettle_poly1305_aes_set_nonce(context, #nonce, nonce)
         end
-        nettle.nettle_poly1305_aes_update(context, #data, data)
+        nettle.nettle_poly1305_aes_update(context, len or #data, data)
         nettle.nettle_poly1305_aes_digest(context, 16, buf128)
         return ffi_str(buf128, 16)
     end
@@ -41,8 +41,8 @@ function poly1305.new(key, nonce)
     return self
 end
 
-function poly1305:update(data)
-    return nettle.nettle_poly1305_aes_update(self.context, #data, data)
+function poly1305:update(data, len)
+    return nettle.nettle_poly1305_aes_update(self.context, len or #data, data)
 end
 
 function poly1305:digest()

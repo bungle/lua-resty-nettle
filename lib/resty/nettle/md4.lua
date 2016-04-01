@@ -21,10 +21,10 @@ void nettle_md4_digest(struct md4_ctx *ctx, size_t length, uint8_t *digest);
 local ctx = ffi_typeof "MD4_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 16)
 local md4 = setmetatable({}, {
-    __call = function(_, data)
+    __call = function(_, data, len)
         local context = ffi_new(ctx)
         nettle.nettle_md4_init(context)
-        nettle.nettle_md4_update(context, #data, data)
+        nettle.nettle_md4_update(context, len or #data, data)
         nettle.nettle_md4_digest(context, 16, buf)
         return ffi_str(buf, 16)
     end
@@ -37,8 +37,8 @@ function md4.new()
     return self
 end
 
-function md4:update(data)
-    return nettle.nettle_md4_update(self.context, #data, data)
+function md4:update(data, len)
+    return nettle.nettle_md4_update(self.context, len or #data, data)
 end
 
 function md4:digest()
