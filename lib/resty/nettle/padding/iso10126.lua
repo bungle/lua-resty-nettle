@@ -7,6 +7,7 @@ local byte = string.byte
 local sub = string.sub
 local padding = {}
 function padding.pad(data, blocksize)
+    blocksize = blocksize or 16
     assert(blocksize > 0 and blocksize < 257, "Invalid block size")
     local ps = blocksize - #data % blocksize
     if ps == 0 then
@@ -15,6 +16,7 @@ function padding.pad(data, blocksize)
     return data .. yarrow:random(ps - 1) .. char(ps)
 end
 function padding.unpad(data, blocksize)
+    blocksize = blocksize or 16
     local len = #data
     assert(len % blocksize == 0, "Data's length is not a multiple of the block size")
     local chr = sub(data, -1)

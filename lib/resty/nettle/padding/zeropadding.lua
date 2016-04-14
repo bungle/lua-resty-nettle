@@ -4,6 +4,7 @@ local gsub = string.gsub
 local rep = string.rep
 local padding = {}
 function padding.pad(data, blocksize)
+    blocksize = blocksize or 16
     assert(blocksize > 0 and blocksize < 257, "Invalid block size")
     local ps = blocksize - #data % blocksize
     if ps == 0 then
@@ -12,6 +13,7 @@ function padding.pad(data, blocksize)
     return data .. rep("\0", ps)
 end
 function padding.unpad(data, blocksize)
+    blocksize = blocksize or 16
     local len = #data
     assert(len % blocksize == 0, "Data's length is not a multiple of the block size")
     data = gsub(data, "%z+$", "")
