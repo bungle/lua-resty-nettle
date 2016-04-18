@@ -3,9 +3,7 @@ local ffi      = require "ffi"
 local nettle   = require "resty.nettle"
 local ffi_str  = ffi.string
 local tonumber = tonumber
-
 local aeads = {}
-
 do
     local i, as = 0, nettle.nettle_aeads
     while as[i] ~= nil do
@@ -23,12 +21,11 @@ do
             decrypt         = as[i].decrypt,
             digest          = as[i].digest
         }
-        aeads[i + 1] = aead
+        aeads[i+1] = aead
         aeads[aead.name] = aead
-        i = i + 1
+        i=i+1
     end
 end
-
 return {
     aeads = aeads
 }

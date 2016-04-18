@@ -246,13 +246,13 @@ local dgt = ffi_new(uint8t, 16)
 local ccm = {}
 ccm.__index = ccm
 
-function ccm:encrypt(src)
+function ccm:encrypt(src, len)
     local cipher  = self.cipher
     local context = self.context
     local iv      = self.iv
     local ad      = self.ad or ""
     local lad     = #ad
-    local len     = #src
+    local len     = len or #src
     cipher.setiv(context, #iv, iv, lad, len, 16)
     if ad then cipher.update(context, lad, ad) end
     local dst = ffi_new(uint8t, len)
@@ -261,13 +261,13 @@ function ccm:encrypt(src)
     return ffi_str(dst, len), ffi_str(dgt, 16)
 end
 
-function ccm:decrypt(src)
+function ccm:decrypt(src, len)
     local cipher  = self.cipher
     local context = self.context
     local iv      = self.iv
     local ad      = self.ad or ""
     local lad     = #ad
-    local len     = #src
+    local len     = len or #src
     cipher.setiv(context, #iv, iv, lad, len, 16)
     if ad then cipher.update(context, lad, ad) end
     local dst = ffi_new(uint8t, len)
@@ -324,65 +324,63 @@ function aes.new(key, mode, iv, ad)
         cipher  = cipher }, aes)
 end
 
-function aes:encrypt(src)
+function aes:encrypt(src, len)
     local cipher  = self.cipher
     local context = self.context
     if cipher.invert and self.inverted then
         cipher.invert(context, context)
         self.inverted = nil
     end
+    len = len or #src
     if self.iv then
-        local len = #src
-        if cipher.invert then len = ceil(len / 16) * 16 end
-        local dst = ffi_new(uint8t, len)
+        local dln = len
+        if cipher.invert then dln = ceil(dln / 16) * 16 end
+        local dst = ffi_new(uint8t, dln)
+        ffi_copy(dst, src, len)
         local ivl = #self.iv
         local iv = ffi_new(uint8t, ivl)
         ffi_copy(iv, self.iv, ivl)
-        cipher.encrypt(context, cipher.cipher.encrypt, 16, iv, len, dst, src)
-        return ffi_str(dst, len)
+        cipher.encrypt(context, cipher.cipher.encrypt, 16, iv, dln, dst, dst)
+        return ffi_str(dst, dln)
     elseif cipher.digest then
-        local len = #src
         local dst = ffi_new(uint8t, len)
         cipher.encrypt(context, len, dst, src)
         cipher.digest(context, 16, dgt)
         return ffi_str(dst, len), ffi_str(dgt, 16)
     end
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len)
-    cipher.encrypt(context, len, dst, src)
-    return ffi_str(dst, len)
+    local dln = ceil(len / 16) * 16
+    local dst = ffi_new(uint8t, dln)
+    ffi_copy(dst, src, len)
+    cipher.encrypt(context, dln, dst, dst)
+    return ffi_str(dst, dln)
 end
 
-function aes:decrypt(src)
+function aes:decrypt(src, len)
     local cipher  = self.cipher
     local context = self.context
     if cipher.invert and not self.inverted then
         cipher.invert(context, context)
         self.inverted = true
     end
+    len = len or #src
     if self.iv then
-        local len = #src
-        if cipher.invert then len = ceil(len / 16) * 16  end
-        local dst = ffi_new(uint8t, len + 1)
+        local dln = cipher.invert and ceil(len / 16) * 16 or len
+        local dst = ffi_new(uint8t, dln)
         local ivl = #self.iv
         local iv = ffi_new(uint8t, ivl)
         ffi_copy(iv, self.iv, ivl)
-        cipher.decrypt(context, cipher.cipher.decrypt, 16, iv, len, dst, src)
-        if cipher.invert then
-            return ffi_str(dst)
-        end
+        cipher.decrypt(context, cipher.cipher.decrypt, 16, iv, dln, dst, src)
         return ffi_str(dst, len)
     elseif cipher.digest then
-        local len = #src
         local dst = ffi_new(uint8t, len)
         cipher.decrypt(context, len, dst, src)
         cipher.digest(context, 16, dgt)
         return ffi_str(dst, len), ffi_str(dgt, 16)
     end
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len + 1)
-    cipher.decrypt(context, len, dst, src)
-    return ffi_str(dst)
+    local dln = ceil(len / 16) * 16
+    local dst = ffi_new(uint8t, dln)
+    cipher.decrypt(context, dln, dst, src)
+    return ffi_str(dst, len)
 end
 
 return aes

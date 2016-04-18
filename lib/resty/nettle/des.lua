@@ -125,39 +125,37 @@ function des.fix_parity(src)
     return ffi_str(dst, len)
 end
 
-function des:encrypt(src, zeropad)
+function des:encrypt(src, len)
+    len = len or #src
     local cipher  = self.cipher
     local context = self.context
-    local len = ceil(#src / 8) * 8
-    if zeropad then
-        local s = ffi_new(uint8t, len)
-        ffi_copy(s, src, #src)
-        src = s
-    end
-    local dst = ffi_new(uint8t, len)
+    local dln = ceil(len / 8) * 8
+    local dst = ffi_new(uint8t, dln)
+    ffi_copy(dst, src, len)
     if self.iv then
         local iv = ffi_new(uint8t, 8)
         ffi_copy(iv, self.iv, 8)
-        cipher.encrypt(context, cipher.cipher.encrypt, 8, iv, len, dst, src)
+        cipher.encrypt(context, cipher.cipher.encrypt, 8, iv, dln, dst, dst)
     else
-        cipher.encrypt(context, len, dst, src)
+        cipher.encrypt(context, dln, dst, dst)
     end
-    return ffi_str(dst, len)
+    return ffi_str(dst, dln)
 end
 
-function des:decrypt(src)
+function des:decrypt(src, len)
     local cipher  = self.cipher
     local context = self.context
-    local len = ceil(#src / 8) * 8
-    local dst = ffi_new(uint8t, len + 1)
+    len = len or #src
+    local dln = ceil(len / 8) * 8
+    local dst = ffi_new(uint8t, dln)
     if self.iv then
         local iv = ffi_new(uint8t, 8)
         ffi_copy(iv, self.iv, 8)
-        cipher.decrypt(context, cipher.cipher.decrypt, 8, iv, len, dst, src)
+        cipher.decrypt(context, cipher.cipher.decrypt, 8, iv, dln, dst, src)
     else
-        cipher.decrypt(context, len, dst, src)
+        cipher.decrypt(context, dln, dst, src)
     end
-    return ffi_str(dst)
+    return ffi_str(dst, len)
 end
 
 return des

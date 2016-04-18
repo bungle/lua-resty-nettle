@@ -2,6 +2,7 @@ local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
+local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local assert       = assert
 local setmetatable = setmetatable
@@ -35,15 +36,16 @@ function arcfour.new(key)
     return setmetatable({ context = ct }, arcfour)
 end
 
-function arcfour:encrypt(src)
-    local len = #src
+function arcfour:encrypt(src, len)
+    len = len or #src
     local dst = ffi_new(uint8t, len)
-    crypt(self.context, len, dst, src)
+    ffi_copy(dst, src, len)
+    crypt(self.context, len, dst, dst)
     return ffi_str(dst, len)
 end
 
-function arcfour:decrypt(src)
-    local len = #src
+function arcfour:decrypt(src, len)
+    len = len or #src
     local dst = ffi_new(uint8t, len)
     crypt(self.context, len, dst, src)
     return ffi_str(dst, len)

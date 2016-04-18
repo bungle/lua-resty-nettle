@@ -4,6 +4,7 @@ local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
+local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local ceil         = math.ceil
 local assert       = assert
@@ -109,44 +110,45 @@ function camellia.new(key, mode, iv, ad)
         cipher  = cipher }, camellia)
 end
 
-function camellia:encrypt(src)
+function camellia:encrypt(src, len)
     local cipher  = self.cipher
     local context = self.context
     if cipher.invert and self.inverted then
         cipher.invert(context, context)
         self.inverted = nil
     end
+    len = len or #src
     if cipher.digest then
-        local len = #src
         local dst = ffi_new(uint8t, len)
         cipher.encrypt(context, len, dst, src)
         cipher.digest(context, 16, dgt)
         return ffi_str(dst, len), ffi_str(dgt, 16)
     end
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len)
-    cipher.encrypt(context, len, dst, src)
-    return ffi_str(dst, len)
+    local dln = ceil(len / 16) * 16
+    local dst = ffi_new(uint8t, dln)
+    ffi_copy(dst, src, len)
+    cipher.encrypt(context, dln, dst, dst)
+    return ffi_str(dst, dln)
 end
 
-function camellia:decrypt(src)
+function camellia:decrypt(src, len)
     local cipher  = self.cipher
     local context = self.context
     if cipher.invert and not self.inverted then
         cipher.invert(context, context)
         self.inverted = true
     end
+    len = len or #src
     if cipher.digest then
-        local len = #src
         local dst = ffi_new(uint8t, len)
         cipher.decrypt(context, len, dst, src)
         cipher.digest(context, 16, dgt)
         return ffi_str(dst, len), ffi_str(dgt, 16)
     end
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len + 1)
-    cipher.decrypt(context, len, dst, src)
-    return ffi_str(dst)
+    local dln = ceil(len / 16) * 16
+    local dst = ffi_new(uint8t, dln)
+    cipher.decrypt(context, dln, dst, src)
+    return ffi_str(dst, len)
 end
 
 return camellia

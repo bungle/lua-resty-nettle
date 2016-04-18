@@ -2,6 +2,7 @@ local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
+local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local ceil         = math.ceil
 local assert       = assert
@@ -37,17 +38,20 @@ function blowfish.new(key)
     return setmetatable({ context = ct }, blowfish), wk ~= 1
 end
 
-function blowfish:encrypt(src)
-    local len = ceil(#src / 8) * 8
-    local dst = ffi_new(uint8t, len)
-    encrypt(self.context, len, dst, src)
-    return ffi_str(dst, len)
+function blowfish:encrypt(src, len)
+    len = len or #src
+    local dln = ceil(len / 8) * 8
+    local dst = ffi_new(uint8t, dln)
+    ffi_copy(dst, src, len)
+    encrypt(self.context, dln, dst, dst)
+    return ffi_str(dst, dln)
 end
 
-function blowfish:decrypt(src)
-    local len = ceil(#src / 8) * 8
-    local dst = ffi_new(uint8t, len + 1)
-    decrypt(self.context, len, dst, src)
-    return ffi_str(dst)
+function blowfish:decrypt(src, len)
+    len = len or #src
+    local dln = ceil(len / 8) * 8
+    local dst = ffi_new(uint8t, dln)
+    decrypt(self.context, dln, dst, src)
+    return ffi_str(dst, len)
 end
 return blowfish

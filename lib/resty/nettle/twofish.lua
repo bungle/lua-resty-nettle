@@ -2,6 +2,7 @@ local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
+local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local ceil         = math.ceil
 local assert       = assert
@@ -47,17 +48,20 @@ function twofish.new(key)
     return setmetatable({ context = ct }, twofish)
 end
 
-function twofish:encrypt(src)
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len)
-    encrypt(self.context, len, dst, src)
-    return ffi_str(dst, len)
+function twofish:encrypt(src, len)
+    len = len or #src
+    local dln = ceil(len / 16) * 16
+    local dst = ffi_new(uint8t, dln)
+    ffi_copy(dst, src, len)
+    encrypt(self.context, dln, dst, dst)
+    return ffi_str(dst, dln)
 end
 
-function twofish:decrypt(src)
-    local len = ceil(#src / 16) * 16
-    local dst = ffi_new(uint8t, len + 1)
-    decrypt(self.context, len, dst, src)
-    return ffi_str(dst)
+function twofish:decrypt(src, len)
+    len = len or #src
+    local dln = ceil(len / 16) * 16
+    local dst = ffi_new(uint8t, dln)
+    decrypt(self.context, dln, dst, src)
+    return ffi_str(dst, len)
 end
 return twofish

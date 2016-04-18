@@ -2,6 +2,7 @@ local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
+local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local assert       = assert
 local setmetatable = setmetatable
@@ -29,15 +30,16 @@ local crypt12   = nettle.nettle_salsa20r12_crypt
 local salsa20r12 = {}
 salsa20r12.__index = salsa20r12
 
-function salsa20r12:encrypt(src)
-    local len = #src
+function salsa20r12:encrypt(src, len)
+    len = len or #src
     local dst = ffi_new(uint8t, len)
-    crypt12(self.context, len, dst, src)
+    ffi_copy(dst, src, len)
+    crypt12(self.context, len, dst, dst)
     return ffi_str(dst, len)
 end
 
-function salsa20r12:decrypt(src)
-    local len = #src
+function salsa20r12:decrypt(src, len)
+    len = len or #src
     local dst = ffi_new(uint8t, len)
     crypt12(self.context, len, dst, src)
     return ffi_str(dst, len)
@@ -65,15 +67,16 @@ function salsa20.new(key, nonce, rounds)
     return setmetatable({ context = ctx }, salsa20r12)
 end
 
-function salsa20:encrypt(src)
-    local len = #src
+function salsa20:encrypt(src, len)
+    len = len or #src
     local dst = ffi_new(uint8t, len)
-    crypt(self.context, len, dst, src)
+    ffi_copy(dst, src, len)
+    crypt(self.context, len, dst, dst)
     return ffi_str(dst, len)
 end
 
-function salsa20:decrypt(src)
-    local len = #src
+function salsa20:decrypt(src, len)
+    len = len or #src
     local dst = ffi_new(uint8t, len)
     crypt(self.context, len, dst, src)
     return ffi_str(dst, len)
