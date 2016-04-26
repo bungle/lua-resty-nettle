@@ -6,11 +6,12 @@ local byte = string.byte
 local rep = string.rep
 local sub = string.sub
 local padding = {}
-function padding.pad(data, blocksize)
+function padding.pad(data, blocksize, optional)
     blocksize = blocksize or 16
     assert(type(blocksize) == "number" and blocksize > 0 and blocksize < 257, "Invalid block size")
     local ps = blocksize - #data % blocksize
     if ps == 0 then
+        if optional then return data end
         ps = blocksize
     end
     return data .. rep("\0", ps - 1) .. char(ps)
