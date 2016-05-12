@@ -18,7 +18,7 @@ function padding.unpad(data, blocksize)
     assert(len % blocksize == 0, "Data's length is not a multiple of the block size")
     data = gsub(data, " +$", "")
     local rem = len - #data
-    assert(rem > 0 and rem <= blocksize, "Invalid padding found")
+    assert(rem > -1 and rem <= blocksize, "Invalid padding found")
     return data
 end
 return padding

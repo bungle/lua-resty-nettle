@@ -21,7 +21,6 @@ function padding.unpad(data, blocksize)
     assert(len % blocksize == 0, "Data's length is not a multiple of the block size")
     local chr = sub(data, -1)
     local rem = byte(chr)
-    assert(rem > 0 and rem <= blocksize, "Invalid padding found")
-    return sub(data, 1, len - rem)
+    return (rem > 0 and rem <= blocksize) and sub(data, 1, len - rem) or data
 end
 return padding
