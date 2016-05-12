@@ -10,10 +10,7 @@ function padding.pad(data, blocksize, optional)
     blocksize = blocksize or 16
     assert(type(blocksize) == "number" and blocksize > 0 and blocksize < 257, "Invalid block size")
     local ps = blocksize - #data % blocksize
-    if ps == 0 then
-        if optional then return data end
-        ps = blocksize
-    end
+    if optional and ps == blocksize then return data end
     return data .. rep("\0", ps - 1) .. char(ps)
 end
 function padding.unpad(data, blocksize)
