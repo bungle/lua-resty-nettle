@@ -821,13 +821,13 @@ print()
 do
     local ed = require "resty.nettle.ed25519-sha512"
     local pri = "testtesttesttesttesttesttesttest"
-    print("EdDSA25519 SHA-512 private key", pri)
+    print("EdDSA25519 SHA-512 private key", #pri, pri)
     local pub = ed.public_key(pri)
-    print("EdDSA25519 SHA-512 public key", hex(pub))
+    print("EdDSA25519 SHA-512 public key", #pub, hex(pub))
     local msg = "hello"
-    print("EdDSA25519 SHA-512 message", msg)
+    print("EdDSA25519 SHA-512 message", #msg, msg)
     local sig = ed.sign(pub, pri, msg)
-    print("EdDSA25519 SHA-512 signature", hex(sig))
+    print("EdDSA25519 SHA-512 signature", #sig, hex(sig))
     local chk = ed.verify(pub, msg, sig)
     print("EdDSA25519 SHA-512 verify (true)", chk)
     local err = "error"
@@ -1147,10 +1147,10 @@ gcm_camellia256	4416	16	32	12	cdata<void (*)()>: 0x0008db47	cdata<void (*)()>: 0
 eax_aes128	272	16	16	16	cdata<void (*)()>: 0x0008ce11	cdata<void (*)()>: 0x0008ce11	cdata<void (*)()>: 0x0008cf10	cdata<void (*)()>: 0x0008ce62	cdata<void (*)()>: 0x0008ce87	cdata<void (*)()>: 0x0008ceb9	cdata<void (*)()>: 0x0008ceeb
 chacha_poly1305	176	64	32	12	cdata<void (*)()>: 0x0008a065	cdata<void (*)()>: 0x0008a065	cdata<void (*)()>: 0x0008a06f	cdata<void (*)()>: 0x0008a0ce	cdata<void (*)()>: 0x0008a214	cdata<void (*)()>: 0x0008a2df	cdata<void (*)()>: 0x0008a35a
 
-EdDSA25519 SHA-512 private key	testtesttesttesttesttesttesttest
-EdDSA25519 SHA-512 public key	06B77FC89D2B9785433DD37A9B98A3C8FA37F03DB2B2CC0E79BE76F87B223D21
-EdDSA25519 SHA-512 message	hello
-EdDSA25519 SHA-512 signature	0E202379D19190BC1A933D3DD1753FF0B833393BEED1DC12469309F2A07094348E340C302069CDB7C7C54C21CCDA8891F21FA4588D63803C9538F2A513DA6E04
+EdDSA25519 SHA-512 private key	32	testtesttesttesttesttesttesttest
+EdDSA25519 SHA-512 public key	32	06B77FC89D2B9785433DD37A9B98A3C8FA37F03DB2B2CC0E79BE76F87B223D21
+EdDSA25519 SHA-512 message	5	hello
+EdDSA25519 SHA-512 signature	64	0E202379D19190BC1A933D3DD1753FF0B833393BEED1DC12469309F2A07094348E340C302069CDB7C7C54C21CCDA8891F21FA4588D63803C9538F2A513DA6E04
 EdDSA25519 SHA-512 verify (true)	true
 EdDSA25519 SHA-512 verify (false)	false
 ```

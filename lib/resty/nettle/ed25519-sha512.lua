@@ -2,6 +2,7 @@ local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
+local ffi_typeof   = ffi.typeof
 local assert       = assert
 local hogweed      = require "resty.nettle.hogweed"
 
@@ -11,8 +12,9 @@ void nettle_ed25519_sha512_sign(const uint8_t *pub, const uint8_t *priv, size_t 
  int nettle_ed25519_sha512_verify(const uint8_t *pub, size_t length, const uint8_t *msg, const uint8_t *signature);
 ]]
 
-local sig = ffi_new("uint8_t[?]", 64)
-local pub = ffi_new("uint8_t[?]", 32)
+local uint8t = ffi_typeof "uint8_t[?]"
+local sig = ffi_new(uint8t, 64)
+local pub = ffi_new(uint8t, 32)
 local ed = {}
 
 function ed.public_key(pri)
