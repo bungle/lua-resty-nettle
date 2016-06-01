@@ -4,7 +4,6 @@ require "resty.nettle"
 
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
-local ffi_load     = ffi.load
 local ffi_cdef     = ffi.cdef
 local ffi_typeof   = ffi.typeof
 local ffi_str      = ffi.string
@@ -15,7 +14,7 @@ local gmp          = require "resty.nettle.gmp"
 local buffer       = require "resty.nettle.buffer"
 local yarrow       = require "resty.nettle.yarrow"
 local knuth        = require "resty.nettle.knuth-lfib"
-local hogweed      = ffi_load "hogweed"
+local hogweed      = require "resty.nettle.hogweed"
 
 ffi_cdef[[
 typedef struct dsa_params {

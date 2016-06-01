@@ -1,6 +1,6 @@
-local ffi        = require "ffi"
-local ffi_load   = ffi.load
-local ffi_cdef   = ffi.cdef
+local ffi      = require "ffi"
+local ffi_load = ffi.load
+local ffi_cdef = ffi.cdef
 
 ffi_cdef[[
 union nettle_block16 { uint8_t b[16]; unsigned long w[16 / sizeof(unsigned long)]; };
