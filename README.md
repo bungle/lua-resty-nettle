@@ -1183,7 +1183,7 @@ sha1:update "st"
 local dgst = sha1:digest()
 ```
 
-#### SHA2-256
+#### SHA-2 256
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1197,7 +1197,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA2-224
+#### SHA-2 224
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1211,7 +1211,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA2-512
+#### SHA-2 512
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1225,7 +1225,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA2-384
+#### SHA-2 384
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1239,7 +1239,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA2-512/224
+#### SHA-2 512/224
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1253,7 +1253,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA2-512/256
+#### SHA-2 512/256
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1267,7 +1267,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA3-224
+#### SHA-3 224
 
 ```lua
 local hash = require "resty.nettle.sha3"
@@ -1281,7 +1281,7 @@ sha3:update "st"
 local dgst = sha3:digest()
 ```
 
-#### SHA3-256
+#### SHA-3 256
 
 ```lua
 local hash = require "resty.nettle.sha3"
@@ -1295,7 +1295,7 @@ sha3:update "st"
 local dgst = sha3:digest()
 ```
 
-#### SHA3-384
+#### SHA-3 384
 
 ```lua
 local hash = require "resty.nettle.sha3"
@@ -1309,7 +1309,7 @@ sha3:update "st"
 local dgst = sha3:digest()
 ```
 
-#### SHA3-512
+#### SHA-3 512
 
 ```lua
 local hash = require "resty.nettle.sha3"
