@@ -1028,30 +1028,30 @@ BASE64 dec	16	testtesttesttest
 BASE64 enc-url	24	dGVzdHRlc3R0ZXN0dGVzdCsm
 BASE64 dec-url	18	testtesttesttest+&
 
-d	1
-G	1
-Vz	2
-d	1
+d	    1
+G	    1
+Vz	    2
+d	    1
 HRlc3	5
-R0	2
-Z	1
-X	1
-N0	2
+R0	    2
+Z	    1
+X	    1
+N0	    2
 dGVzd	5
-A==	3
+A==	    3
 
-	0
-t	1
-e	1
-s	1
-	0
+	    0
+t	    1
+e	    1
+s	    1
+	    0
 ttes	4
-t	1
-t	1
-	0
-e	1
-s	1
-t	1
+t	    1
+t	    1
+	    0
+e	    1
+s	    1
+t	    1
 test	4
 true
 
@@ -1069,23 +1069,23 @@ BASE16 dec	16	testtesttesttest
 74
 74657374
 
-	0
-t	1
-	0
-e	1
-	0
-s	1
-	0
-t	1
+	    0
+t	    1
+	    0
+e	    1
+	    0
+s	    1
+	    0
+t	    1
 test	4
-	0
-t	1
-	0
-e	1
-	0
-s	1
-	0
-t	1
+	    0
+t	    1
+	    0
+e	    1
+	    0
+s	    1
+	    0
+t	    1
 test	4
 true
 
