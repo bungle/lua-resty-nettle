@@ -1183,20 +1183,6 @@ sha1:update "st"
 local dgst = sha1:digest()
 ```
 
-#### SHA-256
-
-```lua
-local hash = require "resty.nettle.sha2"
-local dgst = hash("sha256", "test")
--- or
-local dgst = hash.sha256 "test"
--- or
-local sha2 = hash.sha256.new()
-sha2:update "te"
-sha2:update "st"
-local dgst = sha2:digest()
-```
-
 #### SHA-224
 
 ```lua
@@ -1211,15 +1197,15 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-512
+#### SHA-256
 
 ```lua
 local hash = require "resty.nettle.sha2"
-local dgst = hash("sha512", "test")
+local dgst = hash("sha256", "test")
 -- or
-local dgst = hash.sha512 "test"
+local dgst = hash.sha256 "test"
 -- or
-local sha2 = hash.sha512.new()
+local sha2 = hash.sha256.new()
 sha2:update "te"
 sha2:update "st"
 local dgst = sha2:digest()
@@ -1234,6 +1220,20 @@ local dgst = hash("sha384", "test")
 local dgst = hash.sha384 "test"
 -- or
 local sha2 = hash.sha384.new()
+sha2:update "te"
+sha2:update "st"
+local dgst = sha2:digest()
+```
+
+#### SHA-512
+
+```lua
+local hash = require "resty.nettle.sha2"
+local dgst = hash("sha512", "test")
+-- or
+local dgst = hash.sha512 "test"
+-- or
+local sha2 = hash.sha512.new()
 sha2:update "te"
 sha2:update "st"
 local dgst = sha2:digest()
