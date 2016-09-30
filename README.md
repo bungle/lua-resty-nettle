@@ -1183,7 +1183,7 @@ sha1:update "st"
 local dgst = sha1:digest()
 ```
 
-#### SHA-2 256
+#### SHA-256
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1197,7 +1197,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-2 224
+#### SHA-224
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1211,7 +1211,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-2 512
+#### SHA-512
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1225,7 +1225,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-2 384
+#### SHA-384
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1239,7 +1239,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-2 512/224
+#### SHA-512/224
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1253,7 +1253,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-2 512/256
+#### SHA-512/256
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1267,7 +1267,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-3 224
+#### SHA3-224
 
 ```lua
 local hash = require "resty.nettle.sha3"
@@ -1281,7 +1281,7 @@ sha3:update "st"
 local dgst = sha3:digest()
 ```
 
-#### SHA-3 256
+#### SHA3-256
 
 ```lua
 local hash = require "resty.nettle.sha3"
@@ -1295,7 +1295,7 @@ sha3:update "st"
 local dgst = sha3:digest()
 ```
 
-#### SHA-3 384
+#### SHA3-384
 
 ```lua
 local hash = require "resty.nettle.sha3"
@@ -1309,7 +1309,7 @@ sha3:update "st"
 local dgst = sha3:digest()
 ```
 
-#### SHA-3 512
+#### SHA3-512
 
 ```lua
 local hash = require "resty.nettle.sha3"
@@ -1325,13 +1325,63 @@ local dgst = sha3:digest()
 
 #### MD2
 
+```lua
+local hash = require "resty.nettle.md2"
+local dgst = hash "test"
+-- or
+local md2 = hash.new()
+md2:update "te"
+md2:update "st"
+local dgst = md2:digest()
+```
+
 #### MD4
+
+```lua
+local hash = require "resty.nettle.md4"
+local dgst = hash "test"
+-- or
+local md4 = hash.new()
+md4:update "te"
+md4:update "st"
+local dgst = md4:digest()
+```
 
 #### MD5
 
+```lua
+local hash = require "resty.nettle.md5"
+local dgst = hash "test"
+-- or
+local md5 = hash.new()
+md5:update "te"
+md5:update "st"
+local dgst = md5:digest()
+```
+
 #### RIPEMD160
 
+```lua
+local hash = require "resty.nettle.ripemd160"
+local dgst = hash "test"
+-- or
+local ripe = hash.new()
+ripe:update "te"
+ripe:update "st"
+local dgst = ripe:digest()
+```
+
 #### GOSTHASH94
+
+```lua
+local hash = require "resty.nettle.gosthash94"
+local dgst = hash "test"
+-- or
+local gh94 = hash.new()
+gh94:update "te"
+gh94:update "st"
+local dgst = gh94:digest()
+```
 
 ## Keyed Hash Functions
 
