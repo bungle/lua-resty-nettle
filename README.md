@@ -1171,7 +1171,19 @@ LuaRocks repository for `lua-resty-nettle` is located at https://luarocks.org/mo
 
 ## Hash Functions
 
-#### SHA-256
+#### SHA-1
+
+```lua
+local hash = require "resty.nettle.sha1"
+local dgst = hash "test"
+-- or
+local sha1 = hash.new()
+sha1:update "te"
+sha1:update "st"
+local dgst = sha1:digest()
+```
+
+#### SHA2-256
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1185,7 +1197,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-224
+#### SHA2-224
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1199,7 +1211,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-512
+#### SHA2-512
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1213,7 +1225,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-384
+#### SHA2-384
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1227,7 +1239,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-512/224
+#### SHA2-512/224
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1241,7 +1253,7 @@ sha2:update "st"
 local dgst = sha2:digest()
 ```
 
-#### SHA-512/256
+#### SHA2-512/256
 
 ```lua
 local hash = require "resty.nettle.sha2"
@@ -1311,13 +1323,11 @@ sha3:update "st"
 local dgst = sha3:digest()
 ```
 
-#### SHA-1
-
-#### MD5
-
 #### MD2
 
 #### MD4
+
+#### MD5
 
 #### RIPEMD160
 
