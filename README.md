@@ -1107,41 +1107,41 @@ table: 0x000d4f18
 60825a64566db004c282188996f74d5d84b9fa7ef971155b220e8ba36eb262e68299480c5eb067d873b531ed077b00c7602c8126485d0bf34a54470865a76441ac39734a0dfd0d0879a5bb1e3034f0c4afc48b1472ea50b449cb5f9aaabb26250423c4bf78300792636d5d6d503d120da9154e0398194a8284ce2643ab266326ea4d629bb738937ed1617df7ee7bf7429942409d48781e1fceb1c2608af60fed42a37caaf0f35616bb41959d151a873e5f4565be8220f8b4058dc975ae77cd221ae2f66260300401a3e8e171ad658100ad7e239a9259f952e7599a1d0cdb0cdb4a792792e9d7a7fdb99ed4ac0fc752f1bc4785218a31642a631b95e402b8b6686a4690aa6e092af88c542bd0e62353c461bbdd956fe3018b17634b10c6f7c8767985dfc2e5e9d395af516ddd710444d2b39d2d03da405cd041a75850f02292a660e541a00f47a6938295ddbad84de448bc78deb767611f991c919da007614032cfa17f1fb40d145f1d5238e33a1de784e3e474ad80325b57598ad35283f4f438bbe67844fb070243ba0dd112fa39305888a44086fd12d7649d80d3d3bfa2b4e574ec177927c7ef3e9e1ec69662be16ca7922e5cb15d2484daad1cf12fde129281219d919b53aaabd8ff9d47852f7b6bfd76e8504eeb07a0fa4ca7b2561cadecbd6df3cd709dbe6bccbd2c74b21ef071093340e28e237e8f21e1ba78192ec8933
 fish
 
-md2	84	16	cdata<void (*)()>: 0x0008f87c	cdata<void (*)()>: 0x0008f89f	cdata<void (*)()>: 0x0008f9dd
-md4	96	64	cdata<void (*)()>: 0x0008fa7b	cdata<void (*)()>: 0x0008fa9a	cdata<void (*)()>: 0x0008fbd6
-md5	96	64	cdata<void (*)()>: 0x0009025a	cdata<void (*)()>: 0x00090279	cdata<void (*)()>: 0x00090352
-ripemd160	104	64	cdata<void (*)()>: 0x00091503	cdata<void (*)()>: 0x0009152b	cdata<void (*)()>: 0x00091604
-sha1	104	64	cdata<void (*)()>: 0x00093512	cdata<void (*)()>: 0x0009353a	cdata<void (*)()>: 0x00093613
-sha224	112	64	cdata<void (*)()>: 0x00094c4d	cdata<void (*)()>: 0x000949f3	cdata<void (*)()>: 0x00094c77
-sha256	112	64	cdata<void (*)()>: 0x000949c9	cdata<void (*)()>: 0x000949f3	cdata<void (*)()>: 0x00094ae4
-sha384	216	128	cdata<void (*)()>: 0x00095f3f	cdata<void (*)()>: 0x00095b51	cdata<void (*)()>: 0x00095f81
-sha512	216	128	cdata<void (*)()>: 0x00095b0f	cdata<void (*)()>: 0x00095b51	cdata<void (*)()>: 0x00095c62
+md2	                84	16	            cdata<void (*)()>: 0x0008f87c	cdata<void (*)()>: 0x0008f89f	cdata<void (*)()>: 0x0008f9dd
+md4	                96	64	            cdata<void (*)()>: 0x0008fa7b	cdata<void (*)()>: 0x0008fa9a	cdata<void (*)()>: 0x0008fbd6
+md5	                96	64	            cdata<void (*)()>: 0x0009025a	cdata<void (*)()>: 0x00090279	cdata<void (*)()>: 0x00090352
+ripemd160	        104	64	            cdata<void (*)()>: 0x00091503	cdata<void (*)()>: 0x0009152b	cdata<void (*)()>: 0x00091604
+sha1	            104	64	            cdata<void (*)()>: 0x00093512	cdata<void (*)()>: 0x0009353a	cdata<void (*)()>: 0x00093613
+sha224	            112	64	            cdata<void (*)()>: 0x00094c4d	cdata<void (*)()>: 0x000949f3	cdata<void (*)()>: 0x00094c77
+sha256	            112	64	            cdata<void (*)()>: 0x000949c9	cdata<void (*)()>: 0x000949f3	cdata<void (*)()>: 0x00094ae4
+sha384	            216	128	            cdata<void (*)()>: 0x00095f3f	cdata<void (*)()>: 0x00095b51	cdata<void (*)()>: 0x00095f81
+sha512	            216	128	            cdata<void (*)()>: 0x00095b0f	cdata<void (*)()>: 0x00095b51	cdata<void (*)()>: 0x00095c62
 
-aes128	176	16	16	cdata<void (*)()>: 0x00083e58	cdata<void (*)()>: 0x00083e93	cdata<void (*)()>: 0x00083a55	cdata<void (*)()>: 0x000836a5
-aes192	208	16	24	cdata<void (*)()>: 0x00083eb7	cdata<void (*)()>: 0x00083ef2	cdata<void (*)()>: 0x00083a9e	cdata<void (*)()>: 0x000836ee
-aes256	240	16	32	cdata<void (*)()>: 0x00083f16	cdata<void (*)()>: 0x00083f51	cdata<void (*)()>: 0x00083ae7	cdata<void (*)()>: 0x00083737
-camellia128	192	16	16	cdata<void (*)()>: 0x00086486	cdata<void (*)()>: 0x00086ac4	cdata<void (*)()>: 0x00086a60	cdata<void (*)()>: 0x00086a60
-camellia192	256	16	24	cdata<void (*)()>: 0x00087329	cdata<void (*)()>: 0x000874b8	cdata<void (*)()>: 0x00087430	cdata<void (*)()>: 0x00087430
-camellia256	256	16	32	cdata<void (*)()>: 0x00086ae8	cdata<void (*)()>: 0x00087494	cdata<void (*)()>: 0x00087430	cdata<void (*)()>: 0x00087430
-cast128	84	8	16	cdata<void (*)()>: 0x00088f54	cdata<void (*)()>: 0x00088f54	cdata<void (*)()>: 0x000874dc	cdata<void (*)()>: 0x000879c0
-serpent128	528	16	16	cdata<void (*)()>: 0x0009839d	cdata<void (*)()>: 0x0009839d	cdata<void (*)()>: 0x000983e0	cdata<void (*)()>: 0x000994a0
-serpent192	528	16	24	cdata<void (*)()>: 0x000983b2	cdata<void (*)()>: 0x000983b2	cdata<void (*)()>: 0x000983e0	cdata<void (*)()>: 0x000994a0
-serpent256	528	16	32	cdata<void (*)()>: 0x000983c7	cdata<void (*)()>: 0x000983c7	cdata<void (*)()>: 0x000983e0	cdata<void (*)()>: 0x000994a0
-twofish128	4256	16	16	cdata<void (*)()>: 0x0009ac4c	cdata<void (*)()>: 0x0009ac4c	cdata<void (*)()>: 0x0009ac8b	cdata<void (*)()>: 0x0009aee9
-twofish192	4256	16	24	cdata<void (*)()>: 0x0009ac61	cdata<void (*)()>: 0x0009ac61	cdata<void (*)()>: 0x0009ac8b	cdata<void (*)()>: 0x0009aee9
-twofish256	4256	16	32	cdata<void (*)()>: 0x0009ac76	cdata<void (*)()>: 0x0009ac76	cdata<void (*)()>: 0x0009ac8b	cdata<void (*)()>: 0x0009aee9
-arctwo40	128	8	5	cdata<void (*)()>: 0x00084686	cdata<void (*)()>: 0x00084686	cdata<void (*)()>: 0x000841ad	cdata<void (*)()>: 0x00084324
-arctwo64	128	8	8	cdata<void (*)()>: 0x000846a0	cdata<void (*)()>: 0x000846a0	cdata<void (*)()>: 0x000841ad	cdata<void (*)()>: 0x00084324
-arctwo128	128	8	16	cdata<void (*)()>: 0x000846ba	cdata<void (*)()>: 0x000846ba	cdata<void (*)()>: 0x000841ad	cdata<void (*)()>: 0x00084324
-arctwo_gutmann128	128	8	16	cdata<void (*)()>: 0x000846d4	cdata<void (*)()>: 0x000846d4	cdata<void (*)()>: 0x000841ad	cdata<void (*)()>: 0x00084324
+aes128	            176	16	16	        cdata<void (*)()>: 0x00083e58	cdata<void (*)()>: 0x00083e93	cdata<void (*)()>: 0x00083a55	cdata<void (*)()>: 0x000836a5
+aes192	            208	16	24	        cdata<void (*)()>: 0x00083eb7	cdata<void (*)()>: 0x00083ef2	cdata<void (*)()>: 0x00083a9e	cdata<void (*)()>: 0x000836ee
+aes256	            240	16	32	        cdata<void (*)()>: 0x00083f16	cdata<void (*)()>: 0x00083f51	cdata<void (*)()>: 0x00083ae7	cdata<void (*)()>: 0x00083737
+camellia128	        192	16	16	        cdata<void (*)()>: 0x00086486	cdata<void (*)()>: 0x00086ac4	cdata<void (*)()>: 0x00086a60	cdata<void (*)()>: 0x00086a60
+camellia192	        256	16	24	        cdata<void (*)()>: 0x00087329	cdata<void (*)()>: 0x000874b8	cdata<void (*)()>: 0x00087430	cdata<void (*)()>: 0x00087430
+camellia256	        256	16	32	        cdata<void (*)()>: 0x00086ae8	cdata<void (*)()>: 0x00087494	cdata<void (*)()>: 0x00087430	cdata<void (*)()>: 0x00087430
+cast128	84	        8	16	            cdata<void (*)()>: 0x00088f54	cdata<void (*)()>: 0x00088f54	cdata<void (*)()>: 0x000874dc	cdata<void (*)()>: 0x000879c0
+serpent128	        528	16	16	        cdata<void (*)()>: 0x0009839d	cdata<void (*)()>: 0x0009839d	cdata<void (*)()>: 0x000983e0	cdata<void (*)()>: 0x000994a0
+serpent192	        528	16	24	        cdata<void (*)()>: 0x000983b2	cdata<void (*)()>: 0x000983b2	cdata<void (*)()>: 0x000983e0	cdata<void (*)()>: 0x000994a0
+serpent256	        528	16	32	        cdata<void (*)()>: 0x000983c7	cdata<void (*)()>: 0x000983c7	cdata<void (*)()>: 0x000983e0	cdata<void (*)()>: 0x000994a0
+twofish128	        4256	16	16	    cdata<void (*)()>: 0x0009ac4c	cdata<void (*)()>: 0x0009ac4c	cdata<void (*)()>: 0x0009ac8b	cdata<void (*)()>: 0x0009aee9
+twofish192	        4256	16	24	    cdata<void (*)()>: 0x0009ac61	cdata<void (*)()>: 0x0009ac61	cdata<void (*)()>: 0x0009ac8b	cdata<void (*)()>: 0x0009aee9
+twofish256	        4256	16	32	    cdata<void (*)()>: 0x0009ac76	cdata<void (*)()>: 0x0009ac76	cdata<void (*)()>: 0x0009ac8b	cdata<void (*)()>: 0x0009aee9
+arctwo40	        128	8	5	        cdata<void (*)()>: 0x00084686	cdata<void (*)()>: 0x00084686	cdata<void (*)()>: 0x000841ad	cdata<void (*)()>: 0x00084324
+arctwo64	        128	8	8	        cdata<void (*)()>: 0x000846a0	cdata<void (*)()>: 0x000846a0	cdata<void (*)()>: 0x000841ad	cdata<void (*)()>: 0x00084324
+arctwo128	        128	8	16	        cdata<void (*)()>: 0x000846ba	cdata<void (*)()>: 0x000846ba	cdata<void (*)()>: 0x000841ad	cdata<void (*)()>: 0x00084324
+arctwo_gutmann128	128	8	16	        cdata<void (*)()>: 0x000846d4	cdata<void (*)()>: 0x000846d4	cdata<void (*)()>: 0x000841ad	cdata<void (*)()>: 0x00084324
 
-gcm_aes128	4336	16	16	12	cdata<void (*)()>: 0x0008d6b3	cdata<void (*)()>: 0x0008d6b3	cdata<void (*)()>: 0x0008d7c3	cdata<void (*)()>: 0x0008d705	cdata<void (*)()>: 0x0008d728	cdata<void (*)()>: 0x0008d760	cdata<void (*)()>: 0x0008d798
-gcm_aes192	4368	16	24	12	cdata<void (*)()>: 0x0008d7d8	cdata<void (*)()>: 0x0008d7d8	cdata<void (*)()>: 0x0008d8e8	cdata<void (*)()>: 0x0008d82a	cdata<void (*)()>: 0x0008d84d	cdata<void (*)()>: 0x0008d885	cdata<void (*)()>: 0x0008d8bd
-gcm_aes256	4400	16	32	12	cdata<void (*)()>: 0x0008d8fd	cdata<void (*)()>: 0x0008d8fd	cdata<void (*)()>: 0x0008da0d	cdata<void (*)()>: 0x0008d94f	cdata<void (*)()>: 0x0008d972	cdata<void (*)()>: 0x0008d9aa	cdata<void (*)()>: 0x0008d9e2
-gcm_camellia128	4352	16	16	12	cdata<void (*)()>: 0x0008da22	cdata<void (*)()>: 0x0008da22	cdata<void (*)()>: 0x0008db32	cdata<void (*)()>: 0x0008da74	cdata<void (*)()>: 0x0008da97	cdata<void (*)()>: 0x0008dacf	cdata<void (*)()>: 0x0008db07
-gcm_camellia256	4416	16	32	12	cdata<void (*)()>: 0x0008db47	cdata<void (*)()>: 0x0008db47	cdata<void (*)()>: 0x0008dc57	cdata<void (*)()>: 0x0008db99	cdata<void (*)()>: 0x0008dbbc	cdata<void (*)()>: 0x0008dbf4	cdata<void (*)()>: 0x0008dc2c
-eax_aes128	272	16	16	16	cdata<void (*)()>: 0x0008ce11	cdata<void (*)()>: 0x0008ce11	cdata<void (*)()>: 0x0008cf10	cdata<void (*)()>: 0x0008ce62	cdata<void (*)()>: 0x0008ce87	cdata<void (*)()>: 0x0008ceb9	cdata<void (*)()>: 0x0008ceeb
-chacha_poly1305	176	64	32	12	cdata<void (*)()>: 0x0008a065	cdata<void (*)()>: 0x0008a065	cdata<void (*)()>: 0x0008a06f	cdata<void (*)()>: 0x0008a0ce	cdata<void (*)()>: 0x0008a214	cdata<void (*)()>: 0x0008a2df	cdata<void (*)()>: 0x0008a35a
+gcm_aes128	        4336    16  16	12	cdata<void (*)()>: 0x0008d6b3	cdata<void (*)()>: 0x0008d6b3	cdata<void (*)()>: 0x0008d7c3	cdata<void (*)()>: 0x0008d705	cdata<void (*)()>: 0x0008d728	cdata<void (*)()>: 0x0008d760	cdata<void (*)()>: 0x0008d798
+gcm_aes192	        4368	16	24	12	cdata<void (*)()>: 0x0008d7d8	cdata<void (*)()>: 0x0008d7d8	cdata<void (*)()>: 0x0008d8e8	cdata<void (*)()>: 0x0008d82a	cdata<void (*)()>: 0x0008d84d	cdata<void (*)()>: 0x0008d885	cdata<void (*)()>: 0x0008d8bd
+gcm_aes256	        4400	16	32	12	cdata<void (*)()>: 0x0008d8fd	cdata<void (*)()>: 0x0008d8fd	cdata<void (*)()>: 0x0008da0d	cdata<void (*)()>: 0x0008d94f	cdata<void (*)()>: 0x0008d972	cdata<void (*)()>: 0x0008d9aa	cdata<void (*)()>: 0x0008d9e2
+gcm_camellia128	    4352	16	16	12	cdata<void (*)()>: 0x0008da22	cdata<void (*)()>: 0x0008da22	cdata<void (*)()>: 0x0008db32	cdata<void (*)()>: 0x0008da74	cdata<void (*)()>: 0x0008da97	cdata<void (*)()>: 0x0008dacf	cdata<void (*)()>: 0x0008db07
+gcm_camellia256	    4416	16	32	12	cdata<void (*)()>: 0x0008db47	cdata<void (*)()>: 0x0008db47	cdata<void (*)()>: 0x0008dc57	cdata<void (*)()>: 0x0008db99	cdata<void (*)()>: 0x0008dbbc	cdata<void (*)()>: 0x0008dbf4	cdata<void (*)()>: 0x0008dc2c
+eax_aes128	        272	16	16	16	    cdata<void (*)()>: 0x0008ce11	cdata<void (*)()>: 0x0008ce11	cdata<void (*)()>: 0x0008cf10	cdata<void (*)()>: 0x0008ce62	cdata<void (*)()>: 0x0008ce87	cdata<void (*)()>: 0x0008ceb9	cdata<void (*)()>: 0x0008ceeb
+chacha_poly1305	    176	64	32	12	    cdata<void (*)()>: 0x0008a065	cdata<void (*)()>: 0x0008a065	cdata<void (*)()>: 0x0008a06f	cdata<void (*)()>: 0x0008a0ce	cdata<void (*)()>: 0x0008a214	cdata<void (*)()>: 0x0008a2df	cdata<void (*)()>: 0x0008a35a
 
 EdDSA25519 SHA-512 private key	    32	testtesttesttesttesttesttesttest
 EdDSA25519 SHA-512 public key	    32	06B77FC89D2B9785433DD37A9B98A3C8FA37F03DB2B2CC0E79BE76F87B223D21
