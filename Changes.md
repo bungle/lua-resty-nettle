@@ -10,4 +10,4 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 
 ### Change
 - Moved nettle.lua to nettle/library.lua.
-- Implmented nettle.lua that autoloads everything-
+- Implmented nettle.lua that autoloads everything.
