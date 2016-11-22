@@ -1,11 +1,11 @@
 require "resty.nettle.types.cipher"
+local lib      = require "resty.nettle.library"
 local ffi      = require "ffi"
-local nettle   = require "resty.nettle"
 local ffi_str  = ffi.string
 local tonumber = tonumber
 local ciphers = {}
 do
-    local i, cs = 0, nettle.nettle_ciphers
+    local i, cs = 0, lib.nettle_ciphers
     while cs[i] ~= nil do
         local cipher = {
             name            = ffi_str(cs[i].name),

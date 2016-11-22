@@ -1,11 +1,11 @@
 require "resty.nettle.types.hash"
+local lib      = require "resty.nettle.library"
 local ffi      = require "ffi"
-local nettle   = require "resty.nettle"
 local tonumber = tonumber
 local ffi_str  = ffi.string
 local hashes = {}
 do
-    local i, hs = 0, nettle.nettle_hashes
+    local i, hs = 0, lib.nettle_hashes
     while hs[i] ~= nil do
         local hash = {
             name         = ffi_str(hs[i].name),

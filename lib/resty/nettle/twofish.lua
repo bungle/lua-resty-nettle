@@ -1,3 +1,4 @@
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -7,7 +8,6 @@ local ffi_str      = ffi.string
 local ceil         = math.ceil
 local assert       = assert
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct twofish_ctx {
@@ -28,11 +28,11 @@ local twofish = {}
 twofish.__index = twofish
 
 local context   = ffi_typeof "TWOFISH_CTX[1]"
-local setkey128 = nettle.nettle_twofish128_set_key
-local setkey192 = nettle.nettle_twofish192_set_key
-local setkey256 = nettle.nettle_twofish256_set_key
-local encrypt   = nettle.nettle_twofish_encrypt
-local decrypt   = nettle.nettle_twofish_decrypt
+local setkey128 = lib.nettle_twofish128_set_key
+local setkey192 = lib.nettle_twofish192_set_key
+local setkey256 = lib.nettle_twofish256_set_key
+local encrypt   = lib.nettle_twofish_encrypt
+local decrypt   = lib.nettle_twofish_decrypt
 
 function twofish.new(key)
     local len = #key

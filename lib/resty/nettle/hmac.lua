@@ -3,7 +3,7 @@ require "resty.nettle.types.ripemd160"
 require "resty.nettle.types.sha1"
 require "resty.nettle.types.sha2"
 
-local nettle       = require "resty.nettle"
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -77,57 +77,57 @@ local hmacs = {
         length  = 16,
         context = ctxmd5,
         buffer  = buf128,
-        setkey  = nettle.nettle_hmac_md5_set_key,
-        update  = nettle.nettle_hmac_md5_update,
-        digest  = nettle.nettle_hmac_md5_digest
+        setkey  = lib.nettle_hmac_md5_set_key,
+        update  = lib.nettle_hmac_md5_update,
+        digest  = lib.nettle_hmac_md5_digest
     },
     sha1 = {
         length  = 20,
         context = ctxsha,
         buffer  = buf160,
-        setkey  = nettle.nettle_hmac_sha1_set_key,
-        update  = nettle.nettle_hmac_sha1_update,
-        digest  = nettle.nettle_hmac_sha1_digest
+        setkey  = lib.nettle_hmac_sha1_set_key,
+        update  = lib.nettle_hmac_sha1_update,
+        digest  = lib.nettle_hmac_sha1_digest
     },
     sha224 = {
         length  = 28,
         context = ctx256,
         buffer  = buf224,
-        setkey  = nettle.nettle_hmac_sha224_set_key,
-        update  = nettle.nettle_hmac_sha256_update,
-        digest  = nettle.nettle_hmac_sha224_digest
+        setkey  = lib.nettle_hmac_sha224_set_key,
+        update  = lib.nettle_hmac_sha256_update,
+        digest  = lib.nettle_hmac_sha224_digest
     },
     sha256 = {
         length  = 32,
         context = ctx256,
         buffer  = buf256,
-        setkey  = nettle.nettle_hmac_sha256_set_key,
-        update  = nettle.nettle_hmac_sha256_update,
-        digest  = nettle.nettle_hmac_sha256_digest
+        setkey  = lib.nettle_hmac_sha256_set_key,
+        update  = lib.nettle_hmac_sha256_update,
+        digest  = lib.nettle_hmac_sha256_digest
     },
     sha384 = {
         length  = 48,
         context = ctx512,
         buffer  = buf384,
-        setkey  = nettle.nettle_hmac_sha384_set_key,
-        update  = nettle.nettle_hmac_sha512_update,
-        digest  = nettle.nettle_hmac_sha384_digest
+        setkey  = lib.nettle_hmac_sha384_set_key,
+        update  = lib.nettle_hmac_sha512_update,
+        digest  = lib.nettle_hmac_sha384_digest
     },
     sha512 = {
         length  = 64,
         context = ctx512,
         buffer  = buf512,
-        setkey  = nettle.nettle_hmac_sha512_set_key,
-        update  = nettle.nettle_hmac_sha512_update,
-        digest  = nettle.nettle_hmac_sha512_digest
+        setkey  = lib.nettle_hmac_sha512_set_key,
+        update  = lib.nettle_hmac_sha512_update,
+        digest  = lib.nettle_hmac_sha512_digest
     },
     ripemd160 = {
         length  = 20,
         context = ctx160,
         buffer  = buf160,
-        setkey  = nettle.nettle_hmac_ripemd160_set_key,
-        update  = nettle.nettle_hmac_ripemd160_update,
-        digest  = nettle.nettle_hmac_ripemd160_digest
+        setkey  = lib.nettle_hmac_ripemd160_set_key,
+        update  = lib.nettle_hmac_ripemd160_update,
+        digest  = lib.nettle_hmac_ripemd160_digest
     }
 }
 

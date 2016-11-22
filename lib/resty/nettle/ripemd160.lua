@@ -1,12 +1,12 @@
 require "resty.nettle.types.ripemd160"
 
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_ripemd160_init(struct ripemd160_ctx *ctx);
@@ -19,9 +19,9 @@ local buf = ffi_new("uint8_t[?]", 20)
 local ripemd160 = setmetatable({}, {
     __call = function(_, data, len)
         local context = ffi_new(ctx)
-        nettle.nettle_ripemd160_init(context)
-        nettle.nettle_ripemd160_update(context, len or #data, data)
-        nettle.nettle_ripemd160_digest(context, 20, buf)
+        lib.nettle_ripemd160_init(context)
+        lib.nettle_ripemd160_update(context, len or #data, data)
+        lib.nettle_ripemd160_digest(context, 20, buf)
         return ffi_str(buf, 20)
     end
 })
@@ -29,16 +29,16 @@ ripemd160.__index = ripemd160
 
 function ripemd160.new()
     local self = setmetatable({ context = ffi_new(ctx) }, ripemd160)
-    nettle.nettle_ripemd160_init(self.context)
+    lib.nettle_ripemd160_init(self.context)
     return self
 end
 
 function ripemd160:update(data, len)
-    return nettle.nettle_ripemd160_update(self.context, len or #data, data)
+    return lib.nettle_ripemd160_update(self.context, len or #data, data)
 end
 
 function ripemd160:digest()
-    nettle.nettle_ripemd160_digest(self.context, 20, buf)
+    lib.nettle_ripemd160_digest(self.context, 20, buf)
     return ffi_str(buf, 20)
 end
 

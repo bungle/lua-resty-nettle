@@ -1,4 +1,4 @@
-require "resty.nettle"
+require "resty.nettle.library"
 local ffi      = require "ffi"
 local ffi_cdef = ffi.cdef
 

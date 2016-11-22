@@ -1,11 +1,11 @@
 require "resty.nettle.types.buffer"
 
+local lib        = require "resty.nettle.library"
 local ffi        = require "ffi"
 local ffi_gc     = ffi.gc
 local ffi_new    = ffi.new
 local ffi_cdef   = ffi.cdef
 local ffi_typeof = ffi.typeof
-local nettle     = require "resty.nettle"
 
 ffi_cdef[[
 void      nettle_buffer_init(struct nettle_buffer *buffer);
@@ -23,8 +23,8 @@ local buf = ffi_typeof "NETTLE_BUFFER"
 local buffer = {}
 
 function buffer.new()
-    local b = ffi_gc(ffi_new(buf), nettle.nettle_buffer_clear)
-    nettle.nettle_buffer_init(b)
+    local b = ffi_gc(ffi_new(buf), lib.nettle_buffer_clear)
+    lib.nettle_buffer_init(b)
     return b
 end
 

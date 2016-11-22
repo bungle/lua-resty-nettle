@@ -1,5 +1,6 @@
 require "resty.nettle.types.sha2"
 
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -7,7 +8,7 @@ local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
 local assert       = assert
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
+
 
 ffi_cdef[[
 void nettle_sha224_init(struct sha256_ctx *ctx);
@@ -39,49 +40,49 @@ local hashes = {
         length  = 28,
         context = ctx256,
         buffer  = buf224,
-        init    = nettle.nettle_sha224_init,
-        update  = nettle.nettle_sha256_update,
-        digest  = nettle.nettle_sha224_digest
+        init    = lib.nettle_sha224_init,
+        update  = lib.nettle_sha256_update,
+        digest  = lib.nettle_sha224_digest
     },
     sha256      = {
         length  = 32,
         context = ctx256,
         buffer  = buf256,
-        init    = nettle.nettle_sha256_init,
-        update  = nettle.nettle_sha256_update,
-        digest  = nettle.nettle_sha256_digest
+        init    = lib.nettle_sha256_init,
+        update  = lib.nettle_sha256_update,
+        digest  = lib.nettle_sha256_digest
     },
     sha384      = {
         length  = 48,
         context = ctx512,
         buffer  = buf384,
-        init    = nettle.nettle_sha384_init,
-        update  = nettle.nettle_sha512_update,
-        digest  = nettle.nettle_sha384_digest
+        init    = lib.nettle_sha384_init,
+        update  = lib.nettle_sha512_update,
+        digest  = lib.nettle_sha384_digest
     },
     sha512      = {
         length  = 64,
         context = ctx512,
         buffer  = buf512,
-        init    = nettle.nettle_sha512_init,
-        update  = nettle.nettle_sha512_update,
-        digest  = nettle.nettle_sha512_digest
+        init    = lib.nettle_sha512_init,
+        update  = lib.nettle_sha512_update,
+        digest  = lib.nettle_sha512_digest
     },
     sha512_224  = {
         length  = 28,
         context = ctx512,
         buffer  = buf224,
-        init    = nettle.nettle_sha512_224_init,
-        update  = nettle.nettle_sha512_update,
-        digest  = nettle.nettle_sha512_224_digest
+        init    = lib.nettle_sha512_224_init,
+        update  = lib.nettle_sha512_update,
+        digest  = lib.nettle_sha512_224_digest
     },
     sha512_256  = {
         length  = 32,
         context = ctx512,
         buffer  = buf256,
-        init    = nettle.nettle_sha512_256_init,
-        update  = nettle.nettle_sha512_update,
-        digest  = nettle.nettle_sha512_256_digest
+        init    = lib.nettle_sha512_256_init,
+        update  = lib.nettle_sha512_update,
+        digest  = lib.nettle_sha512_256_digest
     }
 }
 

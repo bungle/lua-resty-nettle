@@ -1,3 +1,4 @@
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -6,7 +7,6 @@ local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local assert       = assert
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct arcfour_ctx {
@@ -25,8 +25,8 @@ local arcfour = {}
 arcfour.__index = arcfour
 
 local context  = ffi_typeof "ARCFOUR_CTX[1]"
-local setkey   = nettle.nettle_arcfour_set_key
-local crypt    = nettle.nettle_arcfour_crypt
+local setkey   = lib.nettle_arcfour_set_key
+local crypt    = lib.nettle_arcfour_crypt
 
 function arcfour.new(key)
     local len = #key

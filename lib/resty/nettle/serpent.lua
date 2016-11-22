@@ -1,3 +1,4 @@
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -7,7 +8,6 @@ local ffi_str      = ffi.string
 local ceil         = math.ceil
 local assert       = assert
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct serpent_ctx {
@@ -27,11 +27,11 @@ local serpent = {}
 serpent.__index = serpent
 
 local context   = ffi_typeof "SERPENT_CTX[1]"
-local setkey128 = nettle.nettle_serpent128_set_key
-local setkey192 = nettle.nettle_serpent192_set_key
-local setkey256 = nettle.nettle_serpent256_set_key
-local encrypt   = nettle.nettle_serpent_encrypt
-local decrypt   = nettle.nettle_serpent_decrypt
+local setkey128 = lib.nettle_serpent128_set_key
+local setkey192 = lib.nettle_serpent192_set_key
+local setkey256 = lib.nettle_serpent256_set_key
+local encrypt   = lib.nettle_serpent_encrypt
+local decrypt   = lib.nettle_serpent_decrypt
 
 function serpent.new(key)
     local len = #key

@@ -1,3 +1,4 @@
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -6,7 +7,6 @@ local ffi_str      = ffi.string
 local assert       = assert
 local tonumber     = tonumber
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct base16_decode_ctx {
@@ -35,7 +35,7 @@ function encoder.new()
 end
 
 function encoder:single(src)
-    nettle.nettle_base16_encode_single(buf16, (src:byte()))
+    lib.nettle_base16_encode_single(buf16, (src:byte()))
     return ffi_str(buf16, 2)
 end
 
@@ -43,7 +43,7 @@ function encoder:update(src)
     local len = #src
     local dln = len * 2
     local dst = ffi_new(uint8t, dln)
-    nettle.nettle_base16_encode_update(dst, len, src)
+    lib.nettle_base16_encode_update(dst, len, src)
     return ffi_str(dst, dln)
 end
 
@@ -52,12 +52,12 @@ decoder.__index = decoder
 
 function decoder.new()
     local ctx = ffi_new(ctxdec)
-    nettle.nettle_base16_decode_init(ctx)
+    lib.nettle_base16_decode_init(ctx)
     return setmetatable({ context = ctx }, decoder)
 end
 
 function decoder:single(src)
-    local len = nettle.nettle_base16_decode_single(self.context, buf8, (src:byte()))
+    local len = lib.nettle_base16_decode_single(self.context, buf8, (src:byte()))
     return ffi_str(buf8, len), len
 
 end
@@ -65,13 +65,13 @@ end
 function decoder:update(src)
     local len = #src
     local dst = ffi_new(uint8t, (len + 1) / 2)
-    nettle.nettle_base16_decode_update(self.context, length, dst, len, src)
+    lib.nettle_base16_decode_update(self.context, length, dst, len, src)
     local len = tonumber(length[0])
     return ffi_str(dst, len), len
 end
 
 function decoder:final()
-    return (assert(nettle.nettle_base16_decode_final(self.context) == 1, "Base16 end of data is incorrect."))
+    return (assert(lib.nettle_base16_decode_final(self.context) == 1, "Base16 end of data is incorrect."))
 end
 
 local base16 = { encoder = encoder, decoder = decoder }
@@ -80,7 +80,7 @@ function base16.encode(src)
     local len = #src
     local dln = len * 2
     local dst = ffi_new(uint8t, dln)
-    nettle.nettle_base16_encode_update(dst, len, src)
+    lib.nettle_base16_encode_update(dst, len, src)
     return ffi_str(dst, dln)
 end
 
@@ -88,9 +88,9 @@ function base16.decode(src)
     local ctx = ffi_new(ctxdec)
     local len = #src
     local dst = ffi_new(uint8t, (len + 1) / 2)
-    nettle.nettle_base16_decode_init(ctx)
-    nettle.nettle_base16_decode_update(ctx, length, dst, len, src)
-    assert(nettle.nettle_base16_decode_final(ctx) == 1, "Base16 end of data is incorrect.")
+    lib.nettle_base16_decode_init(ctx)
+    lib.nettle_base16_decode_update(ctx, length, dst, len, src)
+    assert(lib.nettle_base16_decode_final(ctx) == 1, "Base16 end of data is incorrect.")
     return ffi_str(dst, length[0])
 end
 

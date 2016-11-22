@@ -1,3 +1,4 @@
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -5,7 +6,6 @@ local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
 local assert       = assert
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct sha3_state {
@@ -60,33 +60,33 @@ local hashes = {
         length  = 28,
         context = ctx224,
         buffer  = buf224,
-        init    = nettle.nettle_sha3_224_init,
-        update  = nettle.nettle_sha3_224_update,
-        digest  = nettle.nettle_sha3_224_digest
+        init    = lib.nettle_sha3_224_init,
+        update  = lib.nettle_sha3_224_update,
+        digest  = lib.nettle_sha3_224_digest
     },
     [256]       = {
         length  = 32,
         context = ctx256,
         buffer  = buf256,
-        init    = nettle.nettle_sha3_256_init,
-        update  = nettle.nettle_sha3_256_update,
-        digest  = nettle.nettle_sha3_256_digest
+        init    = lib.nettle_sha3_256_init,
+        update  = lib.nettle_sha3_256_update,
+        digest  = lib.nettle_sha3_256_digest
     },
     [384]       = {
         length  = 48,
         context = ctx384,
         buffer  = buf384,
-        init    = nettle.nettle_sha3_384_init,
-        update  = nettle.nettle_sha3_384_update,
-        digest  = nettle.nettle_sha3_384_digest
+        init    = lib.nettle_sha3_384_init,
+        update  = lib.nettle_sha3_384_update,
+        digest  = lib.nettle_sha3_384_digest
     },
     [512]       = {
         length  = 64,
         context = ctx512,
         buffer  = buf512,
-        init    = nettle.nettle_sha3_512_init,
-        update  = nettle.nettle_sha3_512_update,
-        digest  = nettle.nettle_sha3_512_digest
+        init    = lib.nettle_sha3_512_init,
+        update  = lib.nettle_sha3_512_update,
+        digest  = lib.nettle_sha3_512_digest
     }
 }
 

@@ -1,4 +1,4 @@
-require "resty.nettle"
+require "resty.nettle.library"
 require "resty.nettle.types.md5"
 require "resty.nettle.types.sha1"
 require "resty.nettle.types.sha2"

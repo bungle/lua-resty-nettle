@@ -1,5 +1,6 @@
 require "resty.nettle.types.aes"
 
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -7,7 +8,6 @@ local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
 local assert       = assert
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 typedef struct umac32_ctx {
@@ -99,37 +99,37 @@ local umacs = {
         length   = 4,
         context  = ctxu32,
         buffer   = bufu32,
-        setkey   = nettle.nettle_umac32_set_key,
-        setnonce = nettle.nettle_umac32_set_nonce,
-        update   = nettle.nettle_umac32_update,
-        digest   = nettle.nettle_umac32_digest
+        setkey   = lib.nettle_umac32_set_key,
+        setnonce = lib.nettle_umac32_set_nonce,
+        update   = lib.nettle_umac32_update,
+        digest   = lib.nettle_umac32_digest
     },
     [64]         = {
         length   = 8,
         context  = ctxu64,
         buffer   = bufu64,
-        setkey   = nettle.nettle_umac64_set_key,
-        setnonce = nettle.nettle_umac64_set_nonce,
-        update   = nettle.nettle_umac64_update,
-        digest   = nettle.nettle_umac64_digest
+        setkey   = lib.nettle_umac64_set_key,
+        setnonce = lib.nettle_umac64_set_nonce,
+        update   = lib.nettle_umac64_update,
+        digest   = lib.nettle_umac64_digest
     },
     [96]         = {
         length   = 12,
         context  = ctxu96,
         buffer   = bufu96,
-        setkey   = nettle.nettle_umac96_set_key,
-        setnonce = nettle.nettle_umac96_set_nonce,
-        update   = nettle.nettle_umac96_update,
-        digest   = nettle.nettle_umac96_digest
+        setkey   = lib.nettle_umac96_set_key,
+        setnonce = lib.nettle_umac96_set_nonce,
+        update   = lib.nettle_umac96_update,
+        digest   = lib.nettle_umac96_digest
     },
     [128]        = {
         length   = 16,
         context  = ctx128,
         buffer   = buf128,
-        setkey   = nettle.nettle_umac128_set_key,
-        setnonce = nettle.nettle_umac128_set_nonce,
-        update   = nettle.nettle_umac128_update,
-        digest   = nettle.nettle_umac128_digest
+        setkey   = lib.nettle_umac128_set_key,
+        setnonce = lib.nettle_umac128_set_nonce,
+        update   = lib.nettle_umac128_update,
+        digest   = lib.nettle_umac128_digest
     }
 }
 

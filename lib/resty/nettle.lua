@@ -1,13 +1,55 @@
-local ffi      = require "ffi"
-local ffi_load = ffi.load
-local ffi_cdef = ffi.cdef
-
-ffi_cdef[[
-union nettle_block16 { uint8_t b[16]; unsigned long w[16 / sizeof(unsigned long)]; };
-typedef void *nettle_realloc_func(void *ctx, void *p, size_t length);
-typedef void nettle_cipher_func(const void *ctx, size_t length, uint8_t *dst, const uint8_t *src);
-typedef void nettle_random_func(void *ctx, size_t length, uint8_t *dst);
-typedef void nettle_progress_func(void *ctx, int c);
-]]
-
-return ffi_load "nettle"
+local require               = require
+local nettle, padding       = { _VERSION = "0.96" }, {}
+nettle.aead                 = require "resty.nettle.aead"
+nettle.aes                  = require "resty.nettle.aes"
+nettle.arcfour              = require "resty.nettle.arcfour"
+nettle.asn1                 = require "resty.nettle.asn1"
+nettle.base16               = require "resty.nettle.base16"
+nettle.base64               = require "resty.nettle.base64"
+nettle.blowfish             = require "resty.nettle.blowfish"
+nettle.buffer               = require "resty.nettle.buffer"
+nettle.camellia             = require "resty.nettle.camellia"
+nettle.cast128              = require "resty.nettle.cast128"
+nettle.chacha               = require "resty.nettle.chacha"
+nettle.chacha_poly1305      = require "resty.nettle.chacha-poly1305"
+nettle["chacha-poly1305"]   = nettle.chacha_poly1305
+nettle.cipher               = require "resty.nettle.cipher"
+nettle.des                  = require "resty.nettle.des"
+nettle.dsa                  = require "resty.nettle.dsa"
+nettle.ed25519_sha512       = require "resty.nettle.ed25519-sha512"
+nettle["ed25519-sha512"]    = nettle.ed25519_sha512
+nettle.gmp                  = require "resty.nettle.gmp"
+nettle.gosthash94           = require "resty.nettle.gosthash94"
+nettle.hash                 = require "resty.nettle.hash"
+nettle.hmac                 = require "resty.nettle.hmac"
+nettle.hogweed              = require "resty.nettle.hogweed"
+nettle.knuth_lfib           = require "resty.nettle.knuth-lfib"
+nettle["knuth-lfib"]        = nettle.knuth_lfib
+nettle.library              = require "resty.nettle.library"
+nettle.md2                  = require "resty.nettle.md2"
+nettle.md4                  = require "resty.nettle.md4"
+nettle.md5                  = require "resty.nettle.md5"
+nettle.pbkdf2               = require "resty.nettle.pbkdf2"
+nettle.poly1305             = require "resty.nettle.poly1305"
+nettle.ripemd160            = require "resty.nettle.ripemd160"
+nettle.rsa                  = require "resty.nettle.rsa"
+nettle.salsa20              = require "resty.nettle.salsa20"
+nettle.serpent              = require "resty.nettle.serpent"
+nettle.sha1                 = require "resty.nettle.sha1"
+nettle.sha2                 = require "resty.nettle.sha2"
+nettle.sha3                 = require "resty.nettle.sha3"
+nettle.twofish              = require "resty.nettle.twofish"
+nettle.umac                 = require "resty.nettle.umac"
+nettle.version              = require "resty.nettle.version"
+nettle.yarrow               = require "resty.nettle.yarrow"
+padding.ansix923            = require "resty.nettle.padding.ansix923"
+padding.base64              = require "resty.nettle.padding.base64"
+padding.iso7816_4           = require "resty.nettle.padding.iso7816-4"
+padding["iso7816-4"]        = padding.iso7816_4
+padding.iso10126            = require "resty.nettle.padding.iso10126"
+padding.nopadding           = require "resty.nettle.padding.nopadding"
+padding.pkcs7               = require "resty.nettle.padding.pkcs7"
+padding.spacepadding        = require "resty.nettle.padding.spacepadding"
+padding.zeropadding         = require "resty.nettle.padding.zeropadding"
+nettle.padding              = padding
+return nettle

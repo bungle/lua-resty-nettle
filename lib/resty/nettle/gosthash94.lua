@@ -1,4 +1,4 @@
-local nettle       = require "resty.nettle"
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -23,9 +23,9 @@ local buf = ffi_new("uint8_t[?]", 32)
 local gosthash94 = setmetatable({}, {
     __call = function(_, data, len)
         local context = ffi_new(ctx)
-        nettle.nettle_gosthash94_init(context)
-        nettle.nettle_gosthash94_update(context, len or #data, data)
-        nettle.nettle_gosthash94_digest(context, 32, buf)
+        lib.nettle_gosthash94_init(context)
+        lib.nettle_gosthash94_update(context, len or #data, data)
+        lib.nettle_gosthash94_digest(context, 32, buf)
         return ffi_str(buf, 32)
     end
 })
@@ -33,16 +33,16 @@ gosthash94.__index = gosthash94
 
 function gosthash94.new()
     local self = setmetatable({ context = ffi_new(ctx) }, gosthash94)
-    nettle.nettle_gosthash94_init(self.context)
+    lib.nettle_gosthash94_init(self.context)
     return self
 end
 
 function gosthash94:update(data, len)
-    return nettle.nettle_gosthash94_update(self.context, len or #data, data)
+    return lib.nettle_gosthash94_update(self.context, len or #data, data)
 end
 
 function gosthash94:digest()
-    nettle.nettle_gosthash94_digest(self.context, 32, buf)
+    lib.nettle_gosthash94_digest(self.context, 32, buf)
     return ffi_str(buf, 32)
 end
 

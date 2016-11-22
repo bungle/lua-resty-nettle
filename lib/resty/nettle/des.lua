@@ -1,5 +1,6 @@
 require "resty.nettle.types.des"
 
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -9,7 +10,6 @@ local ffi_str      = ffi.string
 local ceil         = math.ceil
 local assert       = assert
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 int  nettle_des_set_key(struct des_ctx *ctx, const uint8_t *key);
@@ -31,60 +31,60 @@ local ciphers = {
     des = {
         ecb = {
             context = ffi_typeof "DES_CTX[1]",
-            setkey  = nettle.nettle_des_set_key,
-            encrypt = nettle.nettle_des_encrypt,
-            decrypt = nettle.nettle_des_decrypt
+            setkey  = lib.nettle_des_set_key,
+            encrypt = lib.nettle_des_encrypt,
+            decrypt = lib.nettle_des_decrypt
         },
         cbc = {
             iv_size = 8,
             context = ffi_typeof "DES_CTX[1]",
-            setkey  = nettle.nettle_des_set_key,
-            encrypt = nettle.nettle_cbc_encrypt,
-            decrypt = nettle.nettle_cbc_decrypt,
+            setkey  = lib.nettle_des_set_key,
+            encrypt = lib.nettle_cbc_encrypt,
+            decrypt = lib.nettle_cbc_decrypt,
             cipher  = {
-                encrypt = nettle.nettle_des_encrypt,
-                decrypt = nettle.nettle_des_decrypt
+                encrypt = lib.nettle_des_encrypt,
+                decrypt = lib.nettle_des_decrypt
             }
         },
         ctr = {
             iv_size = 8,
             context = ffi_typeof "DES_CTX[1]",
-            setkey  = nettle.nettle_des_set_key,
-            encrypt = nettle.nettle_ctr_crypt,
-            decrypt = nettle.nettle_ctr_crypt,
+            setkey  = lib.nettle_des_set_key,
+            encrypt = lib.nettle_ctr_crypt,
+            decrypt = lib.nettle_ctr_crypt,
             cipher  = {
-                encrypt = nettle.nettle_des_encrypt,
-                decrypt = nettle.nettle_des_encrypt
+                encrypt = lib.nettle_des_encrypt,
+                decrypt = lib.nettle_des_encrypt
             }
         }
     },
     des3 = {
         ecb = {
             context = ffi_typeof "DES3_CTX[1]",
-            setkey  = nettle.nettle_des3_set_key,
-            encrypt = nettle.nettle_des3_encrypt,
-            decrypt = nettle.nettle_des3_decrypt
+            setkey  = lib.nettle_des3_set_key,
+            encrypt = lib.nettle_des3_encrypt,
+            decrypt = lib.nettle_des3_decrypt
         },
         cbc = {
             iv_size = 8,
             context = ffi_typeof "DES3_CTX[1]",
-            setkey  = nettle.nettle_des3_set_key,
-            encrypt = nettle.nettle_cbc_encrypt,
-            decrypt = nettle.nettle_cbc_decrypt,
+            setkey  = lib.nettle_des3_set_key,
+            encrypt = lib.nettle_cbc_encrypt,
+            decrypt = lib.nettle_cbc_decrypt,
             cipher  = {
-                encrypt = nettle.nettle_des3_encrypt,
-                decrypt = nettle.nettle_des3_decrypt
+                encrypt = lib.nettle_des3_encrypt,
+                decrypt = lib.nettle_des3_decrypt
             }
         },
         ctr = {
             iv_size = 8,
             context = ffi_typeof "DES3_CTX[1]",
-            setkey  = nettle.nettle_des3_set_key,
-            encrypt = nettle.nettle_ctr_crypt,
-            decrypt = nettle.nettle_ctr_crypt,
+            setkey  = lib.nettle_des3_set_key,
+            encrypt = lib.nettle_ctr_crypt,
+            decrypt = lib.nettle_ctr_crypt,
             cipher  = {
-                encrypt = nettle.nettle_des3_encrypt,
-                decrypt = nettle.nettle_des3_encrypt
+                encrypt = lib.nettle_des3_encrypt,
+                decrypt = lib.nettle_des3_encrypt
             }
         }
     }
@@ -114,14 +114,14 @@ end
 function des.check_parity(key)
     local len = #key
     assert(len == 8 or len == 24, "The DES supported key size is 64 bits, and DES3 supported key size is 192 bits.")
-    return nettle.nettle_des_check_parity(len, key) == 1
+    return lib.nettle_des_check_parity(len, key) == 1
 end
 
 function des.fix_parity(src)
     local len = #src
     assert(len == 8 or len == 24, "The DES supported key size is 64 bits, and DES3 supported key size is 192 bits.")
     local dst = ffi_new(uint8t, len)
-    nettle.nettle_des_fix_parity(len, dst, src)
+    lib.nettle_des_fix_parity(len, dst, src)
     return ffi_str(dst, len)
 end
 

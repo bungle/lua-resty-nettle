@@ -1,12 +1,12 @@
 require "resty.nettle.types.md5"
 
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_md5_init(struct md5_ctx *ctx);
@@ -19,9 +19,9 @@ local buf = ffi_new("uint8_t[?]", 16)
 local md5 = setmetatable({}, {
     __call = function(_, data, len)
         local context = ffi_new(ctx)
-        nettle.nettle_md5_init(context)
-        nettle.nettle_md5_update(context, len or #data, data)
-        nettle.nettle_md5_digest(context, 16, buf)
+        lib.nettle_md5_init(context)
+        lib.nettle_md5_update(context, len or #data, data)
+        lib.nettle_md5_digest(context, 16, buf)
         return ffi_str(buf, 16)
     end
 })
@@ -29,16 +29,16 @@ md5.__index = md5
 
 function md5.new()
     local self = setmetatable({ context = ffi_new(ctx) }, md5)
-    nettle.nettle_md5_init(self.context)
+    lib.nettle_md5_init(self.context)
     return self
 end
 
 function md5:update(data, len)
-    return nettle.nettle_md5_update(self.context, len or #data, data)
+    return lib.nettle_md5_update(self.context, len or #data, data)
 end
 
 function md5:digest()
-    nettle.nettle_md5_digest(self.context, 16, buf)
+    lib.nettle_md5_digest(self.context, 16, buf)
     return ffi_str(buf, 16)
 end
 

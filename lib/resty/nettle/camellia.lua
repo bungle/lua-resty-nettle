@@ -1,5 +1,6 @@
 require "resty.nettle.types.camellia"
 
+local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
@@ -9,7 +10,6 @@ local ffi_str      = ffi.string
 local ceil         = math.ceil
 local assert       = assert
 local setmetatable = setmetatable
-local nettle       = require "resty.nettle"
 
 ffi_cdef[[
 void nettle_camellia128_set_encrypt_key(struct camellia128_ctx *ctx, const uint8_t *key);
@@ -38,45 +38,45 @@ local uint8t = ffi_typeof "uint8_t[?]"
 local ciphers = {
     ecb = {
         [128] = {
-            setkey  = nettle.nettle_camellia128_set_encrypt_key,
-            invert  = nettle.nettle_camellia128_invert_key,
-            encrypt = nettle.nettle_camellia128_crypt,
-            decrypt = nettle.nettle_camellia128_crypt,
+            setkey  = lib.nettle_camellia128_set_encrypt_key,
+            invert  = lib.nettle_camellia128_invert_key,
+            encrypt = lib.nettle_camellia128_crypt,
+            decrypt = lib.nettle_camellia128_crypt,
             context = ffi_typeof "CAMELLIA128_CTX[1]"
         },
         [192] = {
-            setkey  = nettle.nettle_camellia192_set_encrypt_key,
-            invert  = nettle.nettle_camellia256_invert_key,
-            encrypt = nettle.nettle_camellia256_crypt,
-            decrypt = nettle.nettle_camellia256_crypt,
+            setkey  = lib.nettle_camellia192_set_encrypt_key,
+            invert  = lib.nettle_camellia256_invert_key,
+            encrypt = lib.nettle_camellia256_crypt,
+            decrypt = lib.nettle_camellia256_crypt,
             context = ffi_typeof "CAMELLIA256_CTX[1]"
         },
         [256] = {
-            setkey  = nettle.nettle_camellia256_set_encrypt_key,
-            invert  = nettle.nettle_camellia256_invert_key,
-            encrypt = nettle.nettle_camellia256_crypt,
-            decrypt = nettle.nettle_camellia256_crypt,
+            setkey  = lib.nettle_camellia256_set_encrypt_key,
+            invert  = lib.nettle_camellia256_invert_key,
+            encrypt = lib.nettle_camellia256_crypt,
+            decrypt = lib.nettle_camellia256_crypt,
             context = ffi_typeof "CAMELLIA256_CTX[1]"
         }
     },
     gcm = {
         iv_size  = 12,
         [128] = {
-            setkey  = nettle.nettle_gcm_camellia128_set_key,
-            setiv   = nettle.nettle_gcm_camellia128_set_iv,
-            update  = nettle.nettle_gcm_camellia128_update,
-            encrypt = nettle.nettle_gcm_camellia128_encrypt,
-            decrypt = nettle.nettle_gcm_camellia128_decrypt,
-            digest  = nettle.nettle_gcm_camellia128_digest,
+            setkey  = lib.nettle_gcm_camellia128_set_key,
+            setiv   = lib.nettle_gcm_camellia128_set_iv,
+            update  = lib.nettle_gcm_camellia128_update,
+            encrypt = lib.nettle_gcm_camellia128_encrypt,
+            decrypt = lib.nettle_gcm_camellia128_decrypt,
+            digest  = lib.nettle_gcm_camellia128_digest,
             context = ffi_typeof "GCM_CAMELLIA128_CTX[1]"
         },
         [256] = {
-            setkey  = nettle.nettle_gcm_camellia256_set_key,
-            setiv   = nettle.nettle_gcm_camellia256_set_iv,
-            update  = nettle.nettle_gcm_camellia256_update,
-            encrypt = nettle.nettle_gcm_camellia256_encrypt,
-            decrypt = nettle.nettle_gcm_camellia256_decrypt,
-            digest  = nettle.nettle_gcm_camellia256_digest,
+            setkey  = lib.nettle_gcm_camellia256_set_key,
+            setiv   = lib.nettle_gcm_camellia256_set_iv,
+            update  = lib.nettle_gcm_camellia256_update,
+            encrypt = lib.nettle_gcm_camellia256_encrypt,
+            decrypt = lib.nettle_gcm_camellia256_decrypt,
+            digest  = lib.nettle_gcm_camellia256_digest,
             context = ffi_typeof "GCM_CAMELLIA256_CTX[1]"
         }        
     }

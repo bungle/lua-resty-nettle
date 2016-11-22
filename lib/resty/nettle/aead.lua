@@ -1,11 +1,11 @@
 require "resty.nettle.types.aead"
+local lib      = require "resty.nettle.library"
 local ffi      = require "ffi"
-local nettle   = require "resty.nettle"
 local ffi_str  = ffi.string
 local tonumber = tonumber
 local aeads = {}
 do
-    local i, as = 0, nettle.nettle_aeads
+    local i, as = 0, lib.nettle_aeads
     while as[i] ~= nil do
         local aead = {
             name            = ffi_str(as[i].name),
