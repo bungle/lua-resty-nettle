@@ -1164,7 +1164,7 @@ $ opm get bungle/lua-resty-nettle
 ### Using LuaRocks
 
 ```Shell
-$ luarocks install lua-resty-template
+$ luarocks install lua-resty-nettle
 ```
 
 LuaRocks repository for `lua-resty-nettle` is located at https://luarocks.org/modules/bungle/lua-resty-nettle.
