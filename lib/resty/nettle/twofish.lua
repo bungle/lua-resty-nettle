@@ -1,3 +1,6 @@
+require "resty.nettle.types.cbc"
+require "resty.nettle.types.ctr"
+
 local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
@@ -24,44 +27,147 @@ void nettle_twofish_decrypt(const struct twofish_ctx *ctx, size_t length, uint8_
 
 local uint8t = ffi_typeof "uint8_t[?]"
 
+local ciphers = {
+    ecb = {
+        [128] = {
+            setkey  = lib.nettle_twofish128_set_key,
+            encrypt = lib.nettle_twofish_encrypt,
+            decrypt = lib.nettle_twofish_decrypt
+        },
+        [192] = {
+            setkey  = lib.nettle_twofish192_set_key,
+            encrypt = lib.nettle_twofish_encrypt,
+            decrypt = lib.nettle_twofish_decrypt
+        },
+        [256] = {
+            setkey  = lib.nettle_twofish256_set_key,
+            encrypt = lib.nettle_twofish_encrypt,
+            decrypt = lib.nettle_twofish_decrypt
+        }
+    },
+    cbc = {
+        iv_size  = 16,
+        [128] = {
+            setkey  = lib.nettle_twofish128_set_key,
+            encrypt = lib.nettle_cbc_encrypt,
+            decrypt = lib.nettle_cbc_decrypt,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_decrypt
+            }
+        },
+        [192] = {
+            setkey  = lib.nettle_twofish192_set_key,
+            encrypt = lib.nettle_cbc_encrypt,
+            decrypt = lib.nettle_cbc_decrypt,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_decrypt
+            }
+        },
+        [256] = {
+            setkey  = lib.nettle_twofish256_set_key,
+            encrypt = lib.nettle_cbc_encrypt,
+            decrypt = lib.nettle_cbc_decrypt,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_decrypt
+            }
+        }
+    },
+    ctr = {
+        iv_size  = 16,
+        [128] = {
+            setkey  = lib.nettle_twofish128_set_key,
+            encrypt  = lib.nettle_ctr_crypt,
+            decrypt  = lib.nettle_ctr_crypt,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_encrypt
+            }
+        },
+        [192] = {
+            setkey  = lib.nettle_twofish192_set_key,
+            encrypt  = lib.nettle_ctr_crypt,
+            decrypt  = lib.nettle_ctr_crypt,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_encrypt
+            }
+        },
+        [256] = {
+            setkey  = lib.nettle_twofish256_set_key,
+            encrypt = lib.nettle_ctr_crypt,
+            decrypt = lib.nettle_ctr_crypt,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_encrypt
+            }
+        }
+    }
+}
+
+local context = ffi_typeof "TWOFISH_CTX[1]"
 local twofish = {}
 twofish.__index = twofish
 
-local context   = ffi_typeof "TWOFISH_CTX[1]"
-local setkey128 = lib.nettle_twofish128_set_key
-local setkey192 = lib.nettle_twofish192_set_key
-local setkey256 = lib.nettle_twofish256_set_key
-local encrypt   = lib.nettle_twofish_encrypt
-local decrypt   = lib.nettle_twofish_decrypt
-
-function twofish.new(key)
+function twofish.new(key, mode, iv)
     local len = #key
     assert(len == 16 or len == 24 or len == 32, "The TWOFISH supported key sizes are 128, 192, and 256 bits.")
-    local ct = ffi_new(context)
-    if len == 16 then
-        setkey128(ct, key)
-    elseif len == 24 then
-        setkey192(ct, key)
-    elseif len == 32 then
-        setkey256(ct, key)
+    mode = (mode or "ecb"):lower()
+    local config = ciphers[mode]
+    assert(config, "The TWOFISH supported modes are ECB, CBC, and CTR.")
+    local bits = len * 8
+    local cipher = config[bits]
+    local context = ffi_new(context)
+    cipher.setkey(context, key)
+    local iv_size = config.iv_size
+    if iv_size then
+        iv = iv or ""
+        assert(#iv == iv_size, "The TWOFISH-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits.")
     end
-    return setmetatable({ context = ct }, twofish)
+    return setmetatable({
+        context = context,
+        cipher  = cipher,
+        iv      = iv }, twofish)
 end
 
 function twofish:encrypt(src, len)
+    local cipher  = self.cipher
+    local context = self.context
     len = len or #src
+    if self.iv then
+        local dst = ffi_new(uint8t, len)
+        ffi_copy(dst, src, len)
+        local ivl = #self.iv
+        local iv = ffi_new(uint8t, ivl)
+        ffi_copy(iv, self.iv, ivl)
+        cipher.encrypt(context, cipher.cipher.encrypt, 16, iv, len, dst, dst)
+        return ffi_str(dst, len)
+    end
     local dln = ceil(len / 16) * 16
     local dst = ffi_new(uint8t, dln)
     ffi_copy(dst, src, len)
-    encrypt(self.context, dln, dst, dst)
+    cipher.encrypt(context, dln, dst, dst)
     return ffi_str(dst, dln)
 end
 
 function twofish:decrypt(src, len)
+    local cipher  = self.cipher
+    local context = self.context
     len = len or #src
+    if self.iv then
+        local dst = ffi_new(uint8t, len)
+        local ivl = #self.iv
+        local iv = ffi_new(uint8t, ivl)
+        ffi_copy(iv, self.iv, ivl)
+        cipher.decrypt(context, cipher.cipher.decrypt, 16, iv, len, dst, src)
+        return ffi_str(dst, len)
+
+    end
     local dln = ceil(len / 16) * 16
     local dst = ffi_new(uint8t, dln)
-    decrypt(self.context, dln, dst, src)
+    cipher.decrypt(self.context, dln, dst, src)
     return ffi_str(dst, len)
 end
 return twofish
