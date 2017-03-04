@@ -51,6 +51,7 @@ local ciphers = {
             setkey  = lib.nettle_twofish128_set_key,
             encrypt = lib.nettle_cbc_encrypt,
             decrypt = lib.nettle_cbc_decrypt,
+            padding = true,
             cipher  = {
                 encrypt = lib.nettle_twofish_encrypt,
                 decrypt = lib.nettle_twofish_decrypt
@@ -60,6 +61,7 @@ local ciphers = {
             setkey  = lib.nettle_twofish192_set_key,
             encrypt = lib.nettle_cbc_encrypt,
             decrypt = lib.nettle_cbc_decrypt,
+            padding = true,
             cipher  = {
                 encrypt = lib.nettle_twofish_encrypt,
                 decrypt = lib.nettle_twofish_decrypt
@@ -69,6 +71,7 @@ local ciphers = {
             setkey  = lib.nettle_twofish256_set_key,
             encrypt = lib.nettle_cbc_encrypt,
             decrypt = lib.nettle_cbc_decrypt,
+            padding = true,
             cipher  = {
                 encrypt = lib.nettle_twofish_encrypt,
                 decrypt = lib.nettle_twofish_decrypt
@@ -137,13 +140,15 @@ function twofish:encrypt(src, len)
     local context = self.context
     len = len or #src
     if self.iv then
-        local dst = ffi_new(uint8t, len)
+        local dln = len
+        if cipher.padding then dln = ceil(dln / 16) * 16 end
+        local dst = ffi_new(uint8t, dln)
         ffi_copy(dst, src, len)
         local ivl = #self.iv
         local iv = ffi_new(uint8t, ivl)
         ffi_copy(iv, self.iv, ivl)
-        cipher.encrypt(context, cipher.cipher.encrypt, 16, iv, len, dst, dst)
-        return ffi_str(dst, len)
+        cipher.encrypt(context, cipher.cipher.encrypt, 16, iv, dln, dst, dst)
+        return ffi_str(dst, dln)
     end
     local dln = ceil(len / 16) * 16
     local dst = ffi_new(uint8t, dln)
