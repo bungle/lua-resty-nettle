@@ -1,4 +1,6 @@
+-- TODO: THIS IS NOT DONE, IT IS NOT FULLY IMPLEMENTED.
 require "resty.nettle.library"
+require "resty.nettle.types.rsa"
 require "resty.nettle.types.md5"
 require "resty.nettle.types.sha1"
 require "resty.nettle.types.sha2"
@@ -19,20 +21,6 @@ local knuth        = require "resty.nettle.knuth-lfib"
 local hogweed      = require "resty.nettle.hogweed"
 
 ffi_cdef[[
-typedef struct rsa_public_key {
-  size_t size;
-  mpz_t n;
-  mpz_t e;
-} RSA_PUBLIC_KEY;
-typedef struct rsa_private_key {
-  size_t size;
-  mpz_t d;
-  mpz_t p;
-  mpz_t q;
-  mpz_t a;
-  mpz_t b;
-  mpz_t c;
-} RSA_PRIVATE_KEY;
 void nettle_rsa_public_key_init(struct rsa_public_key *key);
 void nettle_rsa_public_key_clear(struct rsa_public_key *key);
 int  nettle_rsa_public_key_prepare(struct rsa_public_key *key);
@@ -136,7 +124,7 @@ function keypair.new(n, e, r, p, seed)
         rc = knuth.context(seed)
         rf = knuth.func
     else
-        rc = yarrow.context(seed)
+        rc = yarrow.context(seed or knuth.new():random(32))
         rf = yarrow.func
     end
     local pux = public.new()
@@ -180,7 +168,7 @@ function rsa:encrypt(plain, r, seed)
         rc = knuth.context(seed)
         rf = knuth.func
     else
-        rc = yarrow.context(seed)
+        rc = yarrow.context(seed or knuth.new():random(32))
         rf = yarrow.func
     end
     local ok = hogweed.nettle_rsa_encrypt(self.public.context, rc, rf, #plain, plain, encrypted)

@@ -1,5 +1,5 @@
 -- TODO: THIS IS NOT DONE, IT DOESN'T WORK YET.
-
+require "resty.nettle.types.dsa"
 require "resty.nettle.library"
 
 local ffi          = require "ffi"
@@ -17,15 +17,6 @@ local knuth        = require "resty.nettle.knuth-lfib"
 local hogweed      = require "resty.nettle.hogweed"
 
 ffi_cdef[[
-typedef struct dsa_params {
-  mpz_t p;
-  mpz_t q;
-  mpz_t g;
-} DSA_PARAMS;
-typedef struct dsa_signature {
-  mpz_t r;
-  mpz_t s;
-} DSA_SIGNATURE;
 void nettle_dsa_params_init(struct dsa_params *params);
 void nettle_dsa_params_clear(struct dsa_params *params);
 void nettle_dsa_signature_init(struct dsa_signature *signature);

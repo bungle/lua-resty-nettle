@@ -8,16 +8,12 @@ local ffi_cdef     = ffi.cdef
 local ffi_typeof   = ffi.typeof
 
 local t = ffi_typeof "uint8_t[32]"
-
---local n = ffi_new(t)
---local p = ffi_new(t)
 local q = ffi_new(t)
 
 ffi_cdef[[
 void nettle_curve25519_mul_g(uint8_t *q, const uint8_t *n);
 void nettle_curve25519_mul(uint8_t *q, const uint8_t *n, const uint8_t *p);
 ]]
-
 
 local curve = {}
 

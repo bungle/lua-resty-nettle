@@ -107,6 +107,39 @@ local ciphers = {
                 decrypt = lib.nettle_twofish_encrypt
             }
         }
+    },
+    gcm = {
+        iv_size  = 12,
+        [128] = {
+            setkey  = lib.nettle_twofish128_set_key,
+            encrypt = lib.nettle_cbc_encrypt,
+            decrypt = lib.nettle_cbc_decrypt,
+            padding = true,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_decrypt
+            }
+        },
+        [192] = {
+            setkey  = lib.nettle_twofish192_set_key,
+            encrypt = lib.nettle_cbc_encrypt,
+            decrypt = lib.nettle_cbc_decrypt,
+            padding = true,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_decrypt
+            }
+        },
+        [256] = {
+            setkey  = lib.nettle_twofish256_set_key,
+            encrypt = lib.nettle_cbc_encrypt,
+            decrypt = lib.nettle_cbc_decrypt,
+            padding = true,
+            cipher  = {
+                encrypt = lib.nettle_twofish_encrypt,
+                decrypt = lib.nettle_twofish_decrypt
+            }
+        }
     }
 }
 
@@ -114,7 +147,7 @@ local context = ffi_typeof "TWOFISH_CTX[1]"
 local twofish = {}
 twofish.__index = twofish
 
-function twofish.new(key, mode, iv)
+function twofish.new(key, mode, iv, ad)
     local len = #key
     assert(len == 16 or len == 24 or len == 32, "The TWOFISH supported key sizes are 128, 192, and 256 bits.")
     mode = (mode or "ecb"):lower()

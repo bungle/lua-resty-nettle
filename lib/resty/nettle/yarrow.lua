@@ -53,12 +53,14 @@ end
 function yarrow.context(seed)
     local context = ffi_new(ctx256)
     lib.nettle_yarrow256_init(context, 0, nil)
-    if not seed then
-        seed = knuth.new():random(32)
+    if seed ~= nil then
+        if not seed then
+            seed = knuth.new():random(32)
+        end
+        local len = #seed
+        assert(len > 31, "Seed data length should be at least 32 bytes, but it can be larger.")
+        lib.nettle_yarrow256_seed(context, len, seed)
     end
-    local len = #seed
-    assert(len > 31, "Seed data length should be at least 32 bytes, but it can be larger.")
-    lib.nettle_yarrow256_seed(context, len, seed)
     return context
 end
 
