@@ -10,6 +10,7 @@ local ffi_new      = ffi.new
 local ffi_cdef     = ffi.cdef
 local ffi_typeof   = ffi.typeof
 local ffi_str      = ffi.string
+local error        = error
 local assert       = assert
 local rawget       = rawget
 local tonumber     = tonumber
@@ -55,6 +56,7 @@ local size = ffi_new "size_t[1]"
 local buf = ffi_typeof "uint8_t[?]"
 local pub = ffi_typeof "RSA_PUBLIC_KEY[1]"
 local pri = ffi_typeof "RSA_PRIVATE_KEY[1]"
+local mpz = gmp.context()
 
 local public = {}
 public.__index = public
@@ -190,5 +192,41 @@ function rsa:decrypt(encrypted)
     end
     return nil
 end
+
+function rsa:sign(digest, base)
+    local l, ok = #digest, nil
+    if l == 16 then
+        ok = hogweed.nettle_rsa_md5_sign_digest(self.private.context, digest, mpz)
+    elseif l == 20 then
+        ok = hogweed.nettle_rsa_sha1_sign_digest(self.private.context, digest, mpz)
+    elseif l == 32 then
+        ok = hogweed.nettle_rsa_sha256_sign_digest(self.private.context, digest, mpz)
+    elseif l == 64 then
+        ok = hogweed.nettle_rsa_sha512_sign_digest(self.private.context, digest, mpz)
+    else
+        error("Supported digests are MD5, SHA1, SHA256, and SHA512")
+    end
+    if ok == 1 then
+        return gmp.string(mpz, base)
+    end
+    return nil
+end
+
+function rsa:verify(digest, signature, base)
+    local l, ok = #digest, nil
+    if l == 16 then
+        ok = hogweed.nettle_rsa_md5_verify_digest(self.public.context, digest, gmp.context(signature, base))
+    elseif l == 20 then
+        ok = hogweed.nettle_rsa_sha1_verify_digest(self.public.context, digest, gmp.context(signature, base))
+    elseif l == 32 then
+        ok = hogweed.nettle_rsa_sha256_verify_digest(self.public.context, digest, gmp.context(signature, base))
+    elseif l == 64 then
+        ok = hogweed.nettle_rsa_sha512_verify_digest(self.public.context, digest, gmp.context(signature, base))
+    else
+        error("Supported digests are MD5, SHA1, SHA256, and SHA512")
+    end
+    return ok == 1
+end
+
 
 return rsa
