@@ -105,6 +105,7 @@ function private:prepare()
 end
 
 local keypair = {}
+
 function keypair:__index(n)
     if n == "sexp" then
         local b = buffer.new()
@@ -114,10 +115,12 @@ function keypair:__index(n)
         return rawget(keypair, n)
     end
 end
+
 function keypair:clear()
     hogweed.nettle_rsa_public_key_clear(self.public.context)
     hogweed.nettle_rsa_private_key_clear(self.private.context)
 end
+
 function keypair.new(n, e, r, p, seed)
     n = n or 4096
     e = e or 65537
@@ -138,6 +141,7 @@ function keypair.new(n, e, r, p, seed)
         private = prx
     }, keypair)
 end
+
 function keypair.der(data)
     local pux = public.new()
     local prx = private.new()
@@ -147,6 +151,7 @@ function keypair.der(data)
         private = prx
     }, keypair)
 end
+
 local rsa = { keypair = keypair, key = { public = public, private = private } }
 rsa.__index = rsa
 
@@ -227,6 +232,5 @@ function rsa:verify(digest, signature, base)
     end
     return ok == 1
 end
-
 
 return rsa
