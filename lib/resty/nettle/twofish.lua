@@ -1,5 +1,6 @@
 require "resty.nettle.types.cbc"
 require "resty.nettle.types.ctr"
+require "resty.nettle.types.gcm"
 
 local lib          = require "resty.nettle.library"
 local ffi          = require "ffi"
@@ -111,31 +112,46 @@ local ciphers = {
     gcm = {
         iv_size  = 12,
         [128] = {
-            setkey  = lib.nettle_twofish128_set_key,
-            encrypt = lib.nettle_cbc_encrypt,
-            decrypt = lib.nettle_cbc_decrypt,
-            padding = true,
+            setkey  = lib.nettle_gcm_set_key,
+            setiv   = lib.nettle_gcm_set_iv,
+            update  = lib.nettle_gcm_update,
+            encrypt = lib.nettle_gcm_encrypt,
+            decrypt = lib.nettle_gcm_decrypt,
+            digest  = lib.nettle_gcm_digest,
+            key     = ffi_typeof "GCM_KEY[1]",
+            context = ffi_typeof "GCM_CTX[1]",
             cipher  = {
+                setkey  = lib.nettle_twofish128_set_key,
                 encrypt = lib.nettle_twofish_encrypt,
                 decrypt = lib.nettle_twofish_decrypt
             }
         },
         [192] = {
-            setkey  = lib.nettle_twofish192_set_key,
-            encrypt = lib.nettle_cbc_encrypt,
-            decrypt = lib.nettle_cbc_decrypt,
-            padding = true,
+            setkey  = lib.nettle_gcm_set_key,
+            setiv   = lib.nettle_gcm_set_iv,
+            update  = lib.nettle_gcm_update,
+            encrypt = lib.nettle_gcm_encrypt,
+            decrypt = lib.nettle_gcm_decrypt,
+            digest  = lib.nettle_gcm_digest,
+            key     = ffi_typeof "GCM_KEY[1]",
+            context = ffi_typeof "GCM_CTX[1]",
             cipher  = {
+                setkey  = lib.nettle_twofish192_set_key,
                 encrypt = lib.nettle_twofish_encrypt,
                 decrypt = lib.nettle_twofish_decrypt
             }
         },
         [256] = {
-            setkey  = lib.nettle_twofish256_set_key,
-            encrypt = lib.nettle_cbc_encrypt,
-            decrypt = lib.nettle_cbc_decrypt,
-            padding = true,
+            setkey  = lib.nettle_gcm_set_key,
+            setiv   = lib.nettle_gcm_set_iv,
+            update  = lib.nettle_gcm_update,
+            encrypt = lib.nettle_gcm_encrypt,
+            decrypt = lib.nettle_gcm_decrypt,
+            digest  = lib.nettle_gcm_digest,
+            key     = ffi_typeof "GCM_KEY[1]",
+            context = ffi_typeof "GCM_CTX[1]",
             cipher  = {
+                setkey  = lib.nettle_twofish256_set_key,
                 encrypt = lib.nettle_twofish_encrypt,
                 decrypt = lib.nettle_twofish_decrypt
             }

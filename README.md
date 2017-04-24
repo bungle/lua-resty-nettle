@@ -1401,27 +1401,16 @@ local dgst = gh94:digest()
 ## Cipher Functions
 
 #### AES
-
 #### ARCFOUR
-
 #### ARCTWO
-
 #### BLOWFISH
-
 #### Camellia
-
 #### CAST128
-
 #### ChaCha
-
 #### DES
-
 #### DES3
-
 #### Salsa20
-
 #### SERPENT
-
 #### TWOFISH
 
 ## Cipher Modes

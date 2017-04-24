@@ -139,4 +139,12 @@ function base64.decode(src, urlsafe)
     return ffi_str(dst, length[0])
 end
 
+function base64.urlencode(src)
+    return base64.encode(src, true)
+end
+
+function base64.urldecode(src)
+    return base64.decode(src, true)
+end
+
 return base64

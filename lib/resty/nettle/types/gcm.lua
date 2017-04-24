@@ -14,4 +14,10 @@ typedef struct gcm_ctx {
   uint64_t auth_size;
   uint64_t data_size;
 } GCM_CTX;
+void nettle_gcm_set_key(struct gcm_key *key, const void *cipher, nettle_cipher_func *f);
+void nettle_gcm_set_iv(struct gcm_ctx *ctx, const struct gcm_key *key, size_t length, const uint8_t *iv);
+void nettle_gcm_update(struct gcm_ctx *ctx, const struct gcm_key *key, size_t length, const uint8_t *data);
+void nettle_gcm_encrypt(struct gcm_ctx *ctx, const struct gcm_key *key, const void *cipher, nettle_cipher_func *f, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_decrypt(struct gcm_ctx *ctx, const struct gcm_key *key, const void *cipher, nettle_cipher_func *f, size_t length, uint8_t *dst, const uint8_t *src);
+void nettle_gcm_digest(struct gcm_ctx *ctx, const struct gcm_key *key, const void *cipher, nettle_cipher_func *f, size_t length, uint8_t *digest);
 ]]
