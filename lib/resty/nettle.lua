@@ -14,6 +14,7 @@ nettle.chacha               = require "resty.nettle.chacha"
 nettle.chacha_poly1305      = require "resty.nettle.chacha-poly1305"
 nettle["chacha-poly1305"]   = nettle.chacha_poly1305
 nettle.cipher               = require "resty.nettle.cipher"
+nettle.curve25519           = require "resty.nettle.curve25519"
 nettle.des                  = require "resty.nettle.des"
 nettle.dsa                  = require "resty.nettle.dsa"
 nettle.ecc                  = require "resty.nettle.ecc"

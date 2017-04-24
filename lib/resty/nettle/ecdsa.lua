@@ -23,5 +23,4 @@ function ecdsa.new()
 end
 
 function ecdsa.generate_keypair()
-
 end
