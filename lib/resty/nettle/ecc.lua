@@ -32,7 +32,7 @@ local curves = {
     ["P-224"] = hogweed.nettle_secp_224r1,
     ["P-256"] = hogweed.nettle_secp_256r1,
     ["P-384"] = hogweed.nettle_secp_384r1,
-    --["P-512"] = hogweed.nettle_secp_512r1,
+    ["P-521"] = hogweed.nettle_secp_521r1,
 }
 
 local curve = {}
