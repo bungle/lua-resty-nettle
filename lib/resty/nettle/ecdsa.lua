@@ -1,8 +1,8 @@
--- TODO: THIS IS NOT DONE, IT DOESN'T WORK YET.
-require "resty.nettle.types.dsa"
 require "resty.nettle.types.ecc"
 
-local hogweed      = require "resty.nettle.library"
+local hogweed      = require "resty.nettle.hogweed"
+local dsa          = require "resty.nettle.dsa"
+local ecc          = require "resty.nettle.ecc"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_cdef     = ffi.cdef
@@ -14,13 +14,16 @@ int  nettle_ecdsa_verify(const struct ecc_point *pub, size_t length, const uint8
 void nettle_ecdsa_generate_keypair(struct ecc_point *pub, struct ecc_scalar *key, void *random_ctx, nettle_random_func *random);
 ]]
 
-local ecdsa = {}
+local ecdsa = { signature = dsa.signature, point = ecc.point }
+
 ecdsa.__index = ecdsa
 
-function ecdsa.new()
-    local self = setmetatable({}, ecdsa)
-    return self
+function ecdsa.new(point, scalar)
+    return setmetatable({ point = point, scalar = scalar }, ecdsa)
 end
 
-function ecdsa.generate_keypair()
+function ecdsa:verify(digest, signature)
+    return hogweed.nettle_ecdsa_verify(self.point.context, #digest, digest, signature.context or signature) == 1
 end
+
+return ecdsa

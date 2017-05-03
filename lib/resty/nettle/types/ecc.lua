@@ -10,11 +10,11 @@ extern const struct ecc_curve nettle_secp_224r1;
 extern const struct ecc_curve nettle_secp_256r1;
 extern const struct ecc_curve nettle_secp_384r1;
 extern const struct ecc_curve nettle_secp_521r1;
-struct ecc_point {
+typedef struct ecc_point {
   const struct ecc_curve *ecc;
   mp_limb_t *p;
 } ECC_POINT;
-struct ecc_scalar {
+typedef struct ecc_scalar {
   const struct ecc_curve *ecc;
   mp_limb_t *p;
 } ECC_SCALAR;

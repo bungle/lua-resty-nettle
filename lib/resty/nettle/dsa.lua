@@ -1,11 +1,14 @@
--- TODO: THIS IS NOT DONE, IT DOESN'T WORK YET.
 require "resty.nettle.types.dsa"
 require "resty.nettle.library"
 
+local hogweed      = require "resty.nettle.hogweed"
+local mpz          = require "resty.nettle.mpz"
 local ffi          = require "ffi"
+local ffi_gc       = ffi.gc
 local ffi_new      = ffi.new
 local ffi_cdef     = ffi.cdef
 local ffi_typeof   = ffi.typeof
+local setmetatable = setmetatable
 
 ffi_cdef[[
 void nettle_dsa_params_init(struct dsa_params *params);
@@ -18,10 +21,30 @@ int  nettle_dsa_generate_params(struct dsa_params *params, void *random_ctx, net
 void nettle_dsa_generate_keypair(const struct dsa_params *params, mpz_t pub, mpz_t key, void *random_ctx, nettle_random_func *random);
 int  nettle_dsa_keypair_to_sexp(struct nettle_buffer *buffer, const char *algorithm_name, const struct dsa_params *params, const mpz_t pub, const mpz_t priv);
 ]]
+
 local size = ffi_new "size_t[1]"
 local buf = ffi_typeof "uint8_t[?]"
+local sig = ffi_typeof "DSA_SIGNATURE[1]"
 
-local dsa = { }
+local signature = {}
+
+signature.__index = signature
+
+function signature.new(r, s, base)
+    local context = ffi_gc(ffi_new(sig), hogweed.nettle_dsa_signature_clear)
+    hogweed.nettle_dsa_signature_init(context)
+    if r then
+        mpz.set(context[0].r, r, base)
+    end
+
+    if s then
+        mpz.set(context[0].s, s, base)
+    end
+
+    return setmetatable({ context = context }, signature)
+end
+
+local dsa = { signature = signature }
 dsa.__index = dsa
 
 function dsa.new()
