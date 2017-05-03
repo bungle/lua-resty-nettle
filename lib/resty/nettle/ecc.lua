@@ -51,7 +51,7 @@ function point.new(curve, x, y, base)
     end
 
     if x and y then
-        assert(hogweed.nettle_ecc_point_set(context, mpz.new(x), mpz.new(y)) == 1)
+        assert(hogweed.nettle_ecc_point_set(context, mpz.new(x, base), mpz.new(y, base)) == 1)
     end
 
     return setmetatable({ context = context }, point)
