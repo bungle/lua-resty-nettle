@@ -1,9 +1,14 @@
 local lib          = require "resty.nettle.library"
+local bit          = require "bit"
 local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
+local bnot         = bit.bnot
+local band         = bit.band
+local ceil         = math.ceil
+local floor        = math.floor
 local assert       = assert
 local tonumber     = tonumber
 local setmetatable = setmetatable
@@ -59,7 +64,7 @@ end
 
 function encoder:update(src)
     local len = #src
-    local dln = (len * 8 + 4) / 6
+    local dln = ceil(4 * len / 3)
     local dst = ffi_new(uint8t, dln)
     local len = tonumber(lib.nettle_base64_encode_update(self.context, dst, len, src))
     return ffi_str(dst, len), len
@@ -91,7 +96,8 @@ end
 
 function decoder:update(src)
     local len = #src
-    local dst = ffi_new(uint8t, (len + 1) * 6 / 8)
+    local dln = floor(len * 3 / 4)
+    local dst = ffi_new(uint8t, dln)
     lib.nettle_base64_decode_update(self.context, length, dst, len, src)
     local len = tonumber(length[0])
     return ffi_str(dst, len), len
@@ -104,7 +110,7 @@ end
 local base64 = setmetatable({ encoder = encoder, decoder = decoder }, {
     __call = function(_, src)
         local len = #src
-        local dln = (len + 2) / 3 * 4
+        local dln = ceil(4 * len / 3)
         local dst = ffi_new(uint8t, dln)
         lib.nettle_base64_encode_raw(dst, len, src)
         return ffi_str(dst, dln)
@@ -119,16 +125,21 @@ function base64.encode(src, urlsafe)
         lib.nettle_base64_encode_init(ctx)
     end
     local len = #src
-    local dln = (len * 8 + 4) / 6
+    local dln = band((4 * len / 3) + 3, bnot(3))
     local dst = ffi_new(uint8t, dln)
     dst = ffi_str(dst, lib.nettle_base64_encode_update(ctx, dst, len, src))
-    return dst .. ffi_str(buf24, lib.nettle_base64_encode_final(ctx, buf24))
+    local fnl = lib.nettle_base64_encode_final(ctx, buf24)
+    if fnl > 0 then
+        return dst .. ffi_str(buf24, fnl)
+    end
+    return dst
 end
 
 function base64.decode(src, urlsafe)
     local ctx = ffi_new(ctxdec)
     local len = #src
-    local dst = ffi_new(uint8t, (len + 1) * 6 / 8)
+    local dln = floor(len * 3 / 4)
+    local dst = ffi_new(uint8t, dln)
     if urlsafe then
         lib.nettle_base64url_decode_init(ctx)
     else

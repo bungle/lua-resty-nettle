@@ -1,4 +1,4 @@
-require "resty.nettle.types.gmp"
+require "resty.nettle.types.mpz"
 
 local ffi        = require "ffi"
 local ffi_gc     = ffi.gc
@@ -12,12 +12,12 @@ local assert     = assert
 local gmp        = ffi_load "gmp"
 
 ffi_cdef[[
-void   __gmpz_init (mpz_t);
-void   __gmpz_clear (mpz_t);
-size_t __gmpz_sizeinbase (const mpz_t op, int base);
-char * __gmpz_get_str (char *str, int base, const mpz_t op);
-int    __gmpz_set_str (mpz_t rop, const char *str, int base);
-void   __gmpz_set_ui (mpz_t, unsigned long int iv);
+void   __gmpz_init(mpz_t);
+void   __gmpz_clear(mpz_t);
+size_t __gmpz_sizeinbase(const mpz_t op, int base);
+char * __gmpz_get_str(char *str, int base, const mpz_t op);
+int    __gmpz_set_str(mpz_t rop, const char *str, int base);
+void   __gmpz_set_ui(mpz_t, unsigned long int iv);
 ]]
 
 local ctx = ffi_typeof "mpz_t"
@@ -26,7 +26,7 @@ local chr = ffi_typeof "char[?]"
 local mpz = {}
 mpz.__index = mpz
 
-function mpz.context(str, base)
+function mpz.new(str, base)
     local context = ffi_gc(ffi_new(ctx), gmp.__gmpz_clear)
     gmp.__gmpz_init(context)
     if str then

@@ -6,15 +6,6 @@ local ffi          = require "ffi"
 local ffi_new      = ffi.new
 local ffi_cdef     = ffi.cdef
 local ffi_typeof   = ffi.typeof
-local ffi_str      = ffi.string
-local assert       = assert
-local rawget       = rawget
-local setmetatable = setmetatable
-local gmp          = require "resty.nettle.gmp"
-local buffer       = require "resty.nettle.buffer"
-local yarrow       = require "resty.nettle.yarrow"
-local knuth        = require "resty.nettle.knuth-lfib"
-local hogweed      = require "resty.nettle.hogweed"
 
 ffi_cdef[[
 void nettle_dsa_params_init(struct dsa_params *params);
@@ -29,84 +20,17 @@ int  nettle_dsa_keypair_to_sexp(struct nettle_buffer *buffer, const char *algori
 ]]
 local size = ffi_new "size_t[1]"
 local buf = ffi_typeof "uint8_t[?]"
---local pub = ffi_typeof "RSA_PUBLIC_KEY[1]"
---local pri = ffi_typeof "RSA_PRIVATE_KEY[1]"
 
-local keypair = {}
-function keypair:__index(n)
-    if n == "sexp" then
-        local b = buffer.new()
-        hogweed.nettle_dsa_keypair_to_sexp(b, nil, self.params.context, self.public.context, self.private.context)
-        return ffi_str(b.contents, b.size)
-    else
-        return rawget(keypair, n)
-    end
-end
-function keypair.new(n, e, r, p, seed)
-    n = n or 4096
-    e = e or 65537
-    local rf, rc
-    if r == "knuth-lfib" or r == "knuth" then
-        rc = knuth.context(seed)
-        rf = knuth.func
-    else
-        rc = yarrow.context(seed)
-        rf = yarrow.func
-    end
-    local pux = gmp.context()
-    local prx = gmp.context()
+local dsa = { }
+dsa.__index = dsa
 
-    assert(hogweed.nettle_rsa_generate_keypair(pux, prx, rc, rf) == 1)
-    return setmetatable({
-        public  = pux,
-        private = prx
-    }, keypair)
+function dsa.new()
 end
 
-local rsa = { keypair = keypair, key = { public = public, private = private } }
-rsa.__index = rsa
-
-function rsa.new(pub, pri)
-    if not pub and not pri then
-        local kp = keypair.new()
-        pub = kp.public
-        pri = kp.private
-    elseif not pub then
-        pub = public.new()
-    elseif not pri then
-        pri = private.new()
-    end
-    return setmetatable({ public = pub, private = pri }, rsa)
+function dsa:encrypt()
 end
 
-function rsa:encrypt(plain, rc, rf, seed)
-    local encrypted = gmp.context()
-    local rf, rc
-    if r == "knuth-lfib" or r == "knuth" then
-        rc = knuth.context(seed)
-        rf = knuth.func
-    else
-        rc = yarrow.context(seed)
-        rf = yarrow.func
-    end
-    local ok = hogweed.nettle_rsa_encrypt(self.public.context, rc, rf, #plain, plain, encrypted)
-    if ok == 1 then
-        return gmp.string(encrypted)
-    end
-    return nil
+function dsa:decrypt()
 end
 
-function rsa:decrypt(encrypted)
-    local ct = gmp.context(encrypted)
-    local sz = self.private.context[0].size
-    local s = ffi_new(size)
-    local b = ffi_new(buf, sz)
-    s[0] = sz
-    local ok = hogweed.nettle_rsa_decrypt(self.private.context, s, b, ct)
-    if ok == 1 then
-        return ffi_str(b, s[0])
-    end
-    return nil
-end
-
-return rsa
+return dsa

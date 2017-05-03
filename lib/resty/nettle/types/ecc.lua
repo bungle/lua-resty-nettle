@@ -1,4 +1,4 @@
-require "resty.nettle.types.gmp"
+require "resty.nettle.types.mpz"
 
 local ffi        = require "ffi"
 local ffi_cdef   = ffi.cdef
