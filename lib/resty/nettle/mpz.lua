@@ -26,11 +26,11 @@ local chr = ffi_typeof "char[?]"
 local mpz = {}
 mpz.__index = mpz
 
-function mpz.new(str, base)
+function mpz.new(value, base)
     local context = ffi_gc(ffi_new(ctx), gmp.__gmpz_clear)
     gmp.__gmpz_init(context)
-    if str then
-        assert(gmp.__gmpz_set_str(context, str, base or 16) == 0)
+    if value then
+        assert(mpz.set(context, value, base) == 0)
     end
     return context
 end
@@ -47,6 +47,7 @@ end
 
 function mpz.set(op, value, base)
     local t = type(value)
+    assert(t == "string" or t == "number", "Unable to set mpz_t value.")
     if t == "string" then
         return gmp.__gmpz_set_str(op, value, base or 16)
     elseif t == "number" then
