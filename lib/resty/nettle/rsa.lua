@@ -269,11 +269,11 @@ end
 function rsa:verify_pss(salt_length, digest, signature, base)
     local l, ok = #digest, nil
     if l == 32 then
-        ok = hogweed.nettle_pss_rsa_sha256_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
+        ok = hogweed.nettle_rsa_pss_sha256_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
     elseif l == 48 then
-        ok = hogweed.nettle_pss_rsa_sha384_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
+        ok = hogweed.nettle_rsa_pss_sha384_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
     elseif l == 64 then
-        ok = hogweed.nettle_pss_rsa_sha512_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
+        ok = hogweed.nettle_rsa_pss_sha512_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
     else
         error("Supported digests are SHA256, SHA384, and SHA512")
     end
