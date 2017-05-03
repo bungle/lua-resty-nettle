@@ -275,7 +275,7 @@ function rsa:verify_pss(salt_length, digest, signature, base)
     elseif l == 64 then
         ok = hogweed.nettle_pss_rsa_sha512_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
     else
-        error("Supported digests are MD5, SHA1, SHA256, and SHA512")
+        error("Supported digests are SHA256, SHA384, and SHA512")
     end
     return ok == 1
 end
