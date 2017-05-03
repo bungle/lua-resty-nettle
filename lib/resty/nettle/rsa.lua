@@ -41,8 +41,11 @@ int  nettle_rsa_sha1_sign_digest(const struct rsa_private_key *key, const uint8_
 int  nettle_rsa_sha1_verify_digest(const struct rsa_public_key *key, const uint8_t *digest, const mpz_t signature);
 int  nettle_rsa_sha256_sign_digest(const struct rsa_private_key *key, const uint8_t *digest, mpz_t s);
 int  nettle_rsa_sha256_verify_digest(const struct rsa_public_key *key, const uint8_t *digest, const mpz_t signature);
+int  nettle_rsa_pss_sha256_verify_digest(const struct rsa_public_key *key, size_t salt_length, const uint8_t *digest, const mpz_t signature);
+int  nettle_rsa_pss_sha384_verify_digest(const struct rsa_public_key *key, size_t salt_length, const uint8_t *digest, const mpz_t signature);
 int  nettle_rsa_sha512_sign_digest(const struct rsa_private_key *key, const uint8_t *digest, mpz_t s);
 int  nettle_rsa_sha512_verify_digest(const struct rsa_public_key *key, const uint8_t *digest, const mpz_t signature);
+int  nettle_rsa_pss_sha512_verify_digest(const struct rsa_public_key *key, size_t salt_length, const uint8_t *digest, const mpz_t signature);
 int  nettle_rsa_pkcs1_sign(const struct rsa_private_key *key, size_t length, const uint8_t *digest_info, mpz_t s);
 int  nettle_rsa_pkcs1_verify(const struct rsa_public_key *key, size_t length, const uint8_t *digest_info, const mpz_t signature);
 int  nettle_rsa_encrypt(const struct rsa_public_key *key, void *random_ctx, nettle_random_func *random, size_t length, const uint8_t *cleartext, mpz_t cipher);
@@ -257,6 +260,20 @@ function rsa:verify(digest, signature, base)
         ok = hogweed.nettle_rsa_sha256_verify_digest(self.public.context, digest, mpz.new(signature, base))
     elseif l == 64 then
         ok = hogweed.nettle_rsa_sha512_verify_digest(self.public.context, digest, mpz.new(signature, base))
+    else
+        error("Supported digests are MD5, SHA1, SHA256, and SHA512")
+    end
+    return ok == 1
+end
+
+function rsa:verify_pss(salt_length, digest, signature, base)
+    local l, ok = #digest, nil
+    if l == 32 then
+        ok = hogweed.nettle_pss_rsa_sha256_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
+    elseif l == 48 then
+        ok = hogweed.nettle_pss_rsa_sha384_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
+    elseif l == 64 then
+        ok = hogweed.nettle_pss_rsa_sha512_verify_digest(self.public.context, salt_length, digest, mpz.new(signature, base))
     else
         error("Supported digests are MD5, SHA1, SHA256, and SHA512")
     end
