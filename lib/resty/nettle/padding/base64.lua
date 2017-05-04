@@ -1,13 +1,11 @@
 local assert  = assert
 local string  = string
-local ceil    = math.ceil
 local gsub    = string.gsub
 local rep     = string.rep
 local padding = {}
 function padding.pad(data)
-    local l = #data
-    local n = 4 * ceil(l/4) - l
-    return n == 0 and data or (data .. rep("=", n))
+    local n = #data % 4
+    return n == 0 and data or (data .. rep("=", 4 - n))
 end
 function padding.unpad(data)
     local len = #data
