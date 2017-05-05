@@ -34,11 +34,17 @@ function signature.new(r, s, base)
     local context = ffi_gc(ffi_new(sig), hogweed.nettle_dsa_signature_clear)
     hogweed.nettle_dsa_signature_init(context)
     if r then
-        mpz.set(context[0].r, r, base)
+        local ok, err = mpz.set(context[0].r, r, base)
+        if not ok then
+            return nil, err
+        end
     end
 
     if s then
-        mpz.set(context[0].s, s, base)
+        local ok, err = mpz.set(context[0].s, s, base)
+        if not ok then
+            return nil, err
+        end
     end
 
     return setmetatable({ context = context }, signature)

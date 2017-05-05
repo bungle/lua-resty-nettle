@@ -8,7 +8,6 @@ local ffi_copy     = ffi.copy
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
 local ceil         = math.ceil
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -92,7 +91,9 @@ local ciphers = {
 
 function des.new(key, mode, iv)
     local len = #key
-    assert(len == 8 or len == 24, "The DES supported key size is 64 bits, and DES3 supported key size is 192 bits.")
+    if len ~= 8 and len ~= 24 then
+        return nil, "The DES supported key size is 64 bits, and DES3 supported key size is 192 bits."
+    end
     local cipher
     if len == 8 then
        cipher = ciphers.des
@@ -101,10 +102,14 @@ function des.new(key, mode, iv)
     end
     mode = (mode or "ecb"):lower()
     cipher = cipher[mode]
-    assert(cipher, "The DES/DES3 supported modes are currently ECB, CBC, and CTR.")
+    if not cipher then
+        return nil, "The DES/DES3 supported modes are currently ECB, CBC, and CTR."
+    end
     local iv_size = cipher.iv_size
     if iv_size then
-        assert(#iv == iv_size, "The DES-/DES3-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits.")
+        if #iv ~= iv_size then
+            return nil, "The DES-/DES3-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits."
+        end
     end
     local ct = ffi_new(cipher.context)
     local wk = cipher.setkey(ct, key)
@@ -113,13 +118,17 @@ end
 
 function des.check_parity(key)
     local len = #key
-    assert(len == 8 or len == 24, "The DES supported key size is 64 bits, and DES3 supported key size is 192 bits.")
+    if len ~= 8 and len ~= 24 then
+        return nil, "The DES supported key size is 64 bits, and DES3 supported key size is 192 bits."
+    end
     return lib.nettle_des_check_parity(len, key) == 1
 end
 
 function des.fix_parity(src)
     local len = #src
-    assert(len == 8 or len == 24, "The DES supported key size is 64 bits, and DES3 supported key size is 192 bits.")
+    if len ~= 8 and len ~= 24 then
+        return nil, "The DES supported key size is 64 bits, and DES3 supported key size is 192 bits."
+    end
     local dst = ffi_new(uint8t, len)
     lib.nettle_des_fix_parity(len, dst, src)
     return ffi_str(dst, len)

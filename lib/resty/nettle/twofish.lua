@@ -10,7 +10,6 @@ local ffi_cdef     = ffi.cdef
 local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local ceil         = math.ceil
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -165,10 +164,14 @@ twofish.__index = twofish
 
 function twofish.new(key, mode, iv, ad)
     local len = #key
-    assert(len == 16 or len == 24 or len == 32, "The TWOFISH supported key sizes are 128, 192, and 256 bits.")
+    if len ~= 16 and len ~= 24 and len ~= 32 then
+        return nil, "The TWOFISH supported key sizes are 128, 192, and 256 bits."
+    end
     mode = (mode or "ecb"):lower()
     local config = ciphers[mode]
-    assert(config, "The TWOFISH supported modes are ECB, CBC, and CTR.")
+    if not config then
+        return nil, "The TWOFISH supported modes are ECB, CBC, and CTR."
+    end
     local bits = len * 8
     local cipher = config[bits]
     local context = ffi_new(context)
@@ -176,7 +179,9 @@ function twofish.new(key, mode, iv, ad)
     local iv_size = config.iv_size
     if iv_size then
         iv = iv or ""
-        assert(#iv == iv_size, "The TWOFISH-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits.")
+        if #iv ~= iv_size then
+            return "The TWOFISH-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits."
+        end
     end
     return setmetatable({
         context = context,

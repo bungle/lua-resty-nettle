@@ -7,7 +7,6 @@ local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -44,9 +43,13 @@ local digest   = lib.nettle_chacha_poly1305_digest
 
 function chacha_poly1305.new(key, nonce, ad)
     local kl = #key
-    assert(kl == 32, "The ChaCha-Poly1305 supported key size is 256 bits.")
+    if kl ~= 32 then
+        return nil, "The ChaCha-Poly1305 supported key size is 256 bits."
+    end
     local nl = #nonce
-    assert(nl == 16, "The ChaCha-Poly1305 supported nonce size is 128 bits.")
+    if nl ~= 16 then
+        return nil, "The ChaCha-Poly1305 supported nonce size is 128 bits."
+    end
     local ct = ffi_new(context)
     setkey(ct, key)
     setnonce(ct, nonce)

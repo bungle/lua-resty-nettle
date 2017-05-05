@@ -5,7 +5,6 @@ local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -30,7 +29,9 @@ local crypt    = lib.nettle_arcfour_crypt
 
 function arcfour.new(key)
     local len = #key
-    assert(len > 0 and len < 257, "The ARCFOUR supported key sizes are between 1 and 256 bits.")
+    if len < 1 or len > 256 then
+        return nil, "The ARCFOUR supported key sizes are between 1 and 256 bits."
+    end
     local ct = ffi_new(context)
     setkey(ct, len, key)
     return setmetatable({ context = ct }, arcfour)

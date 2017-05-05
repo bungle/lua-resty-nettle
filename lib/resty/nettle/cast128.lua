@@ -6,7 +6,6 @@ local ffi_cdef     = ffi.cdef
 local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local ceil         = math.ceil
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -34,7 +33,9 @@ local decrypt   = lib.nettle_cast128_decrypt
 
 function cast128.new(key)
     local len = #key
-    assert(len > 4 and len < 17, "The CAST128 supported key sizes are between 40 and 128 bits.")
+    if len < 5 or len > 16 then
+        return nil, "The CAST128 supported key sizes are between 40 and 128 bits."
+    end
     local ct = ffi_new(context)
     if len == 16 then
         setkey128(ct, key)

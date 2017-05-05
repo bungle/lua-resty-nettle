@@ -10,7 +10,6 @@ local ffi_str      = ffi.string
 local ceil         = math.ceil
 local huge         = math.huge
 local type         = type
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -208,7 +207,7 @@ local ciphers = {
             decrypt = lib.nettle_gcm_aes256_decrypt,
             digest  = lib.nettle_gcm_aes256_digest,
             context = ffi_typeof "GCM_AES256_CTX[1]"
-        }        
+        }
     },
     ccm = {
         iv_size  = { 7, 14 },
@@ -238,7 +237,7 @@ local ciphers = {
             decrypt = lib.nettle_ccm_aes256_decrypt,
             digest  = lib.nettle_ccm_aes256_digest,
             context = ffi_typeof "CCM_AES256_CTX[1]"
-        }        
+        }
     }
 }
 local dgt = ffi_new(uint8t, 16)
@@ -281,10 +280,14 @@ aes.__index = aes
 
 function aes.new(key, mode, iv, ad)
     local len = #key
-    assert(len == 16 or len == 24 or len == 32, "The AES supported key sizes are 128, 192, and 256 bits.")
+    if len ~= 16 and len ~= 24 and len ~= 32 then
+        return nil, "The AES supported key sizes are 128, 192, and 256 bits."
+    end
     mode = (mode or "ecb"):lower()
     local config = ciphers[mode]
-    assert(config, "The AES supported modes are ECB, CBC, CTR, EAX, GCM, and CCM.")
+    if not config then
+        return nil, "The AES supported modes are ECB, CBC, CTR, EAX, GCM, and CCM."
+    end
     local bits = len * 8
     local cipher = config[bits]
     local context = ffi_new(cipher.context)
@@ -296,7 +299,9 @@ function aes.new(key, mode, iv, ad)
             iv_size = #iv
         else
             if type(iv_size) == "table" then
-                assert(#iv >= iv_size[1] and #iv <= iv_size[2], "The AES-" .. mode:upper() .. " supported initialization vector sizes are between " .. (iv_size[1] * 8) .. " and " .. (iv_size[2] * 8) .. " bits.")
+                if #iv < iv_size[1] or #iv > iv_size[2] then
+                    return nil, "The AES-" .. mode:upper() .. " supported initialization vector sizes are between " .. (iv_size[1] * 8) .. " and " .. (iv_size[2] * 8) .. " bits."
+                end
                 return setmetatable({
                     context = context,
                     cipher  = cipher,
@@ -304,7 +309,9 @@ function aes.new(key, mode, iv, ad)
                     ad      = ad
                 }, ccm)
             else
-                assert(#iv == iv_size, "The AES-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits.")
+                if #iv ~= iv_size then
+                    return nil, "The AES-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits."
+                end
             end
         end
         if cipher.setiv then

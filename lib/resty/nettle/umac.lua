@@ -6,7 +6,6 @@ local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -175,7 +174,9 @@ return setmetatable({
     umac128 = factory(umacs[128])
 }, { __call = function(_, bits, key, nonce, data, len)
     local mac = umacs[bits]
-    assert(mac, "The supported UMAC algorithm output sizes are 32, 64, 96, and 128 bits")
+    if not mac then
+        return nil, "The supported UMAC algorithm output sizes are 32, 64, 96, and 128 bits."
+    end
     local ctx = ffi_new(mac.context)
     mac.setkey(ctx, key)
     if nonce then

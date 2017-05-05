@@ -4,7 +4,6 @@ local hogweed      = require "resty.nettle.hogweed"
 local dsa          = require "resty.nettle.dsa"
 local ecc          = require "resty.nettle.ecc"
 local ffi          = require "ffi"
-local ffi_new      = ffi.new
 local ffi_cdef     = ffi.cdef
 local setmetatable = setmetatable
 
@@ -23,7 +22,10 @@ function ecdsa.new(point, scalar)
 end
 
 function ecdsa:verify(digest, signature)
-    return hogweed.nettle_ecdsa_verify(self.point.context, #digest, digest, signature.context or signature) == 1
+    if hogweed.nettle_ecdsa_verify(self.point.context, #digest, digest, signature.context or signature) ~= 1 then
+        return nil, "Unable to ECDSA verify."
+    end
+    return true
 end
 
 return ecdsa

@@ -9,4 +9,5 @@ typedef struct {
   mp_limb_t *_mp_d;
 } __mpz_struct;
 typedef __mpz_struct mpz_t[1];
+typedef __mpz_struct *mpz_ptr;
 ]]

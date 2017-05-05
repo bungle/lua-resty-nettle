@@ -4,7 +4,6 @@ local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -126,7 +125,9 @@ return setmetatable({
     sha512     = factory(hashes[512])
 }, { __call = function(_, bits, data, len)
     local hash = hashes[bits]
-    assert(hash, "The supported SHA3 algorithm output sizes are 224, 256, 384, and 512 bits")
+    if not hash then
+        return nil, "The supported SHA3 algorithm output sizes are 224, 256, 384, and 512 bits."
+    end
     local ctx = ffi_new(hash.context)
     hash.init(ctx)
     hash.update(ctx, len or #data, data)

@@ -6,7 +6,6 @@ local ffi_cdef     = ffi.cdef
 local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local ceil         = math.ceil
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -32,7 +31,9 @@ local decrypt = lib.nettle_blowfish_decrypt
 
 function blowfish.new(key)
     local len = #key
-    assert(len > 7 and len < 57, "The BLOWFISH supported key sizes are between 64 and 448 bits.")
+    if len < 8 or len > 56 then
+        return nil, "The BLOWFISH supported key sizes are between 64 and 448 bits."
+    end
     local ct = ffi_new(context)
     local wk = setkey(ct, len, key)
     return setmetatable({ context = ct }, blowfish), wk ~= 1

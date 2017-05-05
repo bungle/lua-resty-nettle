@@ -7,7 +7,6 @@ local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
-local assert       = assert
 local rawget       = rawget
 local getmetatable = getmetatable
 local setmetatable = setmetatable
@@ -58,7 +57,9 @@ function yarrow.context(seed)
             seed = knuth.new():random(32)
         end
         local len = #seed
-        assert(len > 31, "Seed data length should be at least 32 bytes, but it can be larger.")
+        if len > 32 then
+            return nil, "Seed data length should be at least 32 bytes, but it can be larger."
+        end
         lib.nettle_yarrow256_seed(context, len, seed)
     end
     return context
@@ -75,7 +76,9 @@ end
 
 function yarrow:seed(data)
     local len = #data
-    assert(len > 31, "Seed data length should be at least 32 bytes, but it can be larger.")
+    if len < 32 then
+        return nil, "Seed data length should be at least 32 bytes, but it can be larger."
+    end
     lib.nettle_yarrow256_seed(self.context, len, data)
 end
 

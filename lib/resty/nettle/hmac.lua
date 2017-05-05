@@ -9,7 +9,6 @@ local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -170,7 +169,9 @@ return setmetatable({
     ripemd160 = factory(hmacs.ripemd160),
 }, { __call = function(_, algorithm, key, data, len)
     local mac = hmacs[algorithm:lower()]
-    assert(mac, "The supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, and RIPEMD160.")
+    if not mac then
+        return nil, "The supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, and RIPEMD160."
+    end
     local ctx = ffi_new(mac.context)
     mac.setkey(ctx, #key, key)
     mac.update(ctx, len or #data, data)

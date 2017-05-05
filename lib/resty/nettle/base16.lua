@@ -4,7 +4,7 @@ local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
-local assert       = assert
+local byte         = string.byte
 local tonumber     = tonumber
 local setmetatable = setmetatable
 
@@ -57,21 +57,25 @@ function decoder.new()
 end
 
 function decoder:single(src)
-    local len = lib.nettle_base16_decode_single(self.context, buf8, (src:byte()))
+    local len = lib.nettle_base16_decode_single(self.context, buf8, byte(src))
     return ffi_str(buf8, len), len
-
 end
 
 function decoder:update(src)
     local len = #src
     local dst = ffi_new(uint8t, (len + 1) / 2)
-    lib.nettle_base16_decode_update(self.context, length, dst, len, src)
+    if lib.nettle_base16_decode_update(self.context, length, dst, len, src) ~= 1 then
+        return nil, "Unable to decode base16 data."
+    end
     local len = tonumber(length[0])
     return ffi_str(dst, len), len
 end
 
 function decoder:final()
-    return (assert(lib.nettle_base16_decode_final(self.context) == 1, "Base16 end of data is incorrect."))
+    if lib.nettle_base16_decode_final(self.context) ~= 1 then
+        return nil, "End of the base16 data is incorrect."
+    end
+    return true
 end
 
 local base16 = { encoder = encoder, decoder = decoder }
@@ -89,8 +93,12 @@ function base16.decode(src)
     local len = #src
     local dst = ffi_new(uint8t, (len + 1) / 2)
     lib.nettle_base16_decode_init(ctx)
-    lib.nettle_base16_decode_update(ctx, length, dst, len, src)
-    assert(lib.nettle_base16_decode_final(ctx) == 1, "Base16 end of data is incorrect.")
+    if lib.nettle_base16_decode_update(ctx, length, dst, len, src) ~= 1 then
+        return nil, "Unable to decode base16 data."
+    end
+    if lib.nettle_base16_decode_final(ctx) ~= 1 then
+        return nil, "End of the base16 data is incorrect."
+    end
     return ffi_str(dst, length[0])
 end
 

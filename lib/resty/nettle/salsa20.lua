@@ -5,7 +5,6 @@ local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -50,7 +49,9 @@ salsa20.__index = salsa20
 
 function salsa20.new(key, nonce, rounds)
     local len = #key
-    assert(len == 16 or len == 32, "The Salsa20 supported key sizes are 128, and 256 bits.")
+    if len ~= 16 and len ~= 32 then
+        return nil, "The Salsa20 supported key sizes are 128, and 256 bits."
+    end
     local ctx = ffi_new(ctxs20)
     if len == 16 then
         setkey128(ctx, key)
@@ -58,11 +59,15 @@ function salsa20.new(key, nonce, rounds)
         setkey256(ctx, key)
     end
     if nonce then
-        assert(#nonce == 8, "The Salsa20 supported nonce size is 64 bits.")
+        if #nonce ~= 8 then
+            return nil, "The Salsa20 supported nonce size is 64 bits."
+        end
         setnonce(ctx, nonce)
     end
     rounds = rounds or 20
-    assert(rounds == 12 or rounds == 20, "The Salsa20 supported rounds are 12, and 20. The recommended rounds is 20.")
+    if rounds ~= 12 and rounds ~= 20 then
+        return nil, "The Salsa20 supported rounds are 12, and 20. The recommended rounds is 20."
+    end
     if rounds == 20 then return setmetatable({ context = ctx }, salsa20) end
     return setmetatable({ context = ctx }, salsa20r12)
 end

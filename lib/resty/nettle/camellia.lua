@@ -8,7 +8,6 @@ local ffi_cdef     = ffi.cdef
 local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local ceil         = math.ceil
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -78,7 +77,7 @@ local ciphers = {
             decrypt = lib.nettle_gcm_camellia256_decrypt,
             digest  = lib.nettle_gcm_camellia256_digest,
             context = ffi_typeof "GCM_CAMELLIA256_CTX[1]"
-        }        
+        }
     }
 }
 local dgt = ffi_new(uint8t, 16)
@@ -88,10 +87,14 @@ camellia.__index = camellia
 
 function camellia.new(key, mode, iv, ad)
     local len = #key
-    assert(len == 16 or len == 24 or len == 32, "The Camellia supported key sizes are 128, 192, and 256 bits.")
+    if len ~= 16 and len ~= 24 and len ~= 32 then
+        return nil, "The Camellia supported key sizes are 128, 192, and 256 bits."
+    end
     mode = (mode or "ecb"):lower()
     local config = ciphers[mode]
-    assert(config, "The Camellia supported modes are ECB, and GCM.")
+    if not config then
+        return nil, "The Camellia supported modes are ECB, and GCM."
+    end
     local bits = len * 8
     local cipher = config[bits]
     local context = ffi_new(cipher.context)
@@ -99,7 +102,9 @@ function camellia.new(key, mode, iv, ad)
     local iv_size = config.iv_size
     if iv_size then
         iv = iv or ""
-        assert(#iv == iv_size, "The Camellia-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits.")
+        if #iv ~= iv_size then
+            return nil, "The Camellia-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits."
+        end
         cipher.setiv(context, iv_size, iv)
     end
     if ad and cipher.update then

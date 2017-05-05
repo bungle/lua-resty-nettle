@@ -7,7 +7,6 @@ local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -28,9 +27,13 @@ local crypt    = lib.nettle_chacha_crypt
 
 function chacha.new(key, nonce)
     local kl = #key
-    assert(kl == 32, "The ChaCha supported key size is 256 bits.")
+    if kl ~= 32 then
+        return nil, "The ChaCha supported key size is 256 bits."
+    end
     local nl = #nonce
-    assert(nl == 8, "The ChaCha supported nonce size is 64 bits.")
+    if nl ~= 8 then
+        return nil, "The ChaCha supported nonce size is 64 bits."
+    end
     local ct = ffi_new(context)
     setkey(ct, key)
     setnonce(ct, nonce)

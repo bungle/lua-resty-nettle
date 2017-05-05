@@ -6,7 +6,6 @@ local ffi_new      = ffi.new
 local ffi_typeof   = ffi.typeof
 local ffi_cdef     = ffi.cdef
 local ffi_str      = ffi.string
-local assert       = assert
 local setmetatable = setmetatable
 
 
@@ -124,7 +123,9 @@ return setmetatable({
     sha512_256 = factory(hashes.sha512_256)
 }, { __call = function(_, algorithm, data, len)
     local hash = hashes[algorithm:lower()]
-    assert(hash, "The supported SHA2 algorithms are SHA224, SHA256, SHA384, SHA512, SHA512_224, and SHA512_256.")
+    if not hash then
+        return nil, "The supported SHA2 algorithms are SHA224, SHA256, SHA384, SHA512, SHA512_224, and SHA512_256."
+    end
     local ctx = ffi_new(hash.context)
     hash.init(ctx)
     hash.update(ctx, len or #data, data)

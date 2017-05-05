@@ -1,4 +1,3 @@
-local assert  = assert
 local string  = string
 local gsub    = string.gsub
 local rep     = string.rep
@@ -9,10 +8,14 @@ function padding.pad(data)
 end
 function padding.unpad(data)
     local len = #data
-    assert(len % 4 == 0, "Data is incorrectly padded")
+    if len % 4 ~= 0 then
+        return nil, "Data is incorrectly padded."
+    end
     data = gsub(data, "=+$", "")
     local rem = len - #data
-    assert(rem > -1 and rem <= 2, "Invalid padding found")
+    if rem < 0 or rem > 2 then
+        return nil, "Data has invalid padding."
+    end
     return data
 end
 return padding

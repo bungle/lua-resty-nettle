@@ -6,7 +6,6 @@ local ffi_cdef     = ffi.cdef
 local ffi_copy     = ffi.copy
 local ffi_str      = ffi.string
 local ceil         = math.ceil
-local assert       = assert
 local setmetatable = setmetatable
 
 ffi_cdef[[
@@ -35,7 +34,9 @@ local decrypt   = lib.nettle_serpent_decrypt
 
 function serpent.new(key)
     local len = #key
-    assert(len == 16 or len == 24 or len == 32, "The SERPENT supported key sizes are 128, 192, and 256 bits. 256 bits is the recommended key size.")
+    if len ~= 16 and len ~= 24 and len ~= 32 then
+        return nil, "The SERPENT supported key sizes are 128, 192, and 256 bits. 256 bits is the recommended key size."
+    end
     local ct = ffi_new(context)
     if len == 16 then
         setkey128(ct, key)
