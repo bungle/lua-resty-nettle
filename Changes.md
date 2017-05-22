@@ -2,6 +2,19 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [0.98]
+### Changed
+- No asserts / errors anymore, all the functions return nil, error message
+  on errors.
+  
+### Added  
+- Added support for RSA-PSS signing algorithms.
+- Added support for ECC.
+- Added support for ECDSA.
+
+### Fixed
+- Base64 padding related fixes.
+
 ## [0.97] 
 ### Added
 - Added RSA signing algorithms (MD5, SHA1, SHA256 and SHA512).
@@ -14,6 +27,6 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 - Added version.lua file.
 - Added version information in lua-resty-nettle.
 
-### Change
+### Changed
 - Moved nettle.lua to nettle/library.lua.
 - Implemented nettle.lua that autoloads everything.

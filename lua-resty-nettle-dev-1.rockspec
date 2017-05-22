@@ -1,17 +1,17 @@
 package = "lua-resty-nettle"
 version = "dev-1"
 source = {
-    url = "git://github.com/bungle/lua-resty-nettle.git"
+    url = "git://github.com/bungle/lua-resty-nettle.git",
 }
 description = {
-    summary = "Nettle (a low-level cryptographic library) Bindings for LuaJIT FFI",
-    detailed = "lua-resty-nettle contains LuaJIT FFI bindings to GNU Nettle cryptographic library.",
-    homepage = "https://github.com/bungle/lua-resty-nettle",
+    summary    = "LuaJIT FFI bindings for Nettle (a low-level cryptographic library)",
+    detailed   = "lua-resty-nettle contains LuaJIT FFI bindings to GNU Nettle cryptographic library.",
+    homepage   = "https://github.com/bungle/lua-resty-nettle",
     maintainer = "Aapo Talvensaari <aapo.talvensaari@gmail.com>",
-    license = "BSD"
+    license    = "BSD",
 }
 dependencies = {
-    "lua >= 5.1"
+    "lua >= 5.1",
 }
 build = {
     type = "builtin",
@@ -36,7 +36,6 @@ build = {
         ["resty.nettle.ecc"]                  = "lib/resty/nettle/ecc.lua",
         ["resty.nettle.ecdsa"]                = "lib/resty/nettle/ecdsa.lua",
         ["resty.nettle.ed25519-sha512"]       = "lib/resty/nettle/ed25519-sha512.lua",
-        ["resty.nettle.mpz"]                  = "lib/resty/nettle/mpz.lua",
         ["resty.nettle.gosthash94"]           = "lib/resty/nettle/gosthash94.lua",
         ["resty.nettle.hash"]                 = "lib/resty/nettle/hash.lua",
         ["resty.nettle.hmac"]                 = "lib/resty/nettle/hmac.lua",
@@ -46,6 +45,7 @@ build = {
         ["resty.nettle.md2"]                  = "lib/resty/nettle/md2.lua",
         ["resty.nettle.md4"]                  = "lib/resty/nettle/md4.lua",
         ["resty.nettle.md5"]                  = "lib/resty/nettle/md5.lua",
+        ["resty.nettle.mpz"]                  = "lib/resty/nettle/mpz.lua",
         ["resty.nettle.pbkdf2"]               = "lib/resty/nettle/pbkdf2.lua",
         ["resty.nettle.poly1305"]             = "lib/resty/nettle/poly1305.lua",
         ["resty.nettle.ripemd160"]            = "lib/resty/nettle/ripemd160.lua",
@@ -74,9 +74,9 @@ build = {
         ["resty.nettle.types.eax"]            = "lib/resty/nettle/types/eax.lua",
         ["resty.nettle.types.ecc"]            = "lib/resty/nettle/types/ecc.lua",
         ["resty.nettle.types.gcm"]            = "lib/resty/nettle/types/gcm.lua",
-        ["resty.nettle.types.mpz"]            = "lib/resty/nettle/types/mpz.lua",
         ["resty.nettle.types.hash"]           = "lib/resty/nettle/types/hash.lua",
         ["resty.nettle.types.md5"]            = "lib/resty/nettle/types/md5.lua",
+        ["resty.nettle.types.mpz"]            = "lib/resty/nettle/types/mpz.lua",
         ["resty.nettle.types.poly1305"]       = "lib/resty/nettle/types/poly1305.lua",
         ["resty.nettle.types.ripemd160"]      = "lib/resty/nettle/types/ripemd160.lua",
         ["resty.nettle.types.rsa"]            = "lib/resty/nettle/types/rsa.lua",
@@ -89,6 +89,6 @@ build = {
         ["resty.nettle.padding.nopadding"]    = "lib/resty/nettle/padding/nopadding.lua",
         ["resty.nettle.padding.pkcs7"]        = "lib/resty/nettle/padding/pkcs7.lua",
         ["resty.nettle.padding.spacepadding"] = "lib/resty/nettle/padding/spacepadding.lua",
-        ["resty.nettle.padding.zeropadding"]  = "lib/resty/nettle/padding/zeropadding.lua"
+        ["resty.nettle.padding.zeropadding"]  = "lib/resty/nettle/padding/zeropadding.lua",
     }
 }

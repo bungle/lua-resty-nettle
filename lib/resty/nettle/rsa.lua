@@ -323,22 +323,22 @@ function rsa:verify(digest, signature, base)
     return true
 end
 
-function rsa:verify_pss(salt_length, digest, signature, base)
+function rsa:verify_pss(digest, signature, base, salt_length)
     local sig, err = mpz.new(signature, base)
     if not sig then
         return nil, err
     end
     local l = #digest
     if l == 32 then
-        if hogweed.nettle_rsa_pss_sha256_verify_digest(self.public.context, salt_length, digest, sig) ~= 1 then
+        if hogweed.nettle_rsa_pss_sha256_verify_digest(self.public.context, salt_length or 32, digest, sig) ~= 1 then
             return nil, "Unable to RSA PSS SHA256 verify."
         end
     elseif l == 48 then
-        if hogweed.nettle_rsa_pss_sha384_verify_digest(self.public.context, salt_length, digest, sig) ~= 1 then
+        if hogweed.nettle_rsa_pss_sha384_verify_digest(self.public.context, salt_length or 48, digest, sig) ~= 1 then
             return nil, "Unable to RSA PSS SHA384 verify."
         end
     elseif l == 64 then
-        if hogweed.nettle_rsa_pss_sha512_verify_digest(self.public.context, salt_length, digest, sig) ~= 1 then
+        if hogweed.nettle_rsa_pss_sha512_verify_digest(self.public.context, salt_length or 64, digest, sig) ~= 1 then
             return nil, "Unable to RSA PSS SHA512 verify."
         end
     else
