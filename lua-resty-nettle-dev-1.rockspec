@@ -36,6 +36,7 @@ build = {
         ["resty.nettle.ecc"]                  = "lib/resty/nettle/ecc.lua",
         ["resty.nettle.ecdsa"]                = "lib/resty/nettle/ecdsa.lua",
         ["resty.nettle.ed25519-sha512"]       = "lib/resty/nettle/ed25519-sha512.lua",
+        ["resty.nettle.gmp"]                  = "lib/resty/nettle/gmp.lua",
         ["resty.nettle.gosthash94"]           = "lib/resty/nettle/gosthash94.lua",
         ["resty.nettle.hash"]                 = "lib/resty/nettle/hash.lua",
         ["resty.nettle.hmac"]                 = "lib/resty/nettle/hmac.lua",

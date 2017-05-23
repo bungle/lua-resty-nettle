@@ -1,14 +1,13 @@
 require "resty.nettle.types.mpz"
 
+local gmp        = require "resty.nettle.gmp"
 local ffi        = require "ffi"
 local ffi_gc     = ffi.gc
 local ffi_str    = ffi.string
 local ffi_new    = ffi.new
-local ffi_load   = ffi.load
 local ffi_cdef   = ffi.cdef
 local ffi_typeof = ffi.typeof
 local type       = type
-local gmp        = ffi_load "gmp"
 
 ffi_cdef[[
 void   __gmpz_init(mpz_t);

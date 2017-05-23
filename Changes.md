@@ -2,6 +2,12 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [0.99]
+### Added
+- A more robust dynamic library loading.
+  (see [#10](https://github.com/bungle/lua-resty-nettle/issues/10),
+   thanks [@hcaihao](https://github.com/hcaihao))
+
 ## [0.98]
 ### Changed
 - No asserts / errors anymore, all the functions return nil, error message

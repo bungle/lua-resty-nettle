@@ -3,13 +3,13 @@ local ffi_load = ffi.load
 local pcall    = pcall
 
 local function L()
-    local ok, lib = pcall(ffi_load, "hogweed")
+    local ok, lib = pcall(ffi_load, "gmp")
     if ok then return lib end
-    ok, lib = pcall(ffi_load, "hogweed.4")
+    ok, lib = pcall(ffi_load, "gmp.10")
     if ok then return lib end
-    ok, lib = pcall(ffi_load, "hogweed.so.4")
+    ok, lib = pcall(ffi_load, "gmp.so.10")
     if ok then return lib end
-    return ffi_load "libhogweed.so.4"
+    return ffi_load "libgmp.so.10"
 end
 
 return L()
