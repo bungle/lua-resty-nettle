@@ -272,7 +272,7 @@ function rsa:decrypt(encrypted)
 end
 
 function rsa:sign(digest, base)
-    local l, ok = #digest, nil
+    local l = #digest
     if l == 16 then
         if hogweed.nettle_rsa_md5_sign_digest(self.private.context, digest, sig) ~= 1 then
             return nil, "Unable to RSA MD5 sign."
