@@ -144,7 +144,6 @@ function private.new(d, p, q, a, b, c, base)
     elseif q1 then
         mpz.div(context[0].b, context[0].d, q1)
     end
-
     if c then
         local ok, err = mpz.set(context[0].c, c, base)
         if not ok then
