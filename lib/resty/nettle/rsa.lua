@@ -106,16 +106,26 @@ function private.new(d, p, q, a, b, c, base)
             return nil, err
         end
     end
+    local p1
     if p then
         local ok, err = mpz.set(context[0].p, p, base)
         if not ok then
             return nil, err
         end
+        if d and not a then
+            p1 = mpz.new()
+            mpz.sub(p1, context[0].p, 1)
+        end
     end
+    local q1
     if q then
         local ok, err = mpz.set(context[0].q, q, base)
         if not ok then
             return nil, err
+        end
+        if d and not b then
+            q1 = mpz.new()
+            mpz.sub(q1, context[0].q, 1)
         end
     end
     if a then
@@ -123,17 +133,27 @@ function private.new(d, p, q, a, b, c, base)
         if not ok then
             return nil, err
         end
+    elseif p1 then
+        mpz.div(context[0].a, context[0].d, p1)
     end
     if b then
         local ok, err = mpz.set(context[0].b, b, base)
         if not ok then
             return nil, err
         end
+    elseif q1 then
+        mpz.div(context[0].b, context[0].d, q1)
     end
+
     if c then
         local ok, err = mpz.set(context[0].c, c, base)
         if not ok then
             return nil, err
+        end
+    elseif q and p then
+        local ret = mpz.invert(context[0].c, context[0].q, context[0].p)
+        if ret == 0 then
+            ret = mpz.invert(context[0].c, context[0].q, context[0].p)
         end
     end
     if d or p or q or a or b or c then

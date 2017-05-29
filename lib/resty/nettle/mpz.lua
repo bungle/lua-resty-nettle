@@ -16,6 +16,9 @@ size_t __gmpz_sizeinbase(const mpz_t op, int base);
 char * __gmpz_get_str(char *str, int base, const mpz_t op);
 int    __gmpz_set_str(mpz_t rop, const char *str, int base);
 void   __gmpz_set_ui(mpz_t, unsigned long int iv);
+int    __gmpz_invert(mpz_ptr, mpz_srcptr, mpz_srcptr);
+void   __gmpz_sub_ui(mpz_ptr, mpz_srcptr, unsigned long int);
+void   __gmpz_fdiv_r(mpz_ptr, mpz_srcptr, mpz_srcptr);
 ]]
 
 local ctx = ffi_typeof "mpz_t"
@@ -58,6 +61,18 @@ function mpz.set(op, value, base)
         return nil, "Unable to set mpz_t value from an unsupported data type."
     end
     return true
+end
+
+function mpz.invert(rop, op1, op2)
+    return gmp.__gmpz_invert(rop, op1, op2)
+end
+
+function mpz.sub(rop, op1, op2)
+    gmp.__gmpz_sub_ui(rop, op1, op2)
+end
+
+function mpz.div(rop, op1, op2)
+    gmp.__gmpz_fdiv_r(rop, op1, op2)
 end
 
 return mpz
