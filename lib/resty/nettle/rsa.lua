@@ -150,9 +150,8 @@ function private.new(d, p, q, a, b, c, base)
             return nil, err
         end
     elseif q and p then
-        local ret = mpz.invert(context[0].c, context[0].q, context[0].p)
-        if ret == 0 then
-            ret = mpz.invert(context[0].c, context[0].q, context[0].p)
+        if mpz.invert(context[0].c, context[0].q, context[0].p) == 0 then
+           mpz.invert(context[0].c, context[0].q, context[0].p) -- try again once
         end
     end
     if d or p or q or a or b or c then
