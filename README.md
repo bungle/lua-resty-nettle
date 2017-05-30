@@ -774,7 +774,6 @@ do
     local hex = require "resty.nettle.base16"
     local kp = rsa.keypair.new()
     print(hex.encode(kp.sexp))
-    kp:clear()
     local r = rsa.new()
     local gibb = r:encrypt("fish")
     print(gibb)
