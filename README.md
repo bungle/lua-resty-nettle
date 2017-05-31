@@ -774,7 +774,6 @@ do
     local hex = require "resty.nettle.base16"
     local kp = rsa.keypair.new()
     print(hex.encode(kp.sexp))
-    kp:clear()
     local r = rsa.new()
     local gibb = r:encrypt("fish")
     print(gibb)
@@ -1155,7 +1154,7 @@ EdDSA25519 SHA-512 verify (false)	false
 
 Just place [`nettle.lua`](https://github.com/bungle/lua-resty-nettle/blob/master/lib/resty/nettle.lua) and [`nettle`](https://github.com/bungle/lua-resty-nettle/tree/master/lib/resty/nettle) directory somewhere in your `package.path`, under `resty` directory. If you are using OpenResty, the default location would be `/usr/local/openresty/lualib/resty`.
 
-### Using OpenResty Package Manager (opm) - Not Yet Supported
+### Using OpenResty Package Manager (opm)
 
 ```Shell
 $ opm get bungle/lua-resty-nettle
