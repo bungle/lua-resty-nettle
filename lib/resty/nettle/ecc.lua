@@ -56,13 +56,13 @@ local point = {}
 
 point.__index = point
 
-function point.new(curve, x, y, base)
+function point.new(c, x, y, base)
     local context = ffi_gc(ffi_new(pub), hogweed.nettle_ecc_point_clear)
 
-    if type(curve) == "cdata" then
-        hogweed.nettle_ecc_point_init(context, curve)
-    elseif curves[curve] then
-        hogweed.nettle_ecc_point_init(context, curves[curve])
+    if type(c) == "cdata" then
+        hogweed.nettle_ecc_point_init(context, c)
+    elseif curves[c] then
+        hogweed.nettle_ecc_point_init(context, curves[c])
     else
         return nil, "Invalid curve for ECC point."
     end
