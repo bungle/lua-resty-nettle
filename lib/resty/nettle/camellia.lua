@@ -88,12 +88,12 @@ camellia.__index = camellia
 function camellia.new(key, mode, iv, ad)
     local len = #key
     if len ~= 16 and len ~= 24 and len ~= 32 then
-        return nil, "The Camellia supported key sizes are 128, 192, and 256 bits."
+        return nil, "the Camellia supported key sizes are 128, 192, and 256 bits"
     end
     mode = (mode or "ecb"):lower()
     local config = ciphers[mode]
     if not config then
-        return nil, "The Camellia supported modes are ECB, and GCM."
+        return nil, "the Camellia supported modes are ECB, and GCM"
     end
     local bits = len * 8
     local cipher = config[bits]
@@ -103,7 +103,7 @@ function camellia.new(key, mode, iv, ad)
     if iv_size then
         iv = iv or ""
         if #iv ~= iv_size then
-            return nil, "The Camellia-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits."
+            return nil, "the Camellia-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits"
         end
         cipher.setiv(context, iv_size, iv)
     end

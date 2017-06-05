@@ -2,6 +2,14 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [0.100]
+### Changed
+- Added safeguards on missing ECC curves.
+- Automatically calculate, if not provided, RSA a, b, c.
+  (see [#11](https://github.com/bungle/lua-resty-nettle/issues/11),
+   thanks [@hcaihao](https://github.com/hcaihao))
+- Error messages without ending dot and in lowercase.
+
 ## [0.99]
 ### Added
 - A more robust dynamic library loading.

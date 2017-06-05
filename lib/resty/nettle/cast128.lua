@@ -34,7 +34,7 @@ local decrypt   = lib.nettle_cast128_decrypt
 function cast128.new(key)
     local len = #key
     if len < 5 or len > 16 then
-        return nil, "The CAST128 supported key sizes are between 40 and 128 bits."
+        return nil, "the CAST128 supported key sizes are between 40 and 128 bits"
     end
     local ct = ffi_new(context)
     if len == 16 then

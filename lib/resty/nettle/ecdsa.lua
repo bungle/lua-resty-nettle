@@ -23,7 +23,7 @@ end
 
 function ecdsa:verify(digest, signature)
     if hogweed.nettle_ecdsa_verify(self.point.context, #digest, digest, signature.context or signature) ~= 1 then
-        return nil, "Unable to ECDSA verify."
+        return nil, "unable to ECDSA verify"
     end
     return true
 end

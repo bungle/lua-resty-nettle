@@ -281,12 +281,12 @@ aes.__index = aes
 function aes.new(key, mode, iv, ad)
     local len = #key
     if len ~= 16 and len ~= 24 and len ~= 32 then
-        return nil, "The AES supported key sizes are 128, 192, and 256 bits."
+        return nil, "the AES supported key sizes are 128, 192, and 256 bits"
     end
     mode = (mode or "ecb"):lower()
     local config = ciphers[mode]
     if not config then
-        return nil, "The AES supported modes are ECB, CBC, CTR, EAX, GCM, and CCM."
+        return nil, "the AES supported modes are ECB, CBC, CTR, EAX, GCM, and CCM"
     end
     local bits = len * 8
     local cipher = config[bits]
@@ -300,7 +300,7 @@ function aes.new(key, mode, iv, ad)
         else
             if type(iv_size) == "table" then
                 if #iv < iv_size[1] or #iv > iv_size[2] then
-                    return nil, "The AES-" .. mode:upper() .. " supported initialization vector sizes are between " .. (iv_size[1] * 8) .. " and " .. (iv_size[2] * 8) .. " bits."
+                    return nil, "the AES-" .. mode:upper() .. " supported initialization vector sizes are between " .. (iv_size[1] * 8) .. " and " .. (iv_size[2] * 8) .. " bits"
                 end
                 return setmetatable({
                     context = context,
@@ -310,7 +310,7 @@ function aes.new(key, mode, iv, ad)
                 }, ccm)
             else
                 if #iv ~= iv_size then
-                    return nil, "The AES-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits."
+                    return nil, "the AES-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits"
                 end
             end
         end

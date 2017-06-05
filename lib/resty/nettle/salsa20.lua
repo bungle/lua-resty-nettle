@@ -50,7 +50,7 @@ salsa20.__index = salsa20
 function salsa20.new(key, nonce, rounds)
     local len = #key
     if len ~= 16 and len ~= 32 then
-        return nil, "The Salsa20 supported key sizes are 128, and 256 bits."
+        return nil, "the Salsa20 supported key sizes are 128, and 256 bits"
     end
     local ctx = ffi_new(ctxs20)
     if len == 16 then
@@ -60,13 +60,13 @@ function salsa20.new(key, nonce, rounds)
     end
     if nonce then
         if #nonce ~= 8 then
-            return nil, "The Salsa20 supported nonce size is 64 bits."
+            return nil, "the Salsa20 supported nonce size is 64 bits"
         end
         setnonce(ctx, nonce)
     end
     rounds = rounds or 20
     if rounds ~= 12 and rounds ~= 20 then
-        return nil, "The Salsa20 supported rounds are 12, and 20. The recommended rounds is 20."
+        return nil, "the Salsa20 supported rounds are 12, and 20. The recommended rounds is 20"
     end
     if rounds == 20 then return setmetatable({ context = ctx }, salsa20) end
     return setmetatable({ context = ctx }, salsa20r12)

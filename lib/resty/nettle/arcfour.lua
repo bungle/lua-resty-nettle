@@ -30,7 +30,7 @@ local crypt    = lib.nettle_arcfour_crypt
 function arcfour.new(key)
     local len = #key
     if len < 1 or len > 256 then
-        return nil, "The ARCFOUR supported key sizes are between 1 and 256 bits."
+        return nil, "the ARCFOUR supported key sizes are between 1 and 256 bits"
     end
     local ct = ffi_new(context)
     setkey(ct, len, key)

@@ -32,7 +32,7 @@ local decrypt = lib.nettle_blowfish_decrypt
 function blowfish.new(key)
     local len = #key
     if len < 8 or len > 56 then
-        return nil, "The BLOWFISH supported key sizes are between 64 and 448 bits."
+        return nil, "the BLOWFISH supported key sizes are between 64 and 448 bits"
     end
     local ct = ffi_new(context)
     local wk = setkey(ct, len, key)

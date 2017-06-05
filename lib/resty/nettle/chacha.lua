@@ -28,11 +28,11 @@ local crypt    = lib.nettle_chacha_crypt
 function chacha.new(key, nonce)
     local kl = #key
     if kl ~= 32 then
-        return nil, "The ChaCha supported key size is 256 bits."
+        return nil, "the ChaCha supported key size is 256 bits"
     end
     local nl = #nonce
     if nl ~= 8 then
-        return nil, "The ChaCha supported nonce size is 64 bits."
+        return nil, "the ChaCha supported nonce size is 64 bits"
     end
     local ct = ffi_new(context)
     setkey(ct, key)

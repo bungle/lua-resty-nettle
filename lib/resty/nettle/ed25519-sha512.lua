@@ -18,7 +18,7 @@ local ed = {}
 
 function ed.public_key(pri)
     if #pri ~= 32 then
-        return nil, "The EdDSA25519 SHA-512 supported key size is 256 bits."
+        return nil, "the EdDSA25519 SHA-512 supported key size is 256 bits"
     end
     hogweed.nettle_ed25519_sha512_public_key(pub, pri)
     return ffi_str(pub, 32)
@@ -26,10 +26,10 @@ end
 
 function ed.sign(pub, pri, msg)
     if #pub ~= 32 then
-        return nil, "The EdDSA25519 SHA-512 supported public key size is 256 bits."
+        return nil, "the EdDSA25519 SHA-512 supported public key size is 256 bits"
     end
     if #pri ~= 32  then
-        return nil, "The EdDSA25519 SHA-512 supported private key size is 256 bits."
+        return nil, "the EdDSA25519 SHA-512 supported private key size is 256 bits"
     end
     hogweed.nettle_ed25519_sha512_sign(pub, pri, #msg, msg, sig)
     return ffi_str(sig, 64)
@@ -37,13 +37,13 @@ end
 
 function ed.verify(pub, msg, sig)
     if #pub ~= 32 then
-        return nil, "The EdDSA25519 SHA-512 supported public key size is 256 bits."
+        return nil, "the EdDSA25519 SHA-512 supported public key size is 256 bits"
     end
     if #sig ~= 64 then
-        return nil, "The EdDSA25519 SHA-512 supported signature size is 256 bits."
+        return nil, "the EdDSA25519 SHA-512 supported signature size is 256 bits"
     end
     if hogweed.nettle_ed25519_sha512_verify(pub, #msg, msg, sig) ~= 1 then
-        return nil, "Unable to EdDSA25519 SHA-512 verify."
+        return nil, "unable to EdDSA25519 SHA-512 verify"
     end
     return true
 end

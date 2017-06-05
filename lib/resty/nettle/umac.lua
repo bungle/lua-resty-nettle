@@ -175,7 +175,7 @@ return setmetatable({
 }, { __call = function(_, bits, key, nonce, data, len)
     local mac = umacs[bits]
     if not mac then
-        return nil, "The supported UMAC algorithm output sizes are 32, 64, 96, and 128 bits."
+        return nil, "the supported UMAC algorithm output sizes are 32, 64, 96, and 128 bits"
     end
     local ctx = ffi_new(mac.context)
     mac.setkey(ctx, key)

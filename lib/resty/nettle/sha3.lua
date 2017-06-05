@@ -126,7 +126,7 @@ return setmetatable({
 }, { __call = function(_, bits, data, len)
     local hash = hashes[bits]
     if not hash then
-        return nil, "The supported SHA3 algorithm output sizes are 224, 256, 384, and 512 bits."
+        return nil, "the supported SHA3 algorithm output sizes are 224, 256, 384, and 512 bits"
     end
     local ctx = ffi_new(hash.context)
     hash.init(ctx)

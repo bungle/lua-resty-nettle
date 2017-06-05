@@ -44,11 +44,11 @@ local digest   = lib.nettle_chacha_poly1305_digest
 function chacha_poly1305.new(key, nonce, ad)
     local kl = #key
     if kl ~= 32 then
-        return nil, "The ChaCha-Poly1305 supported key size is 256 bits."
+        return nil, "the ChaCha-Poly1305 supported key size is 256 bits"
     end
     local nl = #nonce
     if nl ~= 16 then
-        return nil, "The ChaCha-Poly1305 supported nonce size is 128 bits."
+        return nil, "the ChaCha-Poly1305 supported nonce size is 128 bits"
     end
     local ct = ffi_new(context)
     setkey(ct, key)

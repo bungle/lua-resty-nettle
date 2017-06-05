@@ -9,12 +9,12 @@ end
 function padding.unpad(data)
     local len = #data
     if len % 4 ~= 0 then
-        return nil, "Data is incorrectly padded."
+        return nil, "data is incorrectly padded"
     end
     data = gsub(data, "=+$", "")
     local rem = len - #data
     if rem < 0 or rem > 2 then
-        return nil, "Data has invalid padding."
+        return nil, "data has invalid padding"
     end
     return data
 end

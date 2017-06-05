@@ -98,7 +98,7 @@ function decoder:update(src)
     local dln = floor(len * 3 / 4)
     local dst = ffi_new(uint8t, dln)
     if lib.nettle_base64_decode_update(self.context, length, dst, len, src) ~= 1 then
-        return nil, "Unable to decode base64 data."
+        return nil, "unable to decode base64 data"
     end
     local len = tonumber(length[0])
     return ffi_str(dst, len), len
@@ -106,7 +106,7 @@ end
 
 function decoder:final()
     if lib.nettle_base64_decode_final(self.context) ~= 1 then
-        return nil, "Final padding of base64 is incorrect."
+        return nil, "final padding of base64 is incorrect"
     end
     return true
 end
@@ -150,10 +150,10 @@ function base64.decode(src, urlsafe)
         lib.nettle_base64_decode_init(ctx)
     end
     if lib.nettle_base64_decode_update(ctx, length, dst, len, src) ~= 1 then
-        return nil, "Unable to decode base64 data."
+        return nil, "unable to decode base64 data"
     end
     if lib.nettle_base64_decode_final(ctx) ~= 1 then
-        return nil, "Final padding of base64 is incorrect."
+        return nil, "final padding of base64 is incorrect"
     end
     return ffi_str(dst, length[0])
 end

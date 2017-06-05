@@ -64,7 +64,7 @@ function point.new(c, x, y, base)
     elseif curves[c] then
         hogweed.nettle_ecc_point_init(context, curves[c])
     else
-        return nil, "Invalid curve for ECC point."
+        return nil, "invalid curve for ECC point"
     end
 
     if x and y then
@@ -78,7 +78,7 @@ function point.new(c, x, y, base)
             return nil, err
         end
         if hogweed.nettle_ecc_point_set(context, mx, my) ~= 1 then
-            return nil, "Unable to set ECC point."
+            return nil, "unable to set ECC point"
         end
     end
 

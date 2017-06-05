@@ -124,7 +124,7 @@ return setmetatable({
 }, { __call = function(_, algorithm, data, len)
     local hash = hashes[algorithm:lower()]
     if not hash then
-        return nil, "The supported SHA2 algorithms are SHA224, SHA256, SHA384, SHA512, SHA512_224, and SHA512_256."
+        return nil, "the supported SHA2 algorithms are SHA224, SHA256, SHA384, SHA512, SHA512_224, and SHA512_256"
     end
     local ctx = ffi_new(hash.context)
     hash.init(ctx)

@@ -8,10 +8,10 @@ local padding = {}
 function padding.pad(data, blocksize, optional)
     blocksize = blocksize or 16
     if type(blocksize) ~= "number" then
-        return nil, "Invalid block size data type."
+        return nil, "invalid block size data type"
     end
     if blocksize < 1 or blocksize > 256 then
-        return nil, "Invalid block size."
+        return nil, "invalid block size"
     end
     local ps = blocksize - #data % blocksize
     if optional and ps == blocksize then return data end
@@ -20,14 +20,14 @@ end
 function padding.unpad(data, blocksize)
     blocksize = blocksize or 16
     if type(blocksize) ~= "number" then
-        return nil, "Invalid block size data type."
+        return nil, "invalid block size data type"
     end
     if blocksize < 1 or blocksize > 256 then
-        return nil, "Invalid block size."
+        return nil, "invalid block size"
     end
     local len = #data
     if len % blocksize ~= 0 then
-        return nil, "Data length is not a multiple of the block size."
+        return nil, "data length is not a multiple of the block size"
     end
     local chr = sub(data, -1)
     local rem = byte(chr)

@@ -165,12 +165,12 @@ twofish.__index = twofish
 function twofish.new(key, mode, iv, ad)
     local len = #key
     if len ~= 16 and len ~= 24 and len ~= 32 then
-        return nil, "The TWOFISH supported key sizes are 128, 192, and 256 bits."
+        return nil, "the TWOFISH supported key sizes are 128, 192, and 256 bits"
     end
     mode = (mode or "ecb"):lower()
     local config = ciphers[mode]
     if not config then
-        return nil, "The TWOFISH supported modes are ECB, CBC, and CTR."
+        return nil, "the TWOFISH supported modes are ECB, CBC, and CTR"
     end
     local bits = len * 8
     local cipher = config[bits]
@@ -180,7 +180,7 @@ function twofish.new(key, mode, iv, ad)
     if iv_size then
         iv = iv or ""
         if #iv ~= iv_size then
-            return "The TWOFISH-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits."
+            return "the TWOFISH-" .. mode:upper() .. " supported initialization vector size is " .. (iv_size * 8) .. " bits"
         end
     end
     return setmetatable({

@@ -53,12 +53,12 @@ function mpz.set(op, value, base)
     local t = type(value)
     if t == "string" then
         if gmp.__gmpz_set_str(op, value, base or 16) ~= 0 then
-            return nil, "Unable to set mpz_t value from a string."
+            return nil, "unable to set mpz_t value from a string"
         end
     elseif t == "number" then
         gmp.__gmpz_set_ui(op, value)
     else
-        return nil, "Unable to set mpz_t value from an unsupported data type."
+        return nil, "unable to set mpz_t value from an unsupported data type"
     end
     return true
 end

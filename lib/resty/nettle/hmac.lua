@@ -170,7 +170,7 @@ return setmetatable({
 }, { __call = function(_, algorithm, key, data, len)
     local mac = hmacs[algorithm:lower()]
     if not mac then
-        return nil, "The supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, and RIPEMD160."
+        return nil, "the supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, and RIPEMD160"
     end
     local ctx = ffi_new(mac.context)
     mac.setkey(ctx, #key, key)

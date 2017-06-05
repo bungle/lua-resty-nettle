@@ -58,7 +58,7 @@ function yarrow.context(seed)
         end
         local len = #seed
         if len > 32 then
-            return nil, "Seed data length should be at least 32 bytes, but it can be larger."
+            return nil, "seed data length should be at least 32 bytes, but it can be larger"
         end
         lib.nettle_yarrow256_seed(context, len, seed)
     end
@@ -77,7 +77,7 @@ end
 function yarrow:seed(data)
     local len = #data
     if len < 32 then
-        return nil, "Seed data length should be at least 32 bytes, but it can be larger."
+        return nil, "seed data length should be at least 32 bytes, but it can be larger"
     end
     lib.nettle_yarrow256_seed(self.context, len, data)
 end
