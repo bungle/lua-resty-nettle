@@ -1,15 +1,22 @@
 local ffi      = require "ffi"
 local ffi_load = ffi.load
+local ipairs   = ipairs
 local pcall    = pcall
 
 local function L()
     local ok, lib = pcall(ffi_load, "hogweed")
     if ok then return lib end
-    ok, lib = pcall(ffi_load, "hogweed.4")
-    if ok then return lib end
-    ok, lib = pcall(ffi_load, "hogweed.so.4")
-    if ok then return lib end
-    return ffi_load "libhogweed.so.4"
+    for _, t in ipairs{ "so", "dylib", "dll" } do
+        for i = 4, 2, -1 do
+            ok, lib = pcall(ffi_load, "hogweed." .. i)
+            if ok then return lib end
+            ok, lib = pcall(ffi_load, "hogweed." .. t .. "." .. i)
+            if ok then return lib end
+            ok, lib = pcall(ffi_load, "libhogweed." .. t .. "." .. i)
+            if ok then return lib end
+        end
+    end
+    return nil, "unable to load hogweed"
 end
 
 return L()

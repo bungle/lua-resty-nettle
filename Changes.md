@@ -2,6 +2,11 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [0.101] - 2017-06-05
+### Changed
+- Tries to load older dependencies in case the latest are not available
+  (no gurantees that they will work, though)
+
 ## [0.100]
 ### Changed
 - Added safeguards on missing ECC curves.
