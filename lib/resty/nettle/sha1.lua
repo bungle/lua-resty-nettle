@@ -14,7 +14,7 @@ void nettle_sha1_update(struct sha1_ctx *ctx, size_t length, const uint8_t *data
 void nettle_sha1_digest(struct sha1_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local ctx = ffi_typeof "SHA1_CTX[1]"
+local ctx = ffi_typeof "NETTLE_SHA1_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 20)
 local sha1 = setmetatable({}, {
     __call = function(_, data, len)

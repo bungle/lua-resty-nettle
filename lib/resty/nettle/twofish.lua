@@ -16,7 +16,7 @@ ffi_cdef[[
 typedef struct twofish_ctx {
   uint32_t keys[40];
   uint32_t s_box[4][256];
-} TWOFISH_CTX;
+} NETTLE_TWOFISH_CTX;
 void nettle_twofish_set_key(struct twofish_ctx *ctx, size_t length, const uint8_t *key);
 void nettle_twofish128_set_key(struct twofish_ctx *context, const uint8_t *key);
 void nettle_twofish192_set_key(struct twofish_ctx *context, const uint8_t *key);
@@ -117,8 +117,8 @@ local ciphers = {
             encrypt = lib.nettle_gcm_encrypt,
             decrypt = lib.nettle_gcm_decrypt,
             digest  = lib.nettle_gcm_digest,
-            key     = ffi_typeof "GCM_KEY[1]",
-            context = ffi_typeof "GCM_CTX[1]",
+            key     = ffi_typeof "NETTLE_GCM_KEY[1]",
+            context = ffi_typeof "NETTLE_GCM_CTX[1]",
             cipher  = {
                 setkey  = lib.nettle_twofish128_set_key,
                 encrypt = lib.nettle_twofish_encrypt,
@@ -132,8 +132,8 @@ local ciphers = {
             encrypt = lib.nettle_gcm_encrypt,
             decrypt = lib.nettle_gcm_decrypt,
             digest  = lib.nettle_gcm_digest,
-            key     = ffi_typeof "GCM_KEY[1]",
-            context = ffi_typeof "GCM_CTX[1]",
+            key     = ffi_typeof "NETTLE_GCM_KEY[1]",
+            context = ffi_typeof "NETTLE_GCM_CTX[1]",
             cipher  = {
                 setkey  = lib.nettle_twofish192_set_key,
                 encrypt = lib.nettle_twofish_encrypt,
@@ -147,8 +147,8 @@ local ciphers = {
             encrypt = lib.nettle_gcm_encrypt,
             decrypt = lib.nettle_gcm_decrypt,
             digest  = lib.nettle_gcm_digest,
-            key     = ffi_typeof "GCM_KEY[1]",
-            context = ffi_typeof "GCM_CTX[1]",
+            key     = ffi_typeof "NETTLE_GCM_KEY[1]",
+            context = ffi_typeof "NETTLE_GCM_CTX[1]",
             cipher  = {
                 setkey  = lib.nettle_twofish256_set_key,
                 encrypt = lib.nettle_twofish_encrypt,
@@ -158,7 +158,7 @@ local ciphers = {
     }
 }
 
-local context = ffi_typeof "TWOFISH_CTX[1]"
+local context = ffi_typeof "NETTLE_TWOFISH_CTX[1]"
 local twofish = {}
 twofish.__index = twofish
 

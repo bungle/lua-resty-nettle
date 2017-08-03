@@ -3,7 +3,7 @@ local lib      = require "resty.nettle.library"
 local ffi      = require "ffi"
 local ffi_str  = ffi.string
 local tonumber = tonumber
-local aeads = {}
+local aeads    = {}
 do
     local i, as = 0, lib.nettle_aeads
     while as[i] ~= nil do

@@ -41,21 +41,21 @@ local ciphers = {
             invert  = lib.nettle_camellia128_invert_key,
             encrypt = lib.nettle_camellia128_crypt,
             decrypt = lib.nettle_camellia128_crypt,
-            context = ffi_typeof "CAMELLIA128_CTX[1]"
+            context = ffi_typeof "NETTLE_CAMELLIA128_CTX[1]"
         },
         [192] = {
             setkey  = lib.nettle_camellia192_set_encrypt_key,
             invert  = lib.nettle_camellia256_invert_key,
             encrypt = lib.nettle_camellia256_crypt,
             decrypt = lib.nettle_camellia256_crypt,
-            context = ffi_typeof "CAMELLIA256_CTX[1]"
+            context = ffi_typeof "NETTLE_CAMELLIA256_CTX[1]"
         },
         [256] = {
             setkey  = lib.nettle_camellia256_set_encrypt_key,
             invert  = lib.nettle_camellia256_invert_key,
             encrypt = lib.nettle_camellia256_crypt,
             decrypt = lib.nettle_camellia256_crypt,
-            context = ffi_typeof "CAMELLIA256_CTX[1]"
+            context = ffi_typeof "NETTLE_CAMELLIA256_CTX[1]"
         }
     },
     gcm = {
@@ -67,7 +67,7 @@ local ciphers = {
             encrypt = lib.nettle_gcm_camellia128_encrypt,
             decrypt = lib.nettle_gcm_camellia128_decrypt,
             digest  = lib.nettle_gcm_camellia128_digest,
-            context = ffi_typeof "GCM_CAMELLIA128_CTX[1]"
+            context = ffi_typeof "NETTLE_GCM_CAMELLIA128_CTX[1]"
         },
         [256] = {
             setkey  = lib.nettle_gcm_camellia256_set_key,
@@ -76,7 +76,7 @@ local ciphers = {
             encrypt = lib.nettle_gcm_camellia256_encrypt,
             decrypt = lib.nettle_gcm_camellia256_decrypt,
             digest  = lib.nettle_gcm_camellia256_digest,
-            context = ffi_typeof "GCM_CAMELLIA256_CTX[1]"
+            context = ffi_typeof "NETTLE_GCM_CAMELLIA256_CTX[1]"
         }
     }
 }

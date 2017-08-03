@@ -10,7 +10,7 @@ ffi_cdef[[
 typedef struct knuth_lfib_ctx {
   uint32_t x[100];
   unsigned index;
-} KNUTH_LFIB_CTX;
+} NETTLE_KNUTH_LFIB_CTX;
 void     nettle_knuth_lfib_init(struct knuth_lfib_ctx *ctx, uint32_t seed);
 uint32_t nettle_knuth_lfib_get(struct knuth_lfib_ctx *ctx);
 void     nettle_knuth_lfib_get_array(struct knuth_lfib_ctx *ctx, size_t n, uint32_t *a);
@@ -19,7 +19,7 @@ void     nettle_knuth_lfib_random(struct knuth_lfib_ctx *ctx, size_t n, uint8_t 
 
 local uint8t  = ffi_typeof "uint8_t[?]"
 local uint32t = ffi_typeof "uint32_t[?]"
-local ctx = ffi_typeof "KNUTH_LFIB_CTX[1]"
+local ctx = ffi_typeof "NETTLE_KNUTH_LFIB_CTX[1]"
 
 local knuth = { func = lib.nettle_knuth_lfib_random }
 knuth.__index = knuth

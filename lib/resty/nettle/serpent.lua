@@ -11,7 +11,7 @@ local setmetatable = setmetatable
 ffi_cdef[[
 typedef struct serpent_ctx {
   uint32_t keys[33][4];
-} SERPENT_CTX;
+} NETTLE_SERPENT_CTX;
 void nettle_serpent_set_key(struct serpent_ctx *ctx, size_t length, const uint8_t *key);
 void nettle_serpent128_set_key(struct serpent_ctx *context, const uint8_t *key);
 void nettle_serpent192_set_key(struct serpent_ctx *context, const uint8_t *key);
@@ -25,7 +25,7 @@ local uint8t = ffi_typeof "uint8_t[?]"
 local serpent = {}
 serpent.__index = serpent
 
-local context   = ffi_typeof "SERPENT_CTX[1]"
+local context   = ffi_typeof "NETTLE_SERPENT_CTX[1]"
 local setkey128 = lib.nettle_serpent128_set_key
 local setkey192 = lib.nettle_serpent192_set_key
 local setkey256 = lib.nettle_serpent256_set_key

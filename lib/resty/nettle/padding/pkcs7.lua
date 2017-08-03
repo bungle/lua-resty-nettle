@@ -1,9 +1,9 @@
-local string = string
-local type = type
-local char = string.char
-local byte = string.byte
-local rep = string.rep
-local sub = string.sub
+local string  = string
+local type    = type
+local char    = string.char
+local byte    = string.byte
+local rep     = string.rep
+local sub     = string.sub
 local padding = {}
 function padding.pad(data, blocksize, optional)
     blocksize = blocksize or 16

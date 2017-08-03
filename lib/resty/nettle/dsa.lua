@@ -24,7 +24,7 @@ int  nettle_dsa_keypair_to_sexp(struct nettle_buffer *buffer, const char *algori
 
 local size = ffi_new "size_t[1]"
 local buf = ffi_typeof "uint8_t[?]"
-local sig = ffi_typeof "DSA_SIGNATURE[1]"
+local sig = ffi_typeof "NETTLE_DSA_SIGNATURE[1]"
 
 local signature = {}
 

@@ -12,7 +12,7 @@ ffi_cdef[[
 typedef struct blowfish_ctx {
   uint32_t s[4][256];
   uint32_t p[18];
-} BLOWFISH_CTX;
+} NETTLE_BLOWFISH_CTX;
 int  nettle_blowfish_set_key(struct blowfish_ctx *ctx, size_t length, const uint8_t *key);
 int  nettle_blowfish128_set_key(struct blowfish_ctx *ctx, const uint8_t *key);
 void nettle_blowfish_encrypt(const struct blowfish_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
@@ -24,7 +24,7 @@ local uint8t = ffi_typeof "uint8_t[?]"
 local blowfish = {}
 blowfish.__index = blowfish
 
-local context = ffi_typeof "BLOWFISH_CTX[1]"
+local context = ffi_typeof "NETTLE_BLOWFISH_CTX[1]"
 local setkey  = lib.nettle_blowfish_set_key
 local encrypt = lib.nettle_blowfish_encrypt
 local decrypt = lib.nettle_blowfish_decrypt

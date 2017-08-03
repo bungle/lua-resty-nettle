@@ -7,5 +7,5 @@ typedef struct ripemd160_ctx {
   uint64_t count;
   uint8_t block[64];
   unsigned int index;
-} RIPEMD160_CTX;
+} NETTLE_RIPEMD160_CTX;
 ]]

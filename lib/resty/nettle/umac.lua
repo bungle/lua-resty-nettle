@@ -23,7 +23,7 @@ typedef struct umac32_ctx {
   unsigned index;
   uint64_t count;
   uint8_t block[1024];
-} UMAC32_CTX;
+} NETTLE_UMAC32_CTX;
 typedef struct umac64_ctx {
   uint32_t l1_key[260];
   uint32_t l2_key[12];
@@ -38,7 +38,7 @@ typedef struct umac64_ctx {
   unsigned index;
   uint64_t count;
   uint8_t block[1024];
-} UMAC64_CTX;
+} NETTLE_UMAC64_CTX;
 typedef struct umac96_ctx {
   uint32_t l1_key[264];
   uint32_t l2_key[18];
@@ -51,7 +51,7 @@ typedef struct umac96_ctx {
   unsigned index;
   uint64_t count;
   uint8_t block[1024];
-} UMAC96_CTX;
+} NETTLE_UMAC96_CTX;
 typedef struct umac128_ctx {
   uint32_t l1_key[268];
   uint32_t l2_key[24];
@@ -64,7 +64,7 @@ typedef struct umac128_ctx {
   unsigned index;
   uint64_t count;
   uint8_t block[1024];
-} UMAC128_CTX;
+} NETTLE_UMAC128_CTX;
 void nettle_umac32_set_key(struct umac32_ctx *ctx, const uint8_t *key);
 void nettle_umac64_set_key(struct umac64_ctx *ctx, const uint8_t *key);
 void nettle_umac96_set_key(struct umac96_ctx *ctx, const uint8_t *key);
@@ -84,10 +84,10 @@ void nettle_umac128_digest(struct umac128_ctx *ctx, size_t length, uint8_t *dige
 ]]
 
 local uint8t = ffi_typeof "uint8_t[?]"
-local ctxu32 = ffi_typeof "UMAC32_CTX[1]"
-local ctxu64 = ffi_typeof "UMAC64_CTX[1]"
-local ctxu96 = ffi_typeof "UMAC96_CTX[1]"
-local ctx128 = ffi_typeof "UMAC128_CTX[1]"
+local ctxu32 = ffi_typeof "NETTLE_UMAC32_CTX[1]"
+local ctxu64 = ffi_typeof "NETTLE_UMAC64_CTX[1]"
+local ctxu96 = ffi_typeof "NETTLE_UMAC96_CTX[1]"
+local ctx128 = ffi_typeof "NETTLE_UMAC128_CTX[1]"
 local bufu32 = ffi_new(uint8t, 4)
 local bufu64 = ffi_new(uint8t, 8)
 local bufu96 = ffi_new(uint8t, 12)

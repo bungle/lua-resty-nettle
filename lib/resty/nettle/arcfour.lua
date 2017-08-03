@@ -12,7 +12,7 @@ typedef struct arcfour_ctx {
   uint8_t S[256];
   uint8_t i;
   uint8_t j;
-} ARCFOUR_CTX;
+} NETTLE_ARCFOUR_CTX;
 void nettle_arcfour_set_key(struct arcfour_ctx *ctx, size_t length, const uint8_t *key);
 void nettle_arcfour128_set_key(struct arcfour_ctx *ctx, const uint8_t *key);
 void nettle_arcfour_crypt(struct arcfour_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
@@ -23,7 +23,7 @@ local uint8t = ffi_typeof "uint8_t[?]"
 local arcfour = {}
 arcfour.__index = arcfour
 
-local context  = ffi_typeof "ARCFOUR_CTX[1]"
+local context  = ffi_typeof "NETTLE_ARCFOUR_CTX[1]"
 local setkey   = lib.nettle_arcfour_set_key
 local crypt    = lib.nettle_arcfour_crypt
 

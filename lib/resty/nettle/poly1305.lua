@@ -15,7 +15,7 @@ void nettle_poly1305_aes_update(struct poly1305_aes_ctx *ctx, size_t length, con
 void nettle_poly1305_aes_digest(struct poly1305_aes_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local ctxply = ffi_typeof "POLY1305_AES_CTX[1]"
+local ctxply = ffi_typeof "NETTLE_POLY1305_AES_CTX[1]"
 local buf128 = ffi_new("uint8_t[?]", 16)
 
 local poly1305 = setmetatable({}, {

@@ -81,21 +81,21 @@ local ciphers = {
             invert  = lib.nettle_aes128_invert_key,
             encrypt = lib.nettle_aes128_encrypt,
             decrypt = lib.nettle_aes128_decrypt,
-            context = ffi_typeof "AES128_CTX[1]"
+            context = ffi_typeof "NETTLE_AES128_CTX[1]"
         },
         [192] = {
             setkey  = lib.nettle_aes192_set_encrypt_key,
             invert  = lib.nettle_aes192_invert_key,
             encrypt = lib.nettle_aes192_encrypt,
             decrypt = lib.nettle_aes192_decrypt,
-            context = ffi_typeof "AES192_CTX[1]"
+            context = ffi_typeof "NETTLE_AES192_CTX[1]"
         },
         [256] = {
             setkey  = lib.nettle_aes256_set_encrypt_key,
             invert  = lib.nettle_aes256_invert_key,
             encrypt = lib.nettle_aes256_encrypt,
             decrypt = lib.nettle_aes256_decrypt,
-            context = ffi_typeof "AES256_CTX[1]"
+            context = ffi_typeof "NETTLE_AES256_CTX[1]"
         }
     },
     cbc = {
@@ -109,7 +109,7 @@ local ciphers = {
                 encrypt = lib.nettle_aes128_encrypt,
                 decrypt = lib.nettle_aes128_decrypt
             },
-            context = ffi_typeof "AES128_CTX[1]"
+            context = ffi_typeof "NETTLE_AES128_CTX[1]"
         },
         [192] = {
             setkey  = lib.nettle_aes192_set_encrypt_key,
@@ -120,7 +120,7 @@ local ciphers = {
                 encrypt = lib.nettle_aes192_encrypt,
                 decrypt = lib.nettle_aes192_decrypt
             },
-            context = ffi_typeof "AES192_CTX[1]"
+            context = ffi_typeof "NETTLE_AES192_CTX[1]"
         },
         [256] = {
             setkey  = lib.nettle_aes256_set_encrypt_key,
@@ -131,7 +131,7 @@ local ciphers = {
                 encrypt = lib.nettle_aes256_encrypt,
                 decrypt = lib.nettle_aes256_decrypt
             },
-            context = ffi_typeof "AES256_CTX[1]"
+            context = ffi_typeof "NETTLE_AES256_CTX[1]"
         }
     },
     ctr = {
@@ -144,7 +144,7 @@ local ciphers = {
                 encrypt = lib.nettle_aes128_encrypt,
                 decrypt = lib.nettle_aes128_encrypt
             },
-            context = ffi_typeof "AES128_CTX[1]"
+            context = ffi_typeof "NETTLE_AES128_CTX[1]"
         },
         [192] = {
             setkey  = lib.nettle_aes192_set_encrypt_key,
@@ -154,7 +154,7 @@ local ciphers = {
                 encrypt = lib.nettle_aes192_encrypt,
                 decrypt = lib.nettle_aes192_encrypt
             },
-            context = ffi_typeof "AES192_CTX[1]"
+            context = ffi_typeof "NETTLE_AES192_CTX[1]"
         },
         [256] = {
             setkey  = lib.nettle_aes256_set_encrypt_key,
@@ -164,7 +164,7 @@ local ciphers = {
                 encrypt = lib.nettle_aes256_encrypt,
                 decrypt = lib.nettle_aes256_encrypt
             },
-            context = ffi_typeof "AES256_CTX[1]"
+            context = ffi_typeof "NETTLE_AES256_CTX[1]"
         }
     },
     eax = {
@@ -176,7 +176,7 @@ local ciphers = {
             encrypt = lib.nettle_eax_aes128_encrypt,
             decrypt = lib.nettle_eax_aes128_decrypt,
             digest  = lib.nettle_eax_aes128_digest,
-            context = ffi_typeof "EAX_AES128_CTX[1]"
+            context = ffi_typeof "NETTLE_EAX_AES128_CTX[1]"
         }
     },
     gcm = {
@@ -188,7 +188,7 @@ local ciphers = {
             encrypt = lib.nettle_gcm_aes128_encrypt,
             decrypt = lib.nettle_gcm_aes128_decrypt,
             digest  = lib.nettle_gcm_aes128_digest,
-            context = ffi_typeof "GCM_AES128_CTX[1]"
+            context = ffi_typeof "NETTLE_GCM_AES128_CTX[1]"
         },
         [192] = {
             setkey  = lib.nettle_gcm_aes192_set_key,
@@ -197,7 +197,7 @@ local ciphers = {
             encrypt = lib.nettle_gcm_aes192_encrypt,
             decrypt = lib.nettle_gcm_aes192_decrypt,
             digest  = lib.nettle_gcm_aes192_digest,
-            context = ffi_typeof "GCM_AES192_CTX[1]"
+            context = ffi_typeof "NETTLE_GCM_AES192_CTX[1]"
         },
         [256] = {
             setkey  = lib.nettle_gcm_aes256_set_key,
@@ -206,7 +206,7 @@ local ciphers = {
             encrypt = lib.nettle_gcm_aes256_encrypt,
             decrypt = lib.nettle_gcm_aes256_decrypt,
             digest  = lib.nettle_gcm_aes256_digest,
-            context = ffi_typeof "GCM_AES256_CTX[1]"
+            context = ffi_typeof "NETTLE_GCM_AES256_CTX[1]"
         }
     },
     ccm = {
@@ -218,7 +218,7 @@ local ciphers = {
             encrypt = lib.nettle_ccm_aes128_encrypt,
             decrypt = lib.nettle_ccm_aes128_decrypt,
             digest  = lib.nettle_ccm_aes128_digest,
-            context = ffi_typeof "CCM_AES128_CTX[1]"
+            context = ffi_typeof "NETTLE_CCM_AES128_CTX[1]"
         },
         [192] = {
             setkey  = lib.nettle_ccm_aes192_set_key,
@@ -227,7 +227,7 @@ local ciphers = {
             encrypt = lib.nettle_ccm_aes192_encrypt,
             decrypt = lib.nettle_ccm_aes192_decrypt,
             digest  = lib.nettle_ccm_aes192_digest,
-            context = ffi_typeof "CCM_AES192_CTX[1]"
+            context = ffi_typeof "NETTLE_CCM_AES192_CTX[1]"
         },
         [256] = {
             setkey  = lib.nettle_ccm_aes256_set_key,
@@ -236,7 +236,7 @@ local ciphers = {
             encrypt = lib.nettle_ccm_aes256_encrypt,
             decrypt = lib.nettle_ccm_aes256_decrypt,
             digest  = lib.nettle_ccm_aes256_digest,
-            context = ffi_typeof "CCM_AES256_CTX[1]"
+            context = ffi_typeof "NETTLE_CCM_AES256_CTX[1]"
         }
     }
 }

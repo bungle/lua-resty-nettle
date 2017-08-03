@@ -27,8 +27,8 @@ void nettle_sha512_256_digest(struct sha512_ctx *ctx, size_t length, uint8_t *di
 ]]
 
 local uint8t = ffi_typeof "uint8_t[?]"
-local ctx256 = ffi_typeof "SHA256_CTX[1]"
-local ctx512 = ffi_typeof "SHA512_CTX[1]"
+local ctx256 = ffi_typeof "NETTLE_SHA256_CTX[1]"
+local ctx512 = ffi_typeof "NETTLE_SHA512_CTX[1]"
 local buf224 = ffi_new(uint8t, 28)
 local buf256 = ffi_new(uint8t, 32)
 local buf384 = ffi_new(uint8t, 48)

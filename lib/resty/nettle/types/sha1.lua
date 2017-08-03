@@ -7,5 +7,5 @@ typedef struct sha1_ctx {
   uint64_t count;
   uint8_t block[64];
   unsigned int index;
-} SHA1_CTX;
+} NETTLE_SHA1_CTX;
 ]]

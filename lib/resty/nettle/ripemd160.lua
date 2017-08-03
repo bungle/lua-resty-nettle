@@ -14,7 +14,7 @@ void nettle_ripemd160_update(struct ripemd160_ctx *ctx, size_t length, const uin
 void nettle_ripemd160_digest(struct ripemd160_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local ctx = ffi_typeof "RIPEMD160_CTX[1]"
+local ctx = ffi_typeof "NETTLE_RIPEMD160_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 20)
 local ripemd160 = setmetatable({}, {
     __call = function(_, data, len)

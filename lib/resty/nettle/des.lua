@@ -29,14 +29,14 @@ des.__index = des
 local ciphers = {
     des = {
         ecb = {
-            context = ffi_typeof "DES_CTX[1]",
+            context = ffi_typeof "NETTLE_DES_CTX[1]",
             setkey  = lib.nettle_des_set_key,
             encrypt = lib.nettle_des_encrypt,
             decrypt = lib.nettle_des_decrypt
         },
         cbc = {
             iv_size = 8,
-            context = ffi_typeof "DES_CTX[1]",
+            context = ffi_typeof "NETTLE_DES_CTX[1]",
             setkey  = lib.nettle_des_set_key,
             encrypt = lib.nettle_cbc_encrypt,
             decrypt = lib.nettle_cbc_decrypt,
@@ -47,7 +47,7 @@ local ciphers = {
         },
         ctr = {
             iv_size = 8,
-            context = ffi_typeof "DES_CTX[1]",
+            context = ffi_typeof "NETTLE_DES_CTX[1]",
             setkey  = lib.nettle_des_set_key,
             encrypt = lib.nettle_ctr_crypt,
             decrypt = lib.nettle_ctr_crypt,
@@ -59,14 +59,14 @@ local ciphers = {
     },
     des3 = {
         ecb = {
-            context = ffi_typeof "DES3_CTX[1]",
+            context = ffi_typeof "NETTLE_DES3_CTX[1]",
             setkey  = lib.nettle_des3_set_key,
             encrypt = lib.nettle_des3_encrypt,
             decrypt = lib.nettle_des3_decrypt
         },
         cbc = {
             iv_size = 8,
-            context = ffi_typeof "DES3_CTX[1]",
+            context = ffi_typeof "NETTLE_DES3_CTX[1]",
             setkey  = lib.nettle_des3_set_key,
             encrypt = lib.nettle_cbc_encrypt,
             decrypt = lib.nettle_cbc_decrypt,
@@ -77,7 +77,7 @@ local ciphers = {
         },
         ctr = {
             iv_size = 8,
-            context = ffi_typeof "DES3_CTX[1]",
+            context = ffi_typeof "NETTLE_DES3_CTX[1]",
             setkey  = lib.nettle_des3_set_key,
             encrypt = lib.nettle_ctr_crypt,
             decrypt = lib.nettle_ctr_crypt,

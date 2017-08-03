@@ -20,7 +20,7 @@ local uint8t = ffi_typeof "uint8_t[?]"
 local chacha = {}
 chacha.__index = chacha
 
-local context  = ffi_typeof "CHACHA_CTX[1]"
+local context  = ffi_typeof "NETTLE_CHACHA_CTX[1]"
 local setkey   = lib.nettle_chacha_set_key
 local setnonce = lib.nettle_chacha_set_nonce
 local crypt    = lib.nettle_chacha_crypt

@@ -9,12 +9,12 @@ local setmetatable = setmetatable
 ffi_cdef[[
 typedef struct sha3_state {
   uint64_t a[25];
-} SHA3_STATE;
+} NETTLE_SHA3_STATE;
 typedef struct sha3_224_ctx {
   struct sha3_state state;
   unsigned index;
   uint8_t block[144];
-} SHA3_224_CTX;
+} NETTLE_SHA3_224_CTX;
 void nettle_sha3_224_init(struct sha3_224_ctx *ctx);
 void nettle_sha3_224_update(struct sha3_224_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_sha3_224_digest(struct sha3_224_ctx *ctx, size_t length, uint8_t *digest);
@@ -22,7 +22,7 @@ typedef struct sha3_256_ctx {
   struct sha3_state state;
   unsigned index;
   uint8_t block[136];
-} SHA3_256_CTX;
+} NETTLE_SHA3_256_CTX;
 void nettle_sha3_256_init(struct sha3_256_ctx *ctx);
 void nettle_sha3_256_update(struct sha3_256_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_sha3_256_digest(struct sha3_256_ctx *ctx, size_t length, uint8_t *digest);
@@ -30,7 +30,7 @@ typedef struct sha3_384_ctx {
   struct sha3_state state;
   unsigned index;
   uint8_t block[104];
-} SHA3_384_CTX;
+} NETTLE_SHA3_384_CTX;
 void nettle_sha3_384_init(struct sha3_384_ctx *ctx);
 void nettle_sha3_384_update(struct sha3_384_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_sha3_384_digest(struct sha3_384_ctx *ctx, size_t length, uint8_t *digest);
@@ -38,17 +38,17 @@ typedef struct sha3_512_ctx {
   struct sha3_state state;
   unsigned index;
   uint8_t block[72];
-} SHA3_512_CTX;
+} NETTLE_SHA3_512_CTX;
 void nettle_sha3_512_init(struct sha3_512_ctx *ctx);
 void nettle_sha3_512_update(struct sha3_512_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_sha3_512_digest(struct sha3_512_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
 local uint8t = ffi_typeof "uint8_t[?]"
-local ctx224 = ffi_typeof "SHA3_224_CTX[1]"
-local ctx256 = ffi_typeof "SHA3_256_CTX[1]"
-local ctx384 = ffi_typeof "SHA3_384_CTX[1]"
-local ctx512 = ffi_typeof "SHA3_512_CTX[1]"
+local ctx224 = ffi_typeof "NETTLE_SHA3_224_CTX[1]"
+local ctx256 = ffi_typeof "NETTLE_SHA3_256_CTX[1]"
+local ctx384 = ffi_typeof "NETTLE_SHA3_384_CTX[1]"
+local ctx512 = ffi_typeof "NETTLE_SHA3_512_CTX[1]"
 local buf224 = ffi_new(uint8t, 28)
 local buf256 = ffi_new(uint8t, 32)
 local buf384 = ffi_new(uint8t, 48)

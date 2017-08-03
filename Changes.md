@@ -2,6 +2,13 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [0.102] - 2017-06-05
+### Fixed
+- Prefixed Nettle structs to avoid naming conflicts with other
+  libraries such as OpenSSL
+  (see [#13](https://github.com/bungle/lua-resty-nettle/issues/10),
+   thanks [@xiangnanscu](https://github.com/xiangnanscu))
+
 ## [0.101] - 2017-06-05
 ### Changed
 - Tries to load older dependencies in case the latest are not available

@@ -15,12 +15,12 @@ typedef struct poly1305_ctx {
     uint32_t h32[4];
     uint64_t h64[2];
   } h;
-} POLY1305_CTX;
+} NETTLE_POLY1305_CTX;
 typedef struct poly1305_aes_ctx {
   struct poly1305_ctx pctx;
   uint8_t block[16];
   unsigned index;
   uint8_t nonce[16];
   struct aes128_ctx aes;
-} POLY1305_AES_CTX;
+} NETTLE_POLY1305_AES_CTX;
 ]]

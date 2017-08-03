@@ -13,7 +13,7 @@ typedef struct cast128_ctx {
   unsigned rounds;
   unsigned char Kr[16];
   uint32_t Km[16];
-} CAST128_CTX;
+} NETTLE_CAST128_CTX;
 void nettle_cast5_set_key(struct cast128_ctx *ctx, size_t length, const uint8_t *key);
 void nettle_cast128_set_key(struct cast128_ctx *ctx, const uint8_t *key);
 void nettle_cast128_encrypt(const struct cast128_ctx *ctx, size_t length, uint8_t *dst, const uint8_t *src);
@@ -25,7 +25,7 @@ local uint8t = ffi_typeof "uint8_t[?]"
 local cast128 = {}
 cast128.__index = cast128
 
-local context   = ffi_typeof "CAST128_CTX[1]"
+local context   = ffi_typeof "NETTLE_CAST128_CTX[1]"
 local setkey    = lib.nettle_cast5_set_key
 local setkey128 = lib.nettle_cast128_set_key
 local encrypt   = lib.nettle_cast128_encrypt

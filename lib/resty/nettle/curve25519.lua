@@ -1,11 +1,11 @@
 require "resty.nettle.types.des"
 
-local lib          = require "resty.nettle.hogweed"
-local ffi          = require "ffi"
-local ffi_new      = ffi.new
-local ffi_str      = ffi.string
-local ffi_cdef     = ffi.cdef
-local ffi_typeof   = ffi.typeof
+local lib        = require "resty.nettle.hogweed"
+local ffi        = require "ffi"
+local ffi_new    = ffi.new
+local ffi_str    = ffi.string
+local ffi_cdef   = ffi.cdef
+local ffi_typeof = ffi.typeof
 
 local t = ffi_typeof "uint8_t[32]"
 local q = ffi_new(t)

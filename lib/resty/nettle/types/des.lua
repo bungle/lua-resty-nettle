@@ -7,8 +7,8 @@ local ffi_cdef = ffi.cdef
 ffi_cdef[[
 typedef struct des_ctx {
   uint32_t key[32];
-} DES_CTX;
+} NETTLE_DES_CTX;
 typedef struct des3_ctx {
   struct des_ctx des[3];
-} DES3_CTX;
+} NETTLE_DES3_CTX;
 ]]

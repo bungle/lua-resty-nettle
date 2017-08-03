@@ -17,7 +17,7 @@ enum yarrow_pool_id { YARROW_FAST = 0, YARROW_SLOW = 1 };
 typedef struct yarrow_source {
   uint32_t estimate[2];
   enum yarrow_pool_id next;
-} YARROW_SOURCE;
+} NETTLE_YARROW_SOURCE;
 typedef struct yarrow256_ctx {
   struct sha256_ctx pools[2];
   int seeded;
@@ -25,7 +25,7 @@ typedef struct yarrow256_ctx {
   uint8_t counter[16];
   unsigned nsources;
   struct yarrow_source *sources;
-} YARROW256_CTX;
+} NETTLE_YARROW256_CTX;
 void nettle_yarrow256_init(struct yarrow256_ctx *ctx, unsigned nsources, struct yarrow_source *sources);
 void nettle_yarrow256_seed(struct yarrow256_ctx *ctx, size_t length, const uint8_t *seed_file);
 int  nettle_yarrow256_update(struct yarrow256_ctx *ctx, unsigned source, unsigned entropy, size_t length, const uint8_t *data);
@@ -37,7 +37,7 @@ void nettle_yarrow256_slow_reseed(struct yarrow256_ctx *ctx);
 ]]
 
 local uint8t = ffi_typeof "uint8_t[?]"
-local ctx256 = ffi_typeof "YARROW256_CTX[1]"
+local ctx256 = ffi_typeof "NETTLE_YARROW256_CTX[1]"
 
 local yarrow = { func = lib.nettle_yarrow256_random }
 yarrow.__index = function(t, k)

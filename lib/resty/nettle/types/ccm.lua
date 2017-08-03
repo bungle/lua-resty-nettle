@@ -8,5 +8,5 @@ typedef struct ccm_ctx {
   union nettle_block16 ctr;
   union nettle_block16 tag;
   unsigned int blength;
-} CCM_CTX;
+} NETTLE_CCM_CTX;
 ]]

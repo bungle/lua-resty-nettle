@@ -25,7 +25,7 @@ void nettle_ecc_point_mul(struct ecc_point *r, const struct ecc_scalar *n, const
 void nettle_ecc_point_mul_g(struct ecc_point *r, const struct ecc_scalar *n);
 ]]
 
-local pub  = ffi_typeof "ECC_POINT[1]"
+local pub  = ffi_typeof "NETTLE_ECC_POINT[1]"
 
 local curves = {}
 

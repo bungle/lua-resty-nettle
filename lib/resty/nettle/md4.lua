@@ -12,13 +12,13 @@ typedef struct md4_ctx {
   uint64_t count;
   uint8_t block[64];
   unsigned index;
-} MD4_CTX;
+} NETTLE_MD4_CTX;
 void nettle_md4_init(struct md4_ctx *ctx);
 void nettle_md4_update(struct md4_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_md4_digest(struct md4_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local ctx = ffi_typeof "MD4_CTX[1]"
+local ctx = ffi_typeof "NETTLE_MD4_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 16)
 local md4 = setmetatable({}, {
     __call = function(_, data, len)

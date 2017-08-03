@@ -12,13 +12,13 @@ typedef struct gosthash94_ctx {
   uint32_t sum[8];
   uint8_t message[32];
   uint64_t length;
-} GOSTHASH94_CTX;
+} NETTLE_GOSTHASH94_CTX;
 void nettle_gosthash94_init(struct gosthash94_ctx *ctx);
 void nettle_gosthash94_update(struct gosthash94_ctx *ctx, size_t length, const uint8_t *data);
 void nettle_gosthash94_digest(struct gosthash94_ctx *ctx, size_t length, uint8_t *digest);
 ]]
 
-local ctx = ffi_typeof "GOSTHASH94_CTX[1]"
+local ctx = ffi_typeof "NETTLE_GOSTHASH94_CTX[1]"
 local buf = ffi_new("uint8_t[?]", 32)
 local gosthash94 = setmetatable({}, {
     __call = function(_, data, len)

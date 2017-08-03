@@ -12,7 +12,7 @@ ffi_cdef[[
 typedef struct base16_decode_ctx {
   unsigned word;
   unsigned bits;
-} BASE16_DECODE_CTX;
+} NETTLE_BASE16_DECODE_CTX;
 void nettle_base16_encode_single(uint8_t *dst, uint8_t src);
 void nettle_base16_encode_update(uint8_t *dst, size_t length, const uint8_t *src);
 void nettle_base16_decode_init(struct base16_decode_ctx *ctx);
@@ -20,7 +20,7 @@ int  nettle_base16_decode_single(struct base16_decode_ctx *ctx, uint8_t *dst, ui
 int  nettle_base16_decode_update(struct base16_decode_ctx *ctx, size_t *dst_length, uint8_t *dst, size_t src_length, const uint8_t *src);
 int  nettle_base16_decode_final(struct base16_decode_ctx *ctx);
 ]]
-local ctxdec = ffi_typeof "BASE16_DECODE_CTX[1]"
+local ctxdec = ffi_typeof "NETTLE_BASE16_DECODE_CTX[1]"
 
 local length = ffi_new "size_t[1]"
 local uint8t = ffi_typeof "uint8_t[?]"

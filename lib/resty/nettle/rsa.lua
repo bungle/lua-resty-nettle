@@ -56,8 +56,8 @@ int  nettle_rsa_keypair_from_der(struct rsa_public_key *pub, struct rsa_private_
 ]]
 local size = ffi_new "size_t[1]"
 local buf  = ffi_typeof "uint8_t[?]"
-local pub  = ffi_typeof "RSA_PUBLIC_KEY[1]"
-local pri  = ffi_typeof "RSA_PRIVATE_KEY[1]"
+local pub  = ffi_typeof "NETTLE_RSA_PUBLIC_KEY[1]"
+local pri  = ffi_typeof "NETTLE_RSA_PRIVATE_KEY[1]"
 local sig  = mpz.new()
 
 local public = {}

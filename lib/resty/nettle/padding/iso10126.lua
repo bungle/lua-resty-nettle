@@ -1,10 +1,10 @@
 local require = require
-local yarrow = require "resty.nettle.yarrow".new(require "resty.nettle.knuth-lfib".new():random(32))
-local string = string
-local type = type
-local char = string.char
-local byte = string.byte
-local sub = string.sub
+local yarrow  = require "resty.nettle.yarrow".new(require "resty.nettle.knuth-lfib".new():random(32))
+local string  = string
+local type    = type
+local char    = string.char
+local byte    = string.byte
+local sub     = string.sub
 local padding = {}
 function padding.pad(data, blocksize, optional)
     blocksize = blocksize or 16

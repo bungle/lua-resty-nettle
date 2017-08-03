@@ -1,7 +1,7 @@
 require "resty.nettle.types.mpz"
 
-local ffi        = require "ffi"
-local ffi_cdef   = ffi.cdef
+local ffi      = require "ffi"
+local ffi_cdef = ffi.cdef
 
 ffi_cdef[[
 struct ecc_curve;
@@ -13,9 +13,9 @@ extern const struct ecc_curve nettle_secp_521r1;
 typedef struct ecc_point {
   const struct ecc_curve *ecc;
   mp_limb_t *p;
-} ECC_POINT;
+} NETTLE_ECC_POINT;
 typedef struct ecc_scalar {
   const struct ecc_curve *ecc;
   mp_limb_t *p;
-} ECC_SCALAR;
+} NETTLE_ECC_SCALAR;
 ]]

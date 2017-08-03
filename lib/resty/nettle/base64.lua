@@ -17,12 +17,12 @@ ffi_cdef[[
 typedef struct base64_encode_ctx {
   unsigned word;
   unsigned bits;
-} BASE64_ENCODE_CTX;
+} NETTLE_BASE64_ENCODE_CTX;
 typedef struct base64_decode_ctx {
   unsigned word;
   unsigned bits;
   unsigned padding;
-} BASE64_DECODE_CTX;
+} NETTLE_BASE64_DECODE_CTX;
 void   nettle_base64_encode_init   (struct base64_encode_ctx *ctx);
 void   nettle_base64url_encode_init(struct base64_encode_ctx *ctx);
 size_t nettle_base64_encode_single (struct base64_encode_ctx *ctx, uint8_t *dst, uint8_t src);
@@ -35,8 +35,8 @@ int    nettle_base64_decode_single (struct base64_decode_ctx *ctx, uint8_t *dst,
 int    nettle_base64_decode_update (struct base64_decode_ctx *ctx, size_t *dst_length, uint8_t *dst, size_t src_length, const uint8_t *src);
 int    nettle_base64_decode_final  (struct base64_decode_ctx *ctx);
 ]]
-local ctxenc = ffi_typeof "BASE64_ENCODE_CTX[1]"
-local ctxdec = ffi_typeof "BASE64_DECODE_CTX[1]"
+local ctxenc = ffi_typeof "NETTLE_BASE64_ENCODE_CTX[1]"
+local ctxdec = ffi_typeof "NETTLE_BASE64_DECODE_CTX[1]"
 
 local length = ffi_new "size_t[1]"
 local uint8t = ffi_typeof "uint8_t[?]"

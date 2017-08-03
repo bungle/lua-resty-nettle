@@ -18,7 +18,7 @@ typedef struct chacha_poly1305_ctx {
   uint64_t data_size;
   uint8_t block[16];
   unsigned index;
-} CHACHA_POLY1305;
+} NETTLE_CHACHA_POLY1305;
 void nettle_chacha_poly1305_set_key(struct chacha_poly1305_ctx *ctx, const uint8_t *key);
 void nettle_chacha_poly1305_set_nonce(struct chacha_poly1305_ctx *ctx, const uint8_t *nonce);
 void nettle_chacha_poly1305_update(struct chacha_poly1305_ctx *ctx, size_t length, const uint8_t *data);
@@ -33,7 +33,7 @@ local dgt    = ffi_new(uint8t, 16)
 local chacha_poly1305 = {}
 chacha_poly1305.__index = chacha_poly1305
 
-local context  = ffi_typeof "CHACHA_POLY1305[1]"
+local context  = ffi_typeof "NETTLE_CHACHA_POLY1305[1]"
 local setkey   = lib.nettle_chacha_poly1305_set_key
 local setnonce = lib.nettle_chacha_poly1305_set_nonce
 local update   = lib.nettle_chacha_poly1305_update

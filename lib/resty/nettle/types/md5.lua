@@ -7,5 +7,5 @@ typedef struct md5_ctx {
   uint64_t count;
   uint8_t block[64];
   unsigned index;
-} MD5_CTX;
+} NETTLE_MD5_CTX;
 ]]
