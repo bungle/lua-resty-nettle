@@ -14,15 +14,17 @@ typedef void nettle_progress_func(void *ctx, int c);
 
 local function L()
     local ok, lib = pcall(ffi_load, "nettle")
-    if ok then return lib end
+    if ok and lib then return lib end
     for _, t in ipairs{ "so", "dylib", "dll" } do
+        ok, lib = pcall(ffi_load, "nettle." .. t)
+        if ok and lib then return lib end
         for i = 6, 4, -1 do
             ok, lib = pcall(ffi_load, "nettle." .. i)
-            if ok then return lib end
+            if ok and lib then return lib end
             ok, lib = pcall(ffi_load, "nettle." .. t .. "." .. i)
-            if ok then return lib end
+            if ok and lib then return lib end
             ok, lib = pcall(ffi_load, "libnettle." .. t .. "." .. i)
-            if ok then return lib end
+            if ok and lib then return lib end
         end
     end
     return nil, "unable to load nettle"

@@ -2,6 +2,12 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [0.103] - 2017-08-12
+### Fixed
+- More robust library loaders (they sometimes returned non-helpful booleans)
+  (see [#13](https://github.com/bungle/lua-resty-nettle/issues/10),
+     thanks [@xiangnanscu](https://github.com/xiangnanscu))
+
 ## [0.102] - 2017-06-05
 ### Fixed
 - Prefixed Nettle structs to avoid naming conflicts with other
