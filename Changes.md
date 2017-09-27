@@ -2,6 +2,12 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [0.104] - 2017-09-28
+### Added
+- Option to override library paths with global variables
+  (see [#15](https://github.com/bungle/lua-resty-nettle/pull/15),
+     thanks [@shashiranjan84](https://github.com/shashiranjan84))
+
 ## [0.103] - 2017-08-12
 ### Fixed
 - More robust library loaders (they sometimes returned non-helpful booleans)

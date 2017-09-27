@@ -1,5 +1,5 @@
 local require             = require
-local nettle, padding     = { _VERSION = "0.103" }, {}
+local nettle, padding     = { _VERSION = "0.104" }, {}
 nettle.aead               = require "resty.nettle.aead"
 nettle.aes                = require "resty.nettle.aes"
 nettle.arcfour            = require "resty.nettle.arcfour"
