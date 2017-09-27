@@ -18,12 +18,17 @@ local function L()
     for _, t in ipairs{ "so", "dylib", "dll" } do
         ok, lib = pcall(ffi_load, "nettle." .. t)
         if ok and lib then return lib end
+        local lib_path = (_NETTLE_LIB_PATH or "") .. "libnettle." .. t
+        ok, lib = pcall(ffi_load, lib_path)
+        if ok and lib then return lib end
         for i = 6, 4, -1 do
             ok, lib = pcall(ffi_load, "nettle." .. i)
             if ok and lib then return lib end
             ok, lib = pcall(ffi_load, "nettle." .. t .. "." .. i)
             if ok and lib then return lib end
             ok, lib = pcall(ffi_load, "libnettle." .. t .. "." .. i)
+            if ok and lib then return lib end
+            ok, lib = pcall(ffi_load, lib_path .. "." .. i)
             if ok and lib then return lib end
         end
     end

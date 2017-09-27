@@ -9,12 +9,17 @@ local function L()
     for _, t in ipairs{ "so", "dylib", "dll" } do
         ok, lib = pcall(ffi_load, "hogweed." .. t)
         if ok and lib then return lib end
+        local lib_path = (_HOGWEED_LIB_PATH or "") .. "libhogweed." .. t
+        ok, lib = pcall(ffi_load, lib_path)
+        if ok and lib then return lib end
         for i = 4, 2, -1 do
             ok, lib = pcall(ffi_load, "hogweed." .. i)
             if ok and lib then return lib end
             ok, lib = pcall(ffi_load, "hogweed." .. t .. "." .. i)
             if ok and lib then return lib end
             ok, lib = pcall(ffi_load, "libhogweed." .. t .. "." .. i)
+            if ok and lib then return lib end
+            ok, lib = pcall(ffi_load, lib_path .. "." .. i)
             if ok and lib then return lib end
         end
     end
