@@ -17,16 +17,16 @@ local function L()
 
     if lib_path then
         for _, t in ipairs{ "so", "dylib", "dll" } do
-            ok, lib = pcall(ffi_load, lib_path .. "libgmp." .. t)
+            ok, lib = pcall(ffi_load, lib_path .. "libhogweed." .. t)
             if ok and lib then return lib end
-            ok, lib = pcall(ffi_load, lib_path .. "gmp." .. t)
+            ok, lib = pcall(ffi_load, lib_path .. "hogweed." .. t)
             if ok and lib then return lib end
             for i = 4, 2, -1 do
-                ok, lib = pcall(ffi_load, lib_path .. "libgmp." .. t .. "." .. i)
+                ok, lib = pcall(ffi_load, lib_path .. "libhogweed." .. t .. "." .. i)
                 if ok and lib then return lib end
-                ok, lib = pcall(ffi_load, lib_path .. "gmp." .. t .. "." .. i)
+                ok, lib = pcall(ffi_load, lib_path .. "hogweed." .. t .. "." .. i)
                 if ok and lib then return lib end
-                ok, lib = pcall(ffi_load, lib_path .. "gmp." .. i)
+                ok, lib = pcall(ffi_load, lib_path .. "hogweed." .. i)
                 if ok and lib then return lib end
             end
         end
