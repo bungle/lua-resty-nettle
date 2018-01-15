@@ -14,35 +14,41 @@ local tonumber     = tonumber
 local setmetatable = setmetatable
 
 ffi_cdef[[
-typedef struct base64_encode_ctx {
-  unsigned word;
-  unsigned bits;
-} NETTLE_BASE64_ENCODE_CTX;
-typedef struct base64_decode_ctx {
-  unsigned word;
-  unsigned bits;
-  unsigned padding;
-} NETTLE_BASE64_DECODE_CTX;
 void   nettle_base64_encode_init   (struct base64_encode_ctx *ctx);
 void   nettle_base64url_encode_init(struct base64_encode_ctx *ctx);
-size_t nettle_base64_encode_single (struct base64_encode_ctx *ctx, uint8_t *dst, uint8_t src);
-size_t nettle_base64_encode_update (struct base64_encode_ctx *ctx, uint8_t *dst, size_t length, const uint8_t *src);
-size_t nettle_base64_encode_final  (struct base64_encode_ctx *ctx, uint8_t *dst);
-void   nettle_base64_encode_raw    (uint8_t *dst, size_t length, const uint8_t *src);
+size_t nettle_base64_encode_single (struct base64_encode_ctx *ctx, char *dst, uint8_t src);
+size_t nettle_base64_encode_update (struct base64_encode_ctx *ctx, char *dst, size_t length, const uint8_t *src);
+size_t nettle_base64_encode_final  (struct base64_encode_ctx *ctx, char *dst);
+void   nettle_base64_encode_raw    (char *dst, size_t length, const uint8_t *src);
 void   nettle_base64_decode_init   (struct base64_decode_ctx *ctx);
 void   nettle_base64url_decode_init(struct base64_decode_ctx *ctx);
-int    nettle_base64_decode_single (struct base64_decode_ctx *ctx, uint8_t *dst, uint8_t src);
-int    nettle_base64_decode_update (struct base64_decode_ctx *ctx, size_t *dst_length, uint8_t *dst, size_t src_length, const uint8_t *src);
+int    nettle_base64_decode_single (struct base64_decode_ctx *ctx, uint8_t *dst, char src);
+int    nettle_base64_decode_update (struct base64_decode_ctx *ctx, size_t *dst_length, uint8_t *dst, size_t src_length, const char *src);
 int    nettle_base64_decode_final  (struct base64_decode_ctx *ctx);
 ]]
-local ctxenc = ffi_typeof "NETTLE_BASE64_ENCODE_CTX[1]"
-local ctxdec = ffi_typeof "NETTLE_BASE64_DECODE_CTX[1]"
+
+local ctxenc = ffi_typeof [[
+struct base64_encode_ctx {
+  const char *alphabet;
+  unsigned short word;
+  unsigned char bits;
+}]]
+
+local ctxdec =  ffi_typeof [[
+struct base64_decode_ctx {
+  const signed char *table;
+  unsigned short word;
+  unsigned char bits;
+  unsigned char padding;
+}]]
 
 local length = ffi_new "size_t[1]"
 local uint8t = ffi_typeof "uint8_t[?]"
 local buf8   = ffi_new(uint8t, 1)
-local buf16  = ffi_new(uint8t, 2)
-local buf24  = ffi_new(uint8t, 3)
+
+local chart = ffi_typeof "char[?]"
+local char16  = ffi_new(chart, 2)
+local char24  = ffi_new(chart, 3)
 
 local encoder = {}
 encoder.__index = encoder
@@ -58,21 +64,21 @@ function encoder.new(urlsafe)
 end
 
 function encoder:single(src)
-    local len = lib.nettle_base64_encode_single(self.context, buf16, byte(src))
-    return ffi_str(buf16, len), len
+    local len = lib.nettle_base64_encode_single(self.context, char16, byte(src))
+    return ffi_str(char16, len), tonumber(len)
 end
 
 function encoder:update(src)
     local len = #src
     local dln = ceil(4 * len / 3)
-    local dst = ffi_new(uint8t, dln)
+    local dst = ffi_new(chart, dln)
     local len = lib.nettle_base64_encode_update(self.context, dst, len, src)
-    return ffi_str(dst, len), len
+    return ffi_str(dst, len), tonumber(len)
 end
 
 function encoder:final()
-    local len = lib.nettle_base64_encode_final(self.context, buf24)
-    return ffi_str(buf24, len), len
+    local len = lib.nettle_base64_encode_final(self.context, char24)
+    return ffi_str(char24, len), tonumber(len)
 end
 
 local decoder = {}
@@ -115,7 +121,7 @@ local base64 = setmetatable({ encoder = encoder, decoder = decoder }, {
     __call = function(_, src)
         local len = #src
         local dln = ceil(4 * len / 3)
-        local dst = ffi_new(uint8t, dln)
+        local dst = ffi_new(chart, dln)
         lib.nettle_base64_encode_raw(dst, len, src)
         return ffi_str(dst, dln)
     end
@@ -130,11 +136,11 @@ function base64.encode(src, urlsafe)
     end
     local len = #src
     local dln = band((4 * len / 3) + 3, bnot(3))
-    local dst = ffi_new(uint8t, dln)
+    local dst = ffi_new(chart, dln)
     dst = ffi_str(dst, lib.nettle_base64_encode_update(ctx, dst, len, src))
-    local fnl = lib.nettle_base64_encode_final(ctx, buf24)
+    local fnl = lib.nettle_base64_encode_final(ctx, char24)
     if fnl > 0 then
-        return dst .. ffi_str(buf24, fnl)
+        return dst .. ffi_str(char24, fnl)
     end
     return dst
 end
