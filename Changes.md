@@ -2,7 +2,12 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
-## [0.104] - 2017-09-29
+## [1.0] - 2019-10-28
+### Everything
+- Huge refactoring. A lot of new stuff. From this on, I will keep better changelog, ;-).
+
+
+## [0.105] - 2017-09-29
 ### Fixed
 - Hogweed library loading (copy paste bug, sorry)
 
