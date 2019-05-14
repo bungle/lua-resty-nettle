@@ -60,4 +60,4 @@ local function L()
     return nil, "unable to load nettle"
 end
 
-return L()
+return assert(L())
