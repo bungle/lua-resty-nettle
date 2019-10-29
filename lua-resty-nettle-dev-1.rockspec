@@ -16,7 +16,7 @@ description = {
     },
 }
 dependencies = {
-    "luajit >= 2.0",
+    "lua >= 5.1",
 }
 build = {
     type = "builtin",
@@ -90,6 +90,7 @@ build = {
         ["resty.nettle.types.gcm"]             = "lib/resty/nettle/types/gcm.lua",
         ["resty.nettle.types.gosthash94"]      = "lib/resty/nettle/types/gosthash94.lua",
         ["resty.nettle.types.hmac"]            = "lib/resty/nettle/types/hmac.lua",
+        ["resty.nettle.types.knuth-lfib"]      = "lib/resty/nettle/types/knuth-lfib.lua",
         ["resty.nettle.types.md2"]             = "lib/resty/nettle/types/md2.lua",
         ["resty.nettle.types.md4"]             = "lib/resty/nettle/types/md4.lua",
         ["resty.nettle.types.md5"]             = "lib/resty/nettle/types/md5.lua",
