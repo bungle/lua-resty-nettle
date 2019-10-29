@@ -1,29 +1,19 @@
-require "resty.nettle.types.des"
+require "resty.nettle.types.curve25519"
 
-local lib        = require "resty.nettle.hogweed"
-local ffi        = require "ffi"
-local ffi_new    = ffi.new
-local ffi_str    = ffi.string
-local ffi_cdef   = ffi.cdef
-local ffi_typeof = ffi.typeof
-
-local t = ffi_typeof "uint8_t[32]"
-local q = ffi_new(t)
-
-ffi_cdef[[
-void nettle_curve25519_mul_g(uint8_t *q, const uint8_t *n);
-void nettle_curve25519_mul(uint8_t *q, const uint8_t *n, const uint8_t *p);
-]]
+local types = require "resty.nettle.types.common"
+local lib = require "resty.nettle.hogweed"
+local ffi = require "ffi"
+local ffi_str = ffi.string
 
 local curve = {}
 
 function curve.mul(n, p)
-    if p then
-        lib.nettle_curve25519_mul(q, n, p)
-    else
-        lib.nettle_curve25519_mul_g(q, n)
-    end
-    return ffi_str(q, 32);
+  if p then
+    lib.nettle_curve25519_mul(types.uint8_t_32, n, p)
+  else
+    lib.nettle_curve25519_mul_g(types.uint8_t_32, n)
+  end
+  return ffi_str(types.uint8_t_32, 32);
 end
 
 return curve

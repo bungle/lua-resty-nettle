@@ -1,52 +1,81 @@
-require "resty.nettle.types.cbc"
-require "resty.nettle.types.ctr"
-require "resty.nettle.types.eax"
-require "resty.nettle.types.gcm"
-require "resty.nettle.types.ccm"
-
-local ffi      = require "ffi"
+local ffi = require "ffi"
 local ffi_cdef = ffi.cdef
+local ffi_typeof = ffi.typeof
 
-ffi_cdef[[
-typedef struct aes128_ctx {
-  uint32_t keys[44];
-} NETTLE_AES128_CTX;
-typedef struct aes192_ctx {
-  uint32_t keys[52];
-} NETTLE_AES192_CTX;
-typedef struct aes256_ctx {
-  uint32_t keys[60];
-} NETTLE_AES256_CTX;
-typedef struct eax_aes128_ctx {
-  struct eax_key key;
-  struct eax_ctx eax;
-  struct aes128_ctx cipher;
-} NETTLE_EAX_AES128_CTX;
-typedef struct gcm_aes128_ctx {
-  struct gcm_key key;
-  struct gcm_ctx gcm;
-  struct aes128_ctx cipher;
-} NETTLE_GCM_AES128_CTX;
-typedef struct gcm_aes192_ctx {
-  struct gcm_key key;
-  struct gcm_ctx gcm;
-  struct aes192_ctx cipher;
-} NETTLE_GCM_AES192_CTX;
-typedef struct gcm_aes256_ctx {
-  struct gcm_key key;
-  struct gcm_ctx gcm;
-  struct aes256_ctx cipher;
-} NETTLE_GCM_AES256_CTX;
-typedef struct ccm_aes128_ctx {
-    struct ccm_ctx      ccm;
-    struct aes128_ctx   cipher;
-} NETTLE_CCM_AES128_CTX;
-typedef struct ccm_aes192_ctx {
-    struct ccm_ctx      ccm;
-    struct aes192_ctx   cipher;
-} NETTLE_CCM_AES192_CTX;
-typedef struct ccm_aes256_ctx {
-    struct ccm_ctx      ccm;
-    struct aes256_ctx   cipher;
-} NETTLE_CCM_AES256_CTX;
+ffi_cdef [[
+void
+nettle_aes128_set_encrypt_key(struct aes128_ctx *ctx, const uint8_t *key);
+
+void
+nettle_aes128_set_decrypt_key(struct aes128_ctx *ctx, const uint8_t *key);
+
+void
+nettle_aes128_invert_key(struct aes128_ctx *dst,
+                         const struct aes128_ctx *src);
+
+void
+nettle_aes128_encrypt(const struct aes128_ctx *ctx,
+                      size_t length, uint8_t *dst,
+                      const uint8_t *src);
+
+void
+nettle_aes128_decrypt(const struct aes128_ctx *ctx,
+                      size_t length, uint8_t *dst,
+                      const uint8_t *src);
+
+void
+nettle_aes192_set_encrypt_key(struct aes192_ctx *ctx, const uint8_t *key);
+
+void
+nettle_aes192_set_decrypt_key(struct aes192_ctx *ctx, const uint8_t *key);
+
+void
+nettle_aes192_invert_key(struct aes192_ctx *dst,
+                         const struct aes192_ctx *src);
+
+void
+nettle_aes192_encrypt(const struct aes192_ctx *ctx,
+                      size_t length, uint8_t *dst,
+                      const uint8_t *src);
+
+void
+nettle_aes192_decrypt(const struct aes192_ctx *ctx,
+                      size_t length, uint8_t *dst,
+                      const uint8_t *src);
+
+void
+nettle_aes256_set_encrypt_key(struct aes256_ctx *ctx, const uint8_t *key);
+
+void
+nettle_aes256_set_decrypt_key(struct aes256_ctx *ctx, const uint8_t *key);
+
+void
+nettle_aes256_invert_key(struct aes256_ctx *dst,
+                         const struct aes256_ctx *src);
+
+void
+nettle_aes256_encrypt(const struct aes256_ctx *ctx,
+                      size_t length, uint8_t *dst,
+                      const uint8_t *src);
+
+void
+nettle_aes256_decrypt(const struct aes256_ctx *ctx,
+                      size_t length, uint8_t *dst,
+                      const uint8_t *src);
 ]]
+
+return {
+  aes128 = ffi_typeof [[
+struct aes128_ctx {
+  uint32_t keys[4 * (10 + 1)];
+}]],
+  aes192 = ffi_typeof [[
+struct aes192_ctx {
+  uint32_t keys[4 * (12 + 1)];
+}]],
+  aes256 = ffi_typeof [[
+struct aes256_ctx {
+  uint32_t keys[4 * (14 + 1)];
+}]],
+}
+
