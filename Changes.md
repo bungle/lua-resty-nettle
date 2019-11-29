@@ -2,6 +2,13 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [1.1] - 2019-11-29
+### Fixed
+- Random data used with OpenResty leaked a callback which could have
+  resulted `too many callbacks` error. The function is now casted as
+  a proper C function.
+
+
 ## [1.0] - 2019-10-28
 ### Everything
 - Huge refactoring. A lot of new stuff. From this on, I will keep better changelog, ;-).
