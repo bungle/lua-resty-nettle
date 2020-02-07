@@ -20,4 +20,10 @@ function pbkdf2.hmac_sha256(key, iterations, salt, len)
   return ffi_str(buf, len)
 end
 
+function pbkdf2.hmac_gosthash94cp(key, iterations, salt, len)
+  local buf = ffi_new(types.uint8_t, len)
+  lib.nettle_pbkdf2_hmac_gosthash94cp(#key, key, iterations, #salt, salt, len, buf)
+  return ffi_str(buf, len)
+end
+
 return pbkdf2
