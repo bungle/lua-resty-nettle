@@ -2,6 +2,14 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [1.2] - 2020-03-26
+### Added
+- Support for `pbkdf2.hmac_gosthash94cp`
+
+### Fixed
+- ecc point returned invalid length on some curves for point:x(),
+  point.y(), point.xy() and point.coordinates()
+
 ## [1.1] - 2019-11-29
 ### Fixed
 - Random data used with OpenResty leaked a callback which could have
@@ -16,7 +24,7 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 
 ## [0.105] - 2017-09-29
 ### Fixed
-- Hogweed library loading (copy paste bug, sorry)
+- Hogweed library loading (copy paste bug, sorry).
 
 
 ## [0.104] - 2017-09-28
