@@ -31,6 +31,19 @@ do
   curves["P-521"] = curve("nettle_get_secp_521r1")
 end
 
+local curve_sizes = {
+  ["P-192"] = 24,
+  ["P-224"] = 28,
+  ["P-256"] = 32,
+  ["P-384"] = 48,
+  ["P-521"] = 66,
+  [curves["P-192"]] = 24,
+  [curves["P-224"]] = 28,
+  [curves["P-256"]] = 32,
+  [curves["P-384"]] = 48,
+  [curves["P-384"]] = 66,
+}
+
 local curve = {}
 
 curve.__index = curve
@@ -43,6 +56,8 @@ function point.new(c, x, y)
   local ctx = ffi_gc(ffi_new(context.point), hogweed.nettle_ecc_point_clear)
 
   c = c or curves["P-256"]
+
+  local size = curve_sizes[c]
 
   if type(c) == "cdata" then
     hogweed.nettle_ecc_point_init(ctx, c)
@@ -60,14 +75,14 @@ function point.new(c, x, y)
     end
   end
 
-  return setmetatable({ context = ctx }, point)
+  return setmetatable({ context = ctx, size = size }, point)
 end
 
 function point:coordinates()
   hogweed.nettle_ecc_point_get(self.context, mpz_t_1, mpz_t_2)
   return {
-    x = mpz.tostring(mpz_t_1, 66),
-    y = mpz.tostring(mpz_t_2, 66),
+    x = mpz.tostring(mpz_t_1, self.size),
+    y = mpz.tostring(mpz_t_2, self.size),
   }
 end
 
