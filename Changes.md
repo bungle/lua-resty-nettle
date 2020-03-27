@@ -2,6 +2,13 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [1.3] - 2020-03-27
+### Fixed
+- Fix RSA to pass the right known length to mpz.tostring() on signing
+
+### Changed
+- No need to give length to ecc scalar:d()
+
 ## [1.2] - 2020-03-26
 ### Added
 - Support for `pbkdf2.hmac_gosthash94cp`
