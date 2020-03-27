@@ -122,6 +122,8 @@ function scalar.new(c, z)
 
   c = c or curves["P-256"]
 
+  local size = curve_sizes[c]
+
   if type(c) == "cdata" then
     hogweed.nettle_ecc_scalar_init(ctx, c)
   elseif curves[c] then
@@ -138,13 +140,13 @@ function scalar.new(c, z)
     end
   end
 
-  return setmetatable({ context = ctx }, scalar)
+  return setmetatable({ context = ctx, size = size }, scalar)
 end
 
 
-function scalar:d(len)
+function scalar:d()
   hogweed.nettle_ecc_scalar_get(self.context, mpz_t_1)
-  return mpz.tostring(mpz_t_1, len)
+  return mpz.tostring(mpz_t_1, self.size)
 end
 
 local ecc = { point = point, scalar = scalar, curve = curve }
