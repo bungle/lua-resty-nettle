@@ -2,6 +2,10 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [1.4] - 2020-03-28
+### Fixed
+- Fix (again) RSA to do right calculation of signature length
+
 ## [1.3] - 2020-03-27
 ### Fixed
 - Fix RSA to pass the right known length to mpz.tostring() on signing

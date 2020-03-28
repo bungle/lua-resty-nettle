@@ -232,7 +232,7 @@ function rsa:sign_digest(digest)
     return nil, "supported RSA digests for signing are MD5, SHA1, SHA256, and SHA512"
   end
 
-  return mpz.tostring(sig, l * 8)
+  return mpz.tostring(sig)
 end
 
 function rsa:sign_digest_tr(digest)
@@ -269,7 +269,7 @@ function rsa:sign_digest_tr(digest)
     return nil, "supported RSA digests with blinding are MD5, SHA1, SHA256, and SHA512"
   end
 
-  return mpz.tostring(sig, l * 8)
+  return mpz.tostring(sig)
 end
 
 function rsa:verify_digest(digest, signature)
@@ -327,7 +327,7 @@ function rsa:pss_sign_digest(digest)
     return nil, "supported RSA-PSS digests for signing are SHA256, SHA384, and SHA512"
   end
 
-  return mpz.tostring(sig, l * 8)
+  return mpz.tostring(sig)
 end
 
 function rsa:pss_verify_digest(digest, signature)
