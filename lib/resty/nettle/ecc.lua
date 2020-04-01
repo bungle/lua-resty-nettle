@@ -68,8 +68,16 @@ function point.new(c, x, y)
   end
 
   if x and y then
-    mpz.set(mpz_t_1, x)
-    mpz.set(mpz_t_2, y)
+    local ok, err = mpz.set(mpz_t_1, x)
+    if not ok then
+      return nil, "unable to set ECC point x-coordinate (" .. err .. ")"
+    end
+
+    ok, err  = mpz.set(mpz_t_2, y)
+    if not ok then
+      return nil, "unable to set ECC point y-coordinate (" .. err .. ")"
+    end
+
     if hogweed.nettle_ecc_point_set(ctx, mpz_t_1, mpz_t_2) ~= 1 then
       return nil, "unable to set ECC point"
     end
@@ -133,7 +141,10 @@ function scalar.new(c, z)
   end
 
   if z then
-    mpz.set(mpz_t_1, z)
+    local ok, err = mpz.set(mpz_t_1, z)
+    if not ok then
+      return nil, "unable to set ECC scalar (" .. err .. ")"
+    end
 
     if hogweed.nettle_ecc_scalar_set(ctx, mpz_t_1) ~= 1 then
       return nil, "unable to set ECC scalar"

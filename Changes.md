@@ -2,6 +2,14 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+## [1.5] - 2020-04-01
+### Fixed
+- Fix RSA to do right calculation of exponent lengths
+
+### Added
+- Binding to time resistant RSA decrypt
+- Binding to time and side-channel resistant RSA decrypt
+
 ## [1.4] - 2020-03-28
 ### Fixed
 - Fix (again) RSA to do right calculation of signature length

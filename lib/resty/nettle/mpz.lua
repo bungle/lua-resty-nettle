@@ -29,7 +29,7 @@ function mpz.new(value)
 end
 
 function mpz.size(mpz_t)
-  return gmp.__gmpz_size(mpz_t)
+  return hogweed.nettle_mpz_sizeinbase_256_u(mpz_t)
 end
 
 function mpz.invert(rop, op1, op2)
@@ -57,7 +57,7 @@ function mpz.set(mpz_t, value)
 end
 
 function mpz.tostring(mpz_t, len)
-  len = len or mpz.size(mpz_t) * 8
+  len = len or mpz.size(mpz_t)
   local buf = ffi_new(types.uint8_t, len)
   hogweed.nettle_mpz_get_str_256(len, buf, mpz_t)
   return ffi_str(buf, len)
