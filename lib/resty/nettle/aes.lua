@@ -351,6 +351,7 @@ function aes.new(key, mode, iv, ad)
     cipher.update(context, #ad, ad)
   end
   return setmetatable({
+    ad = ad,
     context = context,
     cipher = cipher
   }, aes)
