@@ -15,8 +15,20 @@ nettle_pbkdf2_hmac_sha256(size_t key_length, const uint8_t *key,
                           size_t length, uint8_t *dst);
 
 void
+nettle_pbkdf2_hmac_sha384(size_t key_length, const uint8_t *key,
+                          unsigned iterations,
+                          size_t salt_length, const uint8_t *salt,
+                          size_t length, uint8_t *dst);
+
+void
+nettle_pbkdf2_hmac_sha512(size_t key_length, const uint8_t *key,
+                          unsigned iterations,
+                          size_t salt_length, const uint8_t *salt,
+                          size_t length, uint8_t *dst);
+
+void
 nettle_pbkdf2_hmac_gosthash94cp(size_t key_length, const uint8_t *key,
-			                   unsigned iterations,
-			                   size_t salt_length, const uint8_t *salt,
-			                   size_t length, uint8_t *dst);
+			                          unsigned iterations,
+			                          size_t salt_length, const uint8_t *salt,
+			                          size_t length, uint8_t *dst);
 ]]
