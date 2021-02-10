@@ -41,6 +41,7 @@ return {
   sha1                = require "resty.nettle.sha1",
   sha2                = require "resty.nettle.sha2",
   sha3                = require "resty.nettle.sha3",
+  streebog            = require "resty.nettle.streebog",
   twofish             = require "resty.nettle.twofish",
   umac                = require "resty.nettle.umac",
   version             = require "resty.nettle.version",
