@@ -2,6 +2,18 @@
 
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
+
+## [1.6] - Upcoming
+### Added
+- Add Streebog hashing algorithms (256 and 512)
+- Add PBKDF2 HMAC-SHA384 and HMAC-SHA512 variants
+- Add support for Nettle 3.6.x and Nettle 3.7.x
+- Add support for GC256B and GC512A ECC curves 
+  
+### Fixed
+- P-512 curve was missing on internal curves table with cdata
+
+
 ## [1.5] - 2020-04-01
 ### Fixed
 - Fix RSA to do right calculation of exponent lengths
@@ -10,9 +22,11 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 - Binding to time resistant RSA decrypt
 - Binding to time and side-channel resistant RSA decrypt
 
+
 ## [1.4] - 2020-03-28
 ### Fixed
 - Fix (again) RSA to do right calculation of signature length
+
 
 ## [1.3] - 2020-03-27
 ### Fixed
@@ -21,6 +35,7 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 ### Changed
 - No need to give length to ecc scalar:d()
 
+
 ## [1.2] - 2020-03-26
 ### Added
 - Support for `pbkdf2.hmac_gosthash94cp`
@@ -28,6 +43,7 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 ### Fixed
 - ecc point returned invalid length on some curves for point:x(),
   point.y(), point.xy() and point.coordinates()
+
 
 ## [1.1] - 2019-11-29
 ### Fixed
@@ -52,11 +68,13 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
   (see [#15](https://github.com/bungle/lua-resty-nettle/pull/15),
      thanks [@shashiranjan84](https://github.com/shashiranjan84))
 
+
 ## [0.103] - 2017-08-12
 ### Fixed
 - More robust library loaders (they sometimes returned non-helpful booleans)
   (see [#14](https://github.com/bungle/lua-resty-nettle/issues/14),
      thanks [@xiangnanscu](https://github.com/xiangnanscu))
+
 
 ## [0.102] - 2017-06-05
 ### Fixed
@@ -65,10 +83,12 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
   (see [#13](https://github.com/bungle/lua-resty-nettle/issues/13),
    thanks [@xiangnanscu](https://github.com/xiangnanscu))
 
+
 ## [0.101] - 2017-06-05
 ### Changed
 - Tries to load older dependencies in case the latest are not available
   (no gurantees that they will work, though)
+
 
 ## [0.100]
 ### Changed
@@ -78,11 +98,13 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
    thanks [@hcaihao](https://github.com/hcaihao))
 - Error messages without ending dot and in lowercase.
 
+
 ## [0.99]
 ### Added
 - A more robust dynamic library loading.
   (see [#10](https://github.com/bungle/lua-resty-nettle/issues/10),
    thanks [@hcaihao](https://github.com/hcaihao))
+
 
 ## [0.98]
 ### Changed
@@ -97,11 +119,13 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 ### Fixed
 - Base64 padding related fixes.
 
+
 ## [0.97] 
 ### Added
 - Added RSA signing algorithms (MD5, SHA1, SHA256 and SHA512).
 - Added CBC and CTR modes to Twofish.
 - Added curve25519.
+
 
 ## [0.96] - 2016-11-22
 ### Added
