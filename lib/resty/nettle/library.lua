@@ -24,7 +24,7 @@ local function L()
       if ok and lib then return lib end
       ok, lib = pcall(ffi_load, lib_path .. "nettle." .. t)
       if ok and lib then return lib end
-      for i = 7, 6, -1 do
+      for i = 8, 6, -1 do
         ok, lib = pcall(ffi_load, lib_path .. "libnettle." .. t .. "." .. i)
         if ok and lib then return lib end
         ok, lib = pcall(ffi_load, lib_path .. "nettle." .. t .. "." .. i)
@@ -40,7 +40,7 @@ local function L()
   for _, t in ipairs { "so", "dylib", "dll" } do
     ok, lib = pcall(ffi_load, "nettle." .. t)
     if ok and lib then return lib end
-    for i = 7, 6, -1 do
+    for i = 8, 6, -1 do
       ok, lib = pcall(ffi_load, "nettle." .. i)
       if ok and lib then return lib end
       ok, lib = pcall(ffi_load, "nettle." .. t .. "." .. i)
