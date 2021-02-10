@@ -29,6 +29,8 @@ do
   curves["P-256"] = curve("nettle_get_secp_256r1")
   curves["P-384"] = curve("nettle_get_secp_384r1")
   curves["P-521"] = curve("nettle_get_secp_521r1")
+  curves["GC256B"] = curve("nettle_get_gost_gc256b")
+  curves["GC512A"] = curve("nettle_get_gost_gc512a")
 end
 
 local curve_sizes = {
@@ -37,11 +39,15 @@ local curve_sizes = {
   ["P-256"] = 32,
   ["P-384"] = 48,
   ["P-521"] = 66,
+  ["GC256B"] = 32,
+  ["GC512A"] = 64,
   [curves["P-192"]] = 24,
   [curves["P-224"]] = 28,
   [curves["P-256"]] = 32,
   [curves["P-384"]] = 48,
-  [curves["P-384"]] = 66,
+  [curves["P-521"]] = 66,
+  [curves["GC256B"]] = 32,
+  [curves["GC512A"]] = 64,
 }
 
 local curve = {}
