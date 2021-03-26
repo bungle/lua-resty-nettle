@@ -81,7 +81,7 @@ return setmetatable({
   sha224 = factory(hashes.sha3_224),
   sha256 = factory(hashes.sha3_256),
   sha384 = factory(hashes.sha3_384),
-  sha512 = factory(hashes[512])
+  sha512 = factory(hashes.sha3_512)
 }, {
   __call = function(_, bits, data, len)
     local hash = hashes[bits]
