@@ -61,6 +61,7 @@ build = {
         ["resty.nettle.sha1"]                  = "lib/resty/nettle/sha1.lua",
         ["resty.nettle.sha2"]                  = "lib/resty/nettle/sha2.lua",
         ["resty.nettle.sha3"]                  = "lib/resty/nettle/sha3.lua",
+        ["resty.nettle.sha3-shake"]            = "lib/resty/nettle/sha3-shake.lua",
         ["resty.nettle.streebog"]              = "lib/resty/nettle/streebog.lua",
         ["resty.nettle.twofish"]               = "lib/resty/nettle/twofish.lua",
         ["resty.nettle.umac"]                  = "lib/resty/nettle/umac.lua",

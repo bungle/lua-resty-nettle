@@ -59,6 +59,10 @@ void
 nettle_sha3_512_digest(struct sha3_512_ctx *ctx,
                        size_t length,
                        uint8_t *digest);
+void
+nettle_sha3_256_shake(struct sha3_256_ctx *ctx,
+	                    size_t length,
+	                    uint8_t *digest);
 ]]
 
 
