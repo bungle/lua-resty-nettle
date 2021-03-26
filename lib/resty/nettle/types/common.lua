@@ -9,7 +9,7 @@ local types = {
   char = ffi_typeof "char[?]",
 }
 
-return {
+local predefined = {
   size_t = types.size_t,
   size_t_8 = ffi_new(types.size_t, 1),
   uint8_t = types.uint8_t,
@@ -19,6 +19,7 @@ return {
   uint8_t_12 = ffi_new(types.uint8_t, 12),
   uint8_t_16 = ffi_new(types.uint8_t, 16),
   uint8_t_20 = ffi_new(types.uint8_t, 20),
+  uint8_t_24 = ffi_new(types.uint8_t, 24),
   uint8_t_28 = ffi_new(types.uint8_t, 28),
   uint8_t_32 = ffi_new(types.uint8_t, 32),
   uint8_t_48 = ffi_new(types.uint8_t, 48),
@@ -28,3 +29,19 @@ return {
   char_2 = ffi_new(types.char, 2),
   char_3 = ffi_new(types.char, 3),
 }
+
+predefined.uint8 = {
+  [1] = predefined.uint8_t_1,
+  [4] = predefined.uint8_t_4,
+  [8] = predefined.uint8_t_8,
+  [12] = predefined.uint8_t_12,
+  [16] = predefined.uint8_t_16,
+  [20] = predefined.uint8_t_20,
+  [24] = predefined.uint8_t_24,
+  [28] = predefined.uint8_t_28,
+  [32] = predefined.uint8_t_32,
+  [48] = predefined.uint8_t_48,
+  [64] = predefined.uint8_t_64,
+}
+
+return predefined

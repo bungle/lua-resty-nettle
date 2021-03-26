@@ -9,6 +9,7 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 - Add PBKDF2 HMAC-SHA384 and HMAC-SHA512 variants
 - Add support for Nettle 3.6.x and Nettle 3.7.x
 - Add support for GC256B and GC512A ECC curves 
+- Add support for SHA3 256 SHAKE
   
 ### Fixed
 - P-512 curve was missing on internal curves table with cdata
