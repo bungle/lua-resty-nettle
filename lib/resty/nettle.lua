@@ -21,6 +21,7 @@ return {
   ["ed25519-sha512"]  = require "resty.nettle.ed25519-sha512",
   gmp                 = require "resty.nettle.gmp",
   gosthash94          = require "resty.nettle.gosthash94",
+  gosthash94cp        = require "resty.nettle.gosthash94cp",
   hmac                = require "resty.nettle.hmac",
   hogweed             = require "resty.nettle.hogweed",
   knuth_lfib          = require "resty.nettle.knuth-lfib",

@@ -42,6 +42,7 @@ build = {
         ["resty.nettle.eddsa"]                 = "lib/resty/nettle/eddsa.lua",
         ["resty.nettle.gmp"]                   = "lib/resty/nettle/gmp.lua",
         ["resty.nettle.gosthash94"]            = "lib/resty/nettle/gosthash94.lua",
+        ["resty.nettle.gosthash94cp"]          = "lib/resty/nettle/gosthash94cp.lua",
         ["resty.nettle.hmac"]                  = "lib/resty/nettle/hmac.lua",
         ["resty.nettle.hogweed"]               = "lib/resty/nettle/hogweed.lua",
         ["resty.nettle.knuth-lfib"]            = "lib/resty/nettle/knuth-lfib.lua",
