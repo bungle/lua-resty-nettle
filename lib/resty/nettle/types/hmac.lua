@@ -2,6 +2,8 @@ require "resty.nettle.types.md5"
 require "resty.nettle.types.ripemd160"
 require "resty.nettle.types.sha1"
 require "resty.nettle.types.sha2"
+require "resty.nettle.types.gosthash94"
+require "resty.nettle.types.streebog"
 
 local ffi = require "ffi"
 local ffi_cdef = ffi.cdef
@@ -98,6 +100,50 @@ nettle_hmac_sha384_set_key(struct hmac_sha512_ctx *ctx,
 void
 nettle_hmac_sha384_digest(struct hmac_sha512_ctx *ctx,
                           size_t length, uint8_t *digest);
+
+void
+nettle_hmac_gosthash94_set_key(struct hmac_gosthash94_ctx *ctx,
+			                         size_t key_length, const uint8_t *key);
+
+void
+nettle_hmac_gosthash94_update(struct hmac_gosthash94_ctx *ctx,
+		                          size_t length, const uint8_t *data);
+
+void
+nettle_hmac_gosthash94_digest(struct hmac_gosthash94_ctx *ctx,
+		                          size_t length, uint8_t *digest);
+
+void
+nettle_hmac_gosthash94cp_set_key(struct hmac_gosthash94_ctx *ctx,
+			                           size_t key_length, const uint8_t *key);
+
+void
+nettle_hmac_gosthash94cp_update(struct hmac_gosthash94_ctx *ctx,
+			                          size_t length, const uint8_t *data);
+
+void
+nettle_hmac_gosthash94cp_digest(struct hmac_gosthash94_ctx *ctx,
+			                          size_t length, uint8_t *digest);
+
+void
+nettle_hmac_streebog512_set_key(struct hmac_streebog512_ctx *ctx,
+		                            size_t key_length, const uint8_t *key);
+
+void
+nettle_hmac_streebog512_update(struct hmac_streebog512_ctx *ctx,
+		                           size_t length, const uint8_t *data);
+
+void
+nettle_hmac_streebog512_digest(struct hmac_streebog512_ctx *ctx,
+		                           size_t length, uint8_t *digest);
+
+void
+nettle_hmac_streebog256_set_key(struct hmac_streebog512_ctx *ctx,
+		                            size_t key_length, const uint8_t *key);
+
+void
+nettle_hmac_streebog256_digest(struct hmac_streebog512_ctx *ctx,
+		                           size_t length, uint8_t *digest);
 ]]
 
 
@@ -113,6 +159,20 @@ struct hmac_sha512_ctx {
   struct sha512_ctx outer;
   struct sha512_ctx inner;
   struct sha512_ctx state;
+}]]
+
+local gosthash94 = ffi_typeof [[
+struct hmac_gosthash94_ctx {
+  struct gosthash94_ctx outer;
+  struct gosthash94_ctx inner;
+  struct gosthash94_ctx state;
+}]]
+
+local streebog512 = ffi_typeof [[
+struct hmac_streebog512_ctx {
+  struct streebog512_ctx outer;
+  struct streebog512_ctx inner;
+  struct streebog512_ctx state;
 }]]
 
 return {
@@ -138,4 +198,8 @@ struct hmac_sha1_ctx {
   sha256 = sha256,
   sha384 = sha512,
   sha512 = sha512,
+  gosthash94 = gosthash94,
+  gosthash94cp = gosthash94,
+  streebog256 = streebog512,
+  streebog512 = streebog512,
 }

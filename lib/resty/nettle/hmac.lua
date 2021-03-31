@@ -64,6 +64,38 @@ local hmacs = {
     update = lib.nettle_hmac_sha512_update,
     digest = lib.nettle_hmac_sha512_digest,
   },
+  gosthash94 = {
+    length = 32,
+    context = context.gosthash94,
+    buffer = types.uint8_t_32,
+    setkey = lib.nettle_hmac_gosthash94_set_key,
+    update = lib.nettle_hmac_gosthash94_update,
+    digest = lib.nettle_hmac_gosthash94_digest,
+  },
+  gosthash94cp = {
+    length = 32,
+    context = context.gosthash94cp,
+    buffer = types.uint8_t_32,
+    setkey = lib.nettle_hmac_gosthash94cp_set_key,
+    update = lib.nettle_hmac_gosthash94cp_update,
+    digest = lib.nettle_hmac_gosthash94cp_digest,
+  },
+  streebog256 = {
+    length = 32,
+    context = context.streebog256,
+    buffer = types.uint8_t_32,
+    setkey = lib.nettle_hmac_streebog256_set_key,
+    update = lib.nettle_hmac_streebog512_update,
+    digest = lib.nettle_hmac_streebog256_digest,
+  },
+  streebog512 = {
+    length = 64,
+    context = context.streebog512,
+    buffer = types.uint8_t_64,
+    setkey = lib.nettle_hmac_streebog512_set_key,
+    update = lib.nettle_hmac_streebog512_update,
+    digest = lib.nettle_hmac_streebog512_digest,
+  },
 }
 
 local hmac = {}
@@ -105,11 +137,16 @@ return setmetatable({
   sha256 = factory(hmacs.sha256),
   sha384 = factory(hmacs.sha384),
   sha512 = factory(hmacs.sha512),
+  gosthash94 = factory(hmacs.gosthash94),
+  gosthash94cp = factory(hmacs.gosthash94cp),
+  streebog256 = factory(hmacs.streebog256),
+  streebog512 = factory(hmacs.streebog512),
 }, {
   __call = function(_, algorithm, key, data, len)
     local mac = hmacs[lower(algorithm)]
     if not mac then
-      return nil, "the supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, and RIPEMD160"
+      return nil, "the supported HMAC algorithms are MD5, SHA1, SHA224, SHA256, SHA384, SHA512, RIPEMD160, " ..
+                  "GOSTHASH94, GOSTHASH94CP, STREEBOG256, and STREEBOG512"
     end
     local ctx = ffi_new(mac.context)
     mac.setkey(ctx, #key, key)
