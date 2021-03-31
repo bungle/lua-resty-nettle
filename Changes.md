@@ -14,6 +14,7 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
   
 ### Fixed
 - P-512 curve was missing on internal curves table with cdata
+- ARCFOUR (RC4) maximum key size is raised from 256 bits to 2048 bits
 
 
 ## [1.5] - 2020-04-01
