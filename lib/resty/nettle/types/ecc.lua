@@ -6,6 +6,8 @@ local ffi_cdef = ffi.cdef
 local ffi_typeof = ffi.typeof
 
 ffi_cdef [[
+const struct ecc_curve * nettle_get_gost_gc256b(void);
+const struct ecc_curve * nettle_get_gost_gc512a(void);
 const struct ecc_curve * nettle_get_secp_192r1(void);
 const struct ecc_curve * nettle_get_secp_224r1(void);
 const struct ecc_curve * nettle_get_secp_256r1(void);
@@ -61,4 +63,3 @@ struct ecc_scalar {
 }]],
   curve = ffi_typeof "struct ecc_curve",
 }
-
