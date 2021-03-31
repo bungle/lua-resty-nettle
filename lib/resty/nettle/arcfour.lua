@@ -12,8 +12,8 @@ arcfour.__index = arcfour
 
 function arcfour.new(key)
   local len = #key
-  if len < 1 or len > 32 then
-    return nil, "the ARCFOUR supported key sizes are between 1 and 256 bits"
+  if len < 1 or len > 256 then
+    return nil, "the ARCFOUR supported key sizes are between 1 and 2048 bits"
   end
 
   local ct = ffi_new(context)
