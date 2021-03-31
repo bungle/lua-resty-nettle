@@ -5,6 +5,7 @@ return {
   arctwo              = require "resty.nettle.arctwo",
   base16              = require "resty.nettle.base16",
   base64              = require "resty.nettle.base64",
+  bcrypt              = require "resty.nettle.bcrypt",
   blowfish            = require "resty.nettle.blowfish",
   camellia            = require "resty.nettle.camellia",
   cast128             = require "resty.nettle.cast128",

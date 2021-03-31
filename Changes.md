@@ -16,6 +16,7 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 - Add support for HMAC-GOSTHASH94CP
 - Add support for HMAC-STREEBOG256
 - Add support for HMAC-STREEBOG512
+- Add support for BCRYPT
   
 ### Fixed
 - P-512 curve was missing on internal curves table with cdata
