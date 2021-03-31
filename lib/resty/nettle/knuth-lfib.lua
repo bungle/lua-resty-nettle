@@ -25,18 +25,18 @@ function knuth:number()
   return lib.nettle_knuth_lfib_get(self.context)
 end
 
-function knuth:array(n)
-  local b = ffi_new(types.uint32_t, n)
-  lib.nettle_knuth_lfib_get_array(self.context, n, b)
+function knuth:array(len)
+  local b = ffi_new(types.uint32_t, len)
+  lib.nettle_knuth_lfib_get_array(self.context, len, b)
   local r = {}
-  for i = 1, n do r[i] = b[i - 1] end
+  for i = 1, len do r[i] = b[i - 1] end
   return r
 end
 
-function knuth:random(n)
-  local b = ffi_new(types.uint8_t, n)
-  lib.nettle_knuth_lfib_random(self.context, n, b)
-  return ffi_str(b, n)
+function knuth:random(len)
+  local b = ffi_new(types.uint8_t, len)
+  lib.nettle_knuth_lfib_random(self.context, len, b)
+  return ffi_str(b, len)
 end
 
 return knuth

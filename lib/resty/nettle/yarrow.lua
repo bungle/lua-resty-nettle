@@ -60,10 +60,10 @@ function yarrow:slow_reseed()
   return lib.nettle_yarrow256_slow_reseed(self.context)
 end
 
-function yarrow:random(length)
-  local buffer = ffi_new(types.uint8_t, length)
-  lib.nettle_yarrow256_random(self.context, length, buffer)
-  return ffi_str(buffer, length)
+function yarrow:random(len)
+  local buffer = ffi_new(types.uint8_t, len)
+  lib.nettle_yarrow256_random(self.context, len, buffer)
+  return ffi_str(buffer, len)
 end
 
 return yarrow
