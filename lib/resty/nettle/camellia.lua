@@ -105,13 +105,18 @@ function camellia:encrypt(src, len)
   end
   len = len or #src
   if cipher.digest then
-    local dst = ffi_new(types.uint8_t, len)
+    local dst, dig = types.buffers(len, 16)
     cipher.encrypt(context, len, dst, src)
-    cipher.digest(context, 16, types.uint8_t_16)
-    return ffi_str(dst, len), ffi_str(types.uint8_t_16, 16)
+    cipher.digest(context, 16, dig)
+    return ffi_str(dst, len), ffi_str(dig, 16)
   end
   local dln = ceil(len / 16) * 16
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst
+  if dln == len then
+    dst = types.buffers(dln)
+  else
+    dst = types.zerobuffers(dln)
+  end
   ffi_copy(dst, src, len)
   cipher.encrypt(context, dln, dst, dst)
   return ffi_str(dst, dln)
@@ -126,13 +131,13 @@ function camellia:decrypt(src, len)
   end
   len = len or #src
   if cipher.digest then
-    local dst = ffi_new(types.uint8_t, len)
+    local dst, dig = types.buffers(len, 16)
     cipher.decrypt(context, len, dst, src)
-    cipher.digest(context, 16, types.uint8_t_16)
-    return ffi_str(dst, len), ffi_str(types.uint8_t_16, 16)
+    cipher.digest(context, 16, dig)
+    return ffi_str(dst, len), ffi_str(dig, 16)
   end
   local dln = ceil(len / 16) * 16
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   cipher.decrypt(context, dln, dst, src)
   return ffi_str(dst, len)
 end

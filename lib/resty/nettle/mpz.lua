@@ -58,7 +58,7 @@ end
 
 function mpz.tostring(mpz_t, len)
   len = len or mpz.size(mpz_t)
-  local buf = ffi_new(types.uint8_t, len)
+  local buf = types.buffers(len)
   hogweed.nettle_mpz_get_str_256(len, buf, mpz_t)
   return ffi_str(buf, len)
 end

@@ -12,7 +12,7 @@ salsa20r12.__index = salsa20r12
 
 function salsa20r12:encrypt(src, len)
   len = len or #src
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   ffi_copy(dst, src, len)
   lib.nettle_salsa20r12_crypt(self.context, len, dst, dst)
   return ffi_str(dst, len)
@@ -20,7 +20,7 @@ end
 
 function salsa20r12:decrypt(src, len)
   len = len or #src
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   lib.nettle_salsa20r12_crypt(self.context, len, dst, src)
   return ffi_str(dst, len)
 end
@@ -62,7 +62,7 @@ end
 
 function salsa20:encrypt(src, len)
   len = len or #src
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   ffi_copy(dst, src, len)
   lib.nettle_salsa20_crypt(self.context, len, dst, dst)
   return ffi_str(dst, len)
@@ -70,7 +70,7 @@ end
 
 function salsa20:decrypt(src, len)
   len = len or #src
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   lib.nettle_salsa20_crypt(self.context, len, dst, src)
   return ffi_str(dst, len)
 end

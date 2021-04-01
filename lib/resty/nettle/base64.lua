@@ -61,7 +61,7 @@ end
 function decoder:update(src)
   local len = #src
   local dln = floor((len + 1) * 6 / 8)
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   if lib.nettle_base64_decode_update(self.context, types.size_t_8, dst, len, src) ~= 1 then
     return nil, "unable to decode base64 data"
   end
@@ -108,7 +108,7 @@ function base64.decode(src, urlsafe)
   local ctx = ffi_new(context.decode)
   local len = #src
   local dln = floor((len + 1) * 6 / 8)
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   if urlsafe then
     lib.nettle_base64url_decode_init(ctx)
   else

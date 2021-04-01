@@ -27,7 +27,7 @@ end
 
 function sha3shake:digest(digest_len)
   local length = digest_len or self.length
-  local buffer = types.uint8[length] or ffi_new(types.uint8_t, length)
+  local buffer = types.buffers(length)
   local hash = self.hash
   hash.digest(self.context, length, buffer)
   return ffi_str(buffer, length)
@@ -46,7 +46,7 @@ local function factory(hash)
       hash.init(ctx)
       hash.update(ctx, len or #data, data)
       local length = digest_len or hash.length
-      local buffer = types.uint8[length] or ffi_new(types.uint8_t, length)
+      local buffer = types.buffers(length)
       hash.digest(ctx, length, buffer)
       return ffi_str(buffer, length)
     end
@@ -65,7 +65,7 @@ return setmetatable({
     hash.init(ctx)
     hash.update(ctx, len or #data, data, digest_len)
     local length = digest_len or hash.length
-    local buffer = types.uint8[length] or ffi_new(types.uint8_t, length)
+    local buffer = types.buffers(length)
     hash.digest(ctx, length, buffer)
     return ffi_str(buffer, length)
   end

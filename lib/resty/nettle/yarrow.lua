@@ -61,7 +61,7 @@ function yarrow:slow_reseed()
 end
 
 function yarrow:random(len)
-  local buffer = ffi_new(types.uint8_t, len)
+  local buffer = types.buffers(len)
   lib.nettle_yarrow256_random(self.context, len, buffer)
   return ffi_str(buffer, len)
 end

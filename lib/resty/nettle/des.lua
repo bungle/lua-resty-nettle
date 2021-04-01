@@ -120,7 +120,7 @@ function des.fix_parity(src)
   if len ~= 8 and len ~= 24 then
     return nil, "the DES supported key size is 64 bits, and DES3 supported key size is 192 bits"
   end
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   lib.nettle_des_fix_parity(len, dst, src)
   return ffi_str(dst, len)
 end
@@ -130,11 +130,23 @@ function des:encrypt(src, len)
   local cip = self.cipher
   local ctx = self.context
   local dln = ceil(len / 8) * 8
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst
+  if dln == len then
+    dst = types.buffers(dln)
+  else
+    dst = types.zerobuffers(dln)
+  end
   ffi_copy(dst, src, len)
   if self.iv then
-    ffi_copy(types.uint8_t_8, self.iv, 8)
-    cip.encrypt(ctx, cip.cipher.encrypt, 8, types.uint8_t_8, dln, dst, dst)
+    local ivl = #self.iv
+    local iv
+    if ivl == 8 then
+      iv = types.buffers(8)
+    else
+      iv = types.zerobuffers(8)
+    end
+    ffi_copy(iv, self.iv, 8)
+    cip.encrypt(ctx, cip.cipher.encrypt, 8, iv, dln, dst, dst)
   else
     cip.encrypt(ctx, dln, dst, dst)
   end
@@ -146,7 +158,7 @@ function des:decrypt(src, len)
   local ctx = self.context
   len = len or #src
   local dln = ceil(len / 8) * 8
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   if self.iv then
     ffi_copy(types.uint8_t_8, self.iv, 8)
     cip.decrypt(ctx, cip.cipher.decrypt, 8, types.uint8_t_8, dln, dst, src)

@@ -34,8 +34,7 @@ function arctwo:encrypt(src, len)
   if len % 8 ~= 0 then
     return nil, "the ARCTWO input must be an integral multiple of the block size"
   end
-
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   ffi_copy(dst, src, len)
   lib.nettle_arctwo_encrypt(self.context, len, dst, dst)
   return ffi_str(dst, len)
@@ -46,7 +45,7 @@ function arctwo:decrypt(src, len)
   if len % 8 ~= 0 then
     return nil, "the ARCTWO input must be an integral multiple of the block size"
   end
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   lib.nettle_arctwo_decrypt(self.context, len, dst, src)
   return ffi_str(dst, len)
 end

@@ -30,19 +30,19 @@ end
 function chacha_poly1305:encrypt(src)
   local len = #src
   local ctx = self.context
-  local dst = ffi_new(types.uint8_t, len)
+  local dst, dig = types.buffers(len, 16)
   lib.nettle_chacha_poly1305_encrypt(ctx, len, dst, src)
-  lib.nettle_chacha_poly1305_digest(ctx, 16, types.uint8_t_16)
-  return ffi_str(dst, len), ffi_str(types.uint8_t_16, 16)
+  lib.nettle_chacha_poly1305_digest(ctx, 16, dig)
+  return ffi_str(dst, len), ffi_str(dig, 16)
 end
 
 function chacha_poly1305:decrypt(src)
   local len = #src
   local ctx = self.context
-  local dst = ffi_new(types.uint8_t, len)
+  local dst, dig = types.buffers(len, 16)
   lib.nettle_chacha_poly1305_decrypt(ctx, len, dst, src)
-  lib.nettle_chacha_poly1305_digest(ctx, 16, types.uint8_t_16)
-  return ffi_str(dst, len), ffi_str(types.uint8_t_16, 16)
+  lib.nettle_chacha_poly1305_digest(ctx, 16, dig)
+  return ffi_str(dst, len), ffi_str(dig, 16)
 end
 
 return chacha_poly1305
