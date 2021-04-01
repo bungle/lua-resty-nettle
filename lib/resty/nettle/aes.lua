@@ -269,10 +269,10 @@ function ccm:encrypt(src, len)
   len = len or #src
   cipher.setiv(context, #iv, iv, lad, len, 16)
   if ad then cipher.update(context, lad, ad) end
-  local dst = ffi_new(types.uint8_t, len)
+  local dst, dig = types.buffers(len, 16)
   cipher.encrypt(context, len, dst, src)
-  cipher.digest(context, 16, types.uint8_t_16)
-  return ffi_str(dst, len), ffi_str(types.uint8_t_16, 16)
+  cipher.digest(context, 16, dig)
+  return ffi_str(dst, len), ffi_str(dig, 16)
 end
 
 function ccm:decrypt(src, len)
@@ -284,10 +284,10 @@ function ccm:decrypt(src, len)
   len = len or #src
   cipher.setiv(context, #iv, iv, lad, len, 16)
   if ad then cipher.update(context, lad, ad) end
-  local dst = ffi_new(types.uint8_t, len)
+  local dst, dig = types.buffers(len, 16)
   cipher.decrypt(context, len, dst, src)
-  cipher.digest(context, 16, types.uint8_t_16)
-  return ffi_str(dst, len), ffi_str(types.uint8_t_16, 16)
+  cipher.digest(context, 16, dig)
+  return ffi_str(dst, len), ffi_str(dig, 16)
 end
 
 local aes = {}
@@ -307,7 +307,7 @@ function aes.new(key, mode, iv, ad)
 
   local config = ciphers[mode]
   if not config then
-    return nil, "the AES supported modes are ECB, CBC, CTR, EAX, GCM, CCM, and XTS"
+    return nil, "the AES supported modes are ECB, CBC, CTR, EAX, GCM, CCM, CFB, and CFB8"
   end
   local bits = len * 8
   local cipher = config[bits]
@@ -328,7 +328,7 @@ function aes.new(key, mode, iv, ad)
           context = context,
           cipher = cipher,
           iv = iv,
-          ad = ad
+          ad = ad,
         }, ccm)
       else
         if #iv ~= iv_size then
@@ -339,21 +339,18 @@ function aes.new(key, mode, iv, ad)
     end
     if cipher.setiv then
       cipher.setiv(context, iv_size, iv)
-    else
-      return setmetatable({
-        context = context,
-        cipher = cipher,
-        iv = iv
-      }, aes)
+      iv = nil
     end
   end
   if ad and cipher.update then
     cipher.update(context, #ad, ad)
+    ad = nil
   end
   return setmetatable({
-    ad = ad,
     context = context,
-    cipher = cipher
+    cipher = cipher,
+    iv = iv,
+    ad = ad,
   }, aes)
 end
 
@@ -367,22 +364,34 @@ function aes:encrypt(src, len)
   len = len or #src
   if self.iv then
     local dln = len
-    if cipher.invert then dln = ceil(dln / 16) * 16 end
-    local dst = ffi_new(types.uint8_t, dln)
-    ffi_copy(dst, src, len)
+    if cipher.invert then
+      dln = ceil(dln / 16) * 16
+    end
     local ivl = #self.iv
-    local iv = ffi_new(types.uint8_t, ivl)
+    local dst, iv
+    if dln == len then
+      dst, iv = types.buffers(dln, ivl)
+    else
+      dst = types.zerobuffers(dln)
+      iv  = types.buffers(ivl)
+    end
+    ffi_copy(dst, src, len)
     ffi_copy(iv, self.iv, ivl)
-    cipher.encrypt(context, cipher.cipher.encrypt, 16, iv, dln, dst, dst)
+    cipher.encrypt(context, cipher.cipher.encrypt, ivl, iv, dln, dst, dst)
     return ffi_str(dst, dln)
   elseif cipher.digest then
-    local dst = ffi_new(types.uint8_t, len)
+    local dst, dig = types.buffers(len, 16)
     cipher.encrypt(context, len, dst, src)
-    cipher.digest(context, 16, types.uint8_t_16)
-    return ffi_str(dst, len), ffi_str(types.uint8_t_16, 16)
+    cipher.digest(context, 16, dig)
+    return ffi_str(dst, len), ffi_str(dig, 16)
   end
   local dln = ceil(len / 16) * 16
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst
+  if dln == len then
+    dst = types.buffers(dln)
+  else
+    dst = types.zerobuffers(dln)
+  end
   ffi_copy(dst, src, len)
   cipher.encrypt(context, dln, dst, dst)
   return ffi_str(dst, dln)
@@ -398,20 +407,25 @@ function aes:decrypt(src, len)
   len = len or #src
   if self.iv then
     local dln = cipher.invert and ceil(len / 16) * 16 or len
-    local dst = ffi_new(types.uint8_t, dln)
     local ivl = #self.iv
-    local iv = ffi_new(types.uint8_t, ivl)
+    local dst, iv
+    if dln == len then
+      dst, iv = types.buffers(dln, ivl)
+    else
+      dst = types.zerobuffers(dln)
+      iv  = types.buffers(ivl)
+    end
     ffi_copy(iv, self.iv, ivl)
-    cipher.decrypt(context, cipher.cipher.decrypt, 16, iv, dln, dst, src)
+    cipher.decrypt(context, cipher.cipher.decrypt, ivl, iv, dln, dst, src)
     return ffi_str(dst, len)
   elseif cipher.digest then
-    local dst = ffi_new(types.uint8_t, len)
+    local dst, dig = types.buffers(len, 16)
     cipher.decrypt(context, len, dst, src)
-    cipher.digest(context, 16, types.uint8_t_16)
-    return ffi_str(dst, len), ffi_str(types.uint8_t_16, 16)
+    cipher.digest(context, 16, dig)
+    return ffi_str(dst, len), ffi_str(dig, 16)
   end
   local dln = ceil(len / 16) * 16
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   cipher.decrypt(context, dln, dst, src)
   return ffi_str(dst, len)
 end

@@ -24,7 +24,12 @@ end
 function blowfish:encrypt(src, len)
   len = len or #src
   local dln = ceil(len / 8) * 8
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst
+  if dln == len then
+    dst = types.buffers(dln)
+  else
+    dst = types.zerobuffers(dln)
+  end
   ffi_copy(dst, src, len)
   lib.nettle_blowfish_encrypt(self.context, dln, dst, dst)
   return ffi_str(dst, dln)
@@ -33,7 +38,7 @@ end
 function blowfish:decrypt(src, len)
   len = len or #src
   local dln = ceil(len / 8) * 8
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.zerobuffers(dln)
   lib.nettle_blowfish_decrypt(self.context, dln, dst, src)
   return ffi_str(dst, len)
 end

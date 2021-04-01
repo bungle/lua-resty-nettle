@@ -46,7 +46,7 @@ end
 function decoder:update(src)
   local len = #src
   local dln = floor((len + 1) / 2)
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   if lib.nettle_base16_decode_update(self.context, types.size_t_8, dst, len, src) ~= 1 then
     return nil, "unable to decode base16 data"
   end
@@ -66,7 +66,7 @@ local base16 = { encoder = encoder, decoder = decoder }
 function base16.encode(src)
   local len = #src
   local dln = len * 2
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   lib.nettle_base16_encode_update(dst, len, src)
   return ffi_str(dst, dln)
 end
@@ -75,7 +75,7 @@ function base16.decode(src)
   local ctx = ffi_new(context)
   local len = #src
   local dln = floor((len + 1) / 2)
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   lib.nettle_base16_decode_init(ctx)
   if lib.nettle_base16_decode_update(ctx, types.size_t_8, dst, len, src) ~= 1 then
     return nil, "unable to decode base16 data"

@@ -28,7 +28,7 @@ end
 
 function arcfour:encrypt(src, len)
   len = len or #src
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   ffi_copy(dst, src, len)
   lib.nettle_arcfour_crypt(self.context, len, dst, dst)
   return ffi_str(dst, len)
@@ -36,7 +36,7 @@ end
 
 function arcfour:decrypt(src, len)
   len = len or #src
-  local dst = ffi_new(types.uint8_t, len)
+  local dst = types.buffers(len)
   lib.nettle_arcfour_crypt(self.context, len, dst, src)
   return ffi_str(dst, len)
 end

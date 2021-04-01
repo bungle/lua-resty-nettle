@@ -34,7 +34,7 @@ function knuth:array(len)
 end
 
 function knuth:random(len)
-  local b = ffi_new(types.uint8_t, len)
+  local b = types.buffers(len)
   lib.nettle_knuth_lfib_random(self.context, len, b)
   return ffi_str(b, len)
 end

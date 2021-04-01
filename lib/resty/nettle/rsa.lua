@@ -240,7 +240,7 @@ function rsa:decrypt(encrypted, outlen)
     return nil, err
   end
   local sz = self.private.context.size
-  local b = ffi_new(types.uint8_t, sz)
+  local b = types.buffers(sz)
   types.size_t_8[0] = sz
   if hogweed.nettle_rsa_decrypt(self.private.context, types.size_t_8, b, ct) ~= 1 then
     return nil, "unable to RSA decrypt"
@@ -254,7 +254,7 @@ function rsa:decrypt_tr(encrypted)
     return nil, err
   end
   local sz = self.private.context.size
-  local b = ffi_new(types.uint8_t, sz)
+  local b = types.buffers(sz)
   types.size_t_8[0] = sz
   if hogweed.nettle_rsa_decrypt_tr(self.public.context,
                                    self.private.context,
@@ -273,7 +273,7 @@ function rsa:decrypt_sec(encrypted, outlen)
   if not ct then
     return nil, err
   end
-  local b = ffi_new(types.uint8_t, outlen)
+  local b = types.buffers(outlen)
   if hogweed.nettle_rsa_sec_decrypt(self.public.context,
                                     self.private.context,
                                     random.context,

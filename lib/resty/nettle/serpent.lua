@@ -31,7 +31,12 @@ end
 function serpent:encrypt(src, len)
   len = len or #src
   local dln = ceil(len / 16) * 16
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst
+  if dln == len then
+    dst = types.buffers(dln)
+  else
+    dst = types.zerobuffers(dln)
+  end
   ffi_copy(dst, src, len)
   lib.nettle_serpent_encrypt(self.context, dln, dst, dst)
   return ffi_str(dst, dln)
@@ -40,7 +45,7 @@ end
 function serpent:decrypt(src, len)
   len = len or #src
   local dln = ceil(len / 16) * 16
-  local dst = ffi_new(types.uint8_t, dln)
+  local dst = types.buffers(dln)
   lib.nettle_serpent_decrypt(self.context, dln, dst, src)
   return ffi_str(dst, len)
 end
