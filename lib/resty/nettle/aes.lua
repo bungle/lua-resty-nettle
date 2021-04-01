@@ -6,6 +6,7 @@ local aes_context = require "resty.nettle.types.aes"
 local eax_context = require "resty.nettle.types.eax"
 local gcm_context = require "resty.nettle.types.gcm"
 local ccm_context = require "resty.nettle.types.ccm"
+local xts_context = require "resty.nettle.types.xts"
 local types = require "resty.nettle.types.common"
 local lib = require "resty.nettle.library"
 local ffi = require "ffi"
@@ -216,6 +217,23 @@ local ciphers = {
       context = ccm_context.ccm_aes256,
     },
   },
+  xts = {
+    iv_size = 16,
+    [128] = {
+      setencryptkey = lib.nettle_xts_aes128_set_encrypt_key,
+      setdecryptkey = lib.nettle_xts_aes128_set_decrypt_key,
+      encrypt = lib.nettle_xts_aes128_encrypt_message,
+      decrypt = lib.nettle_xts_aes128_decrypt_message,
+      context = xts_context.aes128_key
+    },
+    [256] = {
+      setencryptkey = lib.nettle_xts_aes256_set_encrypt_key,
+      setdecryptkey = lib.nettle_xts_aes256_set_decrypt_key,
+      encrypt = lib.nettle_xts_aes128_encrypt_message,
+      decrypt = lib.nettle_xts_aes128_decrypt_message,
+      context = xts_context.aes256_key
+    },
+  },
 }
 
 do
@@ -290,30 +308,79 @@ function ccm:decrypt(src, len)
   return ffi_str(dst, len), ffi_str(dig, 16)
 end
 
+local xts = {}
+xts.__index = xts
+
+function xts:encrypt(src, len, tweak)
+  local cipher = self.cipher
+  local context = ffi_new(cipher.context)
+  len = len or #src
+  local dln = ceil(len / 16) * 16
+  local dst
+  if dln == len then
+    dst = types.buffers(dln)
+  else
+    dst = types.zerobuffers(dln)
+  end
+  ffi_copy(dst, src, len)
+  cipher.setencryptkey(context, self.key)
+  cipher.encrypt(context, tweak or self.tweak, dln, dst, dst)
+  return ffi_str(dst, dln)
+end
+
+function xts:decrypt(src, len, tweak)
+  local cipher = self.cipher
+  local context = ffi_new(cipher.context)
+  len = len or #src
+  local dln = ceil(len / 16) * 16
+  local dst
+  if dln == len then
+    dst = types.buffers(dln)
+  else
+    dst = types.zerobuffers(dln)
+  end
+  ffi_copy(dst, src, len)
+  cipher.setdecryptkey(context, self.key)
+  cipher.decrypt(context, tweak or self.tweak, dln, dst, dst)
+  return ffi_str(dst, dln)
+end
+
 local aes = {}
 aes.__index = aes
 
 function aes.new(key, mode, iv, ad)
-  local len = #key
-  if len ~= 16 and len ~= 24 and len ~= 32 then
-    return nil, "the AES supported key sizes are 128, 192, and 256 bits"
-  end
-
   if mode then
     mode = lower(mode)
   else
     mode = "ecb"
   end
-
+  local len = #key
+  if mode == "xts" and len ~= 32 and len ~= 64 then
+    return nil, "the AES XTS-mode supported key sizes are 256 and 512 bits"
+  elseif len ~= 16 and len ~= 24 and len ~= 32 then
+    return nil, "the AES supported key sizes are 128, 192, and 256 bits"
+  end
   local config = ciphers[mode]
   if not config then
-    return nil, "the AES supported modes are ECB, CBC, CTR, EAX, GCM, CCM, CFB, and CFB8"
+    return nil, "the AES supported modes are ECB, CBC, CTR, EAX, GCM, CCM, CFB, CFB8 and XTS"
   end
   local bits = len * 8
+  local iv_size = config.iv_size
+  if mode == "xts" then
+    local cipher = config[bits / 2]
+    if iv and #iv ~= iv_size then
+      return nil, "the AES-XTS supported tweak size is " .. (iv_size * 8) .. " bits"
+    end
+    return setmetatable({
+      cipher = cipher,
+      tweak = iv,
+      key = key,
+    }, xts)
+  end
+
   local cipher = config[bits]
   local context = ffi_new(cipher.context)
   cipher.setkey(context, key)
-  local iv_size = config.iv_size
   if iv_size then
     iv = iv or ""
     if iv_size == huge then
@@ -324,12 +391,14 @@ function aes.new(key, mode, iv, ad)
           return nil, "the AES-" .. mode:upper() .. " supported initialization vector sizes are between " ..
             (iv_size[1] * 8) .. " and " .. (iv_size[2] * 8) .. " bits"
         end
-        return setmetatable({
-          context = context,
-          cipher = cipher,
-          iv = iv,
-          ad = ad,
-        }, ccm)
+        if mode == "ccm" then
+          return setmetatable({
+            context = context,
+            cipher = cipher,
+            iv = iv,
+            ad = ad,
+          }, ccm)
+        end
       else
         if #iv ~= iv_size then
           return nil, "the AES-" .. mode:upper() .. " supported initialization vector size is " ..

@@ -51,16 +51,15 @@ nettle_xts_aes256_decrypt_message(struct xts_aes256_key *xts_key,
                            uint8_t *dst, const uint8_t *src);
 ]]
 
-
 return {
   aes128_key = ffi_typeof [[
 struct xts_aes128_key {
-    struct aes128_ctx cipher;
-    struct aes128_ctx tweak_cipher;
-};]],
+  struct aes128_ctx cipher;
+  struct aes128_ctx tweak_cipher;
+}]],
   aes256_key = ffi_typeof [[
 struct xts_aes256_key {
-    struct aes256_ctx cipher;
-    struct aes256_ctx tweak_cipher;
-};]]
+  struct aes256_ctx cipher;
+  struct aes256_ctx tweak_cipher;
+}]]
 }
