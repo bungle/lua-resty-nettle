@@ -377,7 +377,6 @@ function aes.new(key, mode, iv, ad)
       key = key,
     }, xts)
   end
-
   local cipher = config[bits]
   local context = ffi_new(cipher.context)
   cipher.setkey(context, key)
