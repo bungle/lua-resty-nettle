@@ -5,7 +5,7 @@ LuaJIT FFI bindings for [Nettle](http://www.lysator.liu.se/~nisse/nettle/nettle.
 ## Requirements
 
 The bindings require `libnettle`, and in some cases also `libhogweed` (comes with `libnettle`) and `gmp`.
-Supported Nettle versions are 3.4.x, 3.5.x, 3.6.x, and 3.7.x. Nettle can be downloaded from here:
+Supported Nettle version is 3.7.x. Nettle can be downloaded from here:
 [www.lysator.liu.se/~nisse/nettle/](https://www.lysator.liu.se/~nisse/nettle/).
 
 Bindings are tested with Linux and macOS on x64 architecture, but I don't see any reason why they wouldn't work

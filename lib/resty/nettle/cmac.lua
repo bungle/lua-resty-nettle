@@ -1,10 +1,3 @@
-do
-  local version = require "resty.nettle.version"
-  if version.major < 3 or (version.major == 3 and version.minor < 5) then
-    return nil, string.format("CMAC is not supportted with Nettle %s", version)
-  end
-end
-
 local types = require "resty.nettle.types.common"
 local context = require "resty.nettle.types.cmac"
 local lib = require "resty.nettle.library"
