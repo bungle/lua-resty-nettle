@@ -113,6 +113,39 @@ local ciphers = {
       context = aes_context.aes256,
     },
   },
+  cfb8 ={
+    iv_size = 16,
+    [128] = {
+      setkey = lib.nettle_aes128_set_encrypt_key,
+      encrypt = lib.nettle_cfb8_encrypt,
+      decrypt = lib.nettle_cfb8_decrypt,
+      cipher = {
+        encrypt = lib.nettle_aes128_encrypt,
+        decrypt = lib.nettle_aes128_encrypt
+      },
+      context = aes_context.aes128,
+    },
+    [192] = {
+      setkey = lib.nettle_aes192_set_encrypt_key,
+      encrypt = lib.nettle_cfb8_encrypt,
+      decrypt = lib.nettle_cfb8_decrypt,
+      cipher = {
+        encrypt = lib.nettle_aes192_encrypt,
+        decrypt = lib.nettle_aes192_encrypt
+      },
+      context = aes_context.aes192,
+    },
+    [256] = {
+      setkey = lib.nettle_aes256_set_encrypt_key,
+      encrypt = lib.nettle_cfb8_encrypt,
+      decrypt = lib.nettle_cfb8_decrypt,
+      cipher = {
+        encrypt = lib.nettle_aes256_encrypt,
+        decrypt = lib.nettle_aes256_encrypt
+      },
+      context = aes_context.aes256,
+    },
+  },
   ctr = {
     iv_size = 16,
     [128] = {
@@ -251,45 +284,6 @@ local ciphers = {
     },
   },
 }
-
-do
-  local version = require "resty.nettle.version"
-  if version.major > 3 or (version.major == 3 and version.minor > 4) then
-    ciphers.cfb8 = {
-      iv_size = 16,
-      [128] = {
-        setkey = lib.nettle_aes128_set_encrypt_key,
-        encrypt = lib.nettle_cfb8_encrypt,
-        decrypt = lib.nettle_cfb8_decrypt,
-        cipher = {
-          encrypt = lib.nettle_aes128_encrypt,
-          decrypt = lib.nettle_aes128_encrypt
-        },
-        context = aes_context.aes128,
-      },
-      [192] = {
-        setkey = lib.nettle_aes192_set_encrypt_key,
-        encrypt = lib.nettle_cfb8_encrypt,
-        decrypt = lib.nettle_cfb8_decrypt,
-        cipher = {
-          encrypt = lib.nettle_aes192_encrypt,
-          decrypt = lib.nettle_aes192_encrypt
-        },
-        context = aes_context.aes192,
-      },
-      [256] = {
-        setkey = lib.nettle_aes256_set_encrypt_key,
-        encrypt = lib.nettle_cfb8_encrypt,
-        decrypt = lib.nettle_cfb8_decrypt,
-        cipher = {
-          encrypt = lib.nettle_aes256_encrypt,
-          decrypt = lib.nettle_aes256_encrypt
-        },
-        context = aes_context.aes256,
-      },
-    }
-  end
-end
 
 local ccm = {}
 ccm.__index = ccm
