@@ -116,6 +116,7 @@ build = {
     ["resty.nettle.types.sha1"]            = "lib/resty/nettle/types/sha1.lua",
     ["resty.nettle.types.sha2"]            = "lib/resty/nettle/types/sha2.lua",
     ["resty.nettle.types.sha3"]            = "lib/resty/nettle/types/sha3.lua",
+    ["resty.nettle.types.siv-cmac"]        = "lib/resty/nettle/types/siv-cmac.lua",
     ["resty.nettle.types.streebog"]        = "lib/resty/nettle/types/streebog.lua",
     ["resty.nettle.types.twofish"]         = "lib/resty/nettle/types/twofish.lua",
     ["resty.nettle.types.umac"]            = "lib/resty/nettle/types/umac.lua",

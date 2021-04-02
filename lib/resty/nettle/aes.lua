@@ -7,6 +7,7 @@ local eax_context = require "resty.nettle.types.eax"
 local gcm_context = require "resty.nettle.types.gcm"
 local ccm_context = require "resty.nettle.types.ccm"
 local xts_context = require "resty.nettle.types.xts"
+local siv_context = require "resty.nettle.types.siv-cmac"
 local types = require "resty.nettle.types.common"
 local lib = require "resty.nettle.library"
 local ffi = require "ffi"
@@ -52,7 +53,7 @@ local ciphers = {
       decrypt = lib.nettle_cbc_decrypt,
       cipher = {
         encrypt = lib.nettle_aes128_encrypt,
-        decrypt = lib.nettle_aes128_decrypt
+        decrypt = lib.nettle_aes128_decrypt,
       },
       context = aes_context.aes128,
     },
@@ -63,7 +64,7 @@ local ciphers = {
       decrypt = lib.nettle_cbc_decrypt,
       cipher = {
         encrypt = lib.nettle_aes192_encrypt,
-        decrypt = lib.nettle_aes192_decrypt
+        decrypt = lib.nettle_aes192_decrypt,
       },
       context = aes_context.aes192,
     },
@@ -74,7 +75,7 @@ local ciphers = {
       decrypt = lib.nettle_cbc_decrypt,
       cipher = {
         encrypt = lib.nettle_aes256_encrypt,
-        decrypt = lib.nettle_aes256_decrypt
+        decrypt = lib.nettle_aes256_decrypt,
       },
       context = aes_context.aes256,
     },
@@ -87,7 +88,7 @@ local ciphers = {
       decrypt = lib.nettle_cfb_decrypt,
       cipher = {
         encrypt = lib.nettle_aes128_encrypt,
-        decrypt = lib.nettle_aes128_encrypt
+        decrypt = lib.nettle_aes128_encrypt,
       },
       context = aes_context.aes128,
     },
@@ -97,7 +98,7 @@ local ciphers = {
       decrypt = lib.nettle_cfb_decrypt,
       cipher = {
         encrypt = lib.nettle_aes192_encrypt,
-        decrypt = lib.nettle_aes192_encrypt
+        decrypt = lib.nettle_aes192_encrypt,
       },
       context = aes_context.aes192,
     },
@@ -107,7 +108,7 @@ local ciphers = {
       decrypt = lib.nettle_cfb_decrypt,
       cipher = {
         encrypt = lib.nettle_aes256_encrypt,
-        decrypt = lib.nettle_aes256_encrypt
+        decrypt = lib.nettle_aes256_encrypt,
       },
       context = aes_context.aes256,
     },
@@ -120,7 +121,7 @@ local ciphers = {
       decrypt = lib.nettle_ctr_crypt,
       cipher = {
         encrypt = lib.nettle_aes128_encrypt,
-        decrypt = lib.nettle_aes128_encrypt
+        decrypt = lib.nettle_aes128_encrypt,
       },
       context = aes_context.aes128,
     },
@@ -130,7 +131,7 @@ local ciphers = {
       decrypt = lib.nettle_ctr_crypt,
       cipher = {
         encrypt = lib.nettle_aes192_encrypt,
-        decrypt = lib.nettle_aes192_encrypt
+        decrypt = lib.nettle_aes192_encrypt,
       },
       context = aes_context.aes192,
     },
@@ -140,7 +141,7 @@ local ciphers = {
       decrypt = lib.nettle_ctr_crypt,
       cipher = {
         encrypt = lib.nettle_aes256_encrypt,
-        decrypt = lib.nettle_aes256_encrypt
+        decrypt = lib.nettle_aes256_encrypt,
       },
       context = aes_context.aes256,
     },
@@ -224,14 +225,29 @@ local ciphers = {
       setdecryptkey = lib.nettle_xts_aes128_set_decrypt_key,
       encrypt = lib.nettle_xts_aes128_encrypt_message,
       decrypt = lib.nettle_xts_aes128_decrypt_message,
-      context = xts_context.aes128_key
+      context = xts_context.aes128_key,
     },
     [256] = {
       setencryptkey = lib.nettle_xts_aes256_set_encrypt_key,
       setdecryptkey = lib.nettle_xts_aes256_set_decrypt_key,
       encrypt = lib.nettle_xts_aes128_encrypt_message,
       decrypt = lib.nettle_xts_aes128_decrypt_message,
-      context = xts_context.aes256_key
+      context = xts_context.aes256_key,
+    },
+  },
+  ["siv-cmac"] = {
+    iv_size = { 1, huge },
+    [128] = {
+      setkey = lib.nettle_siv_cmac_aes128_set_key,
+      encrypt = lib.nettle_siv_cmac_aes128_encrypt_message,
+      decrypt = lib.nettle_siv_cmac_aes128_decrypt_message,
+      context = siv_context.aes128,
+    },
+    [256] = {
+      setkey = lib.nettle_siv_cmac_aes256_set_key,
+      encrypt = lib.nettle_siv_cmac_aes256_encrypt_message,
+      decrypt = lib.nettle_siv_cmac_aes256_decrypt_message,
+      context = siv_context.aes256,
     },
   },
 }
@@ -345,6 +361,35 @@ function xts:decrypt(src, len, tweak)
   return ffi_str(dst, dln)
 end
 
+local siv = {}
+siv.__index = siv
+
+function siv:encrypt(src, len)
+  local cipher = self.cipher
+  local context = self.context
+  local iv = self.iv
+  local ad = self.ad or ""
+  len = len or #src
+  local dln = len + 16
+  local dst = types.buffers(dln)
+  cipher.encrypt(context, #iv, iv, #ad, ad, dln, dst, src)
+  return ffi_str(dst, dln)
+end
+
+function siv:decrypt(src, len)
+  local cipher = self.cipher
+  local context = self.context
+  local iv = self.iv
+  local ad = self.ad or ""
+  len = len or #src
+  local dln = len - 16
+  local dst = types.buffers(dln)
+  if cipher.decrypt(context, #iv, iv, #ad, ad, dln, dst, src) ~= 1 then
+    return nil, "unable to AES-SiV-MAC decrypt"
+  end
+  return ffi_str(dst, dln)
+end
+
 local aes = {}
 aes.__index = aes
 
@@ -355,14 +400,18 @@ function aes.new(key, mode, iv, ad)
     mode = "ecb"
   end
   local len = #key
-  if mode == "xts" and len ~= 32 and len ~= 64 then
-    return nil, "the AES XTS-mode supported key sizes are 256 and 512 bits"
-  elseif len ~= 16 and len ~= 24 and len ~= 32 then
-    return nil, "the AES supported key sizes are 128, 192, and 256 bits"
-  end
   local config = ciphers[mode]
   if not config then
-    return nil, "the AES supported modes are ECB, CBC, CTR, EAX, GCM, CCM, CFB, CFB8 and XTS"
+    return nil, "the AES supported modes are ECB, CBC, CTR, EAX, GCM, CCM, CFB, CFB8, XTS, and SIV-CMAC"
+  end
+  if mode == "xts" and len ~= 32 and len ~= 64 then
+    return nil, "the AES-XTS supported key sizes are 256 and 512 bits"
+  elseif mode == "siv-cmac" and len ~= 32 and len ~= 64 then
+    return nil, "the AES-SIV-CMAC supported key sizes are 256 and 512 bits"
+  elseif mode == "eax" and len ~= 16 then
+    return nil, "the AES-EAX supported key size is 128 bits"
+  elseif len ~= 16 and len ~= 24 and len ~= 32 then
+    return nil, "the AES-" .. mode:upper() .. " supported key sizes are 128, 192, and 256 bits"
   end
   local bits = len * 8
   local iv_size = config.iv_size
@@ -380,6 +429,17 @@ function aes.new(key, mode, iv, ad)
   local cipher = config[bits]
   local context = ffi_new(cipher.context)
   cipher.setkey(context, key)
+  if mode == "siv-cmac" then
+    if #iv < iv_size[1] then
+      return nil, "the AES-SIV-CMAC supported initialization vector minimum size is 8 bits"
+    end
+    return setmetatable({
+      context = context,
+      cipher = cipher,
+      iv = iv,
+      ad = ad,
+    }, siv)
+  end
   if iv_size then
     iv = iv or ""
     if iv_size == huge then
@@ -387,8 +447,16 @@ function aes.new(key, mode, iv, ad)
     else
       if type(iv_size) == "table" then
         if #iv < iv_size[1] or #iv > iv_size[2] then
-          return nil, "the AES-" .. mode:upper() .. " supported initialization vector sizes are between " ..
-            (iv_size[1] * 8) .. " and " .. (iv_size[2] * 8) .. " bits"
+          if iv_size[1] == -huge then
+            return nil, "the AES-" .. mode:upper() .. " supported initialization vector maximum size is " ..
+              (iv_size[2] * 8) .. " bits"
+          elseif iv_size[2] == huge then
+            return nil, "the AES-" .. mode:upper() .. " supported initialization vector minimum size is " ..
+              (iv_size[1] * 8) .. " bits"
+          else
+            return nil, "the AES-" .. mode:upper() .. " supported initialization vector sizes are between " ..
+              (iv_size[1] * 8) .. " and " .. (iv_size[2] * 8) .. " bits"
+          end
         end
         if mode == "ccm" then
           return setmetatable({
