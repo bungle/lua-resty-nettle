@@ -13,6 +13,7 @@ return {
   chacha_poly1305     = require "resty.nettle.chacha-poly1305",
   ["chacha-poly1305"] = require "resty.nettle.chacha-poly1305",
   cmac                = require "resty.nettle.cmac",
+  curve448            = require "resty.nettle.curve448",
   curve25519          = require "resty.nettle.curve25519",
   des                 = require "resty.nettle.des",
   dsa                 = require "resty.nettle.dsa",

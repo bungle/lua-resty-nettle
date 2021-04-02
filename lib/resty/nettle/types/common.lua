@@ -21,6 +21,7 @@ local predefined_a = {
   [28] = ffi_new(types.uint8_t, 28),
   [32] = ffi_new(types.uint8_t, 32),
   [48] = ffi_new(types.uint8_t, 48),
+  [56] = ffi_new(types.uint8_t, 56),
   [61] = ffi_new(types.uint8_t, 61),
   [64] = ffi_new(types.uint8_t, 64),
 }
@@ -36,6 +37,7 @@ local predefined_b = {
   [28] = ffi_new(types.uint8_t, 28),
   [32] = ffi_new(types.uint8_t, 32),
   [48] = ffi_new(types.uint8_t, 48),
+  [56] = ffi_new(types.uint8_t, 56),
   [61] = ffi_new(types.uint8_t, 61),
   [64] = ffi_new(types.uint8_t, 64),
 }
@@ -54,6 +56,7 @@ return {
   uint8_t_28 = predefined_a[28],
   uint8_t_32 = predefined_a[32],
   uint8_t_48 = predefined_a[48],
+  uint8_t_56 = predefined_a[56],
   uint8_t_61 = predefined_a[61],
   uint8_t_64 = predefined_a[64],
   uint32_t = types.uint32_t,

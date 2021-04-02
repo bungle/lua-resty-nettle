@@ -18,6 +18,7 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 - Add support for HMAC-STREEBOG512
 - Add support for BCRYPT
 - Add support for AES-XTS mode
+- Add curve448
   
 ### Fixed
 - P-512 curve was missing on internal curves table with cdata
