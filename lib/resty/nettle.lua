@@ -19,6 +19,8 @@ return {
   dsa                 = require "resty.nettle.dsa",
   ecc                 = require "resty.nettle.ecc",
   ecdsa               = require "resty.nettle.ecdsa",
+  ed448_shake256      = require "resty.nettle.ed448-shake256",
+  ["ed448-shake256"]  = require "resty.nettle.ed448-shake256",
   ed25519_sha512      = require "resty.nettle.ed25519-sha512",
   ["ed25519-sha512"]  = require "resty.nettle.ed25519-sha512",
   gmp                 = require "resty.nettle.gmp",
