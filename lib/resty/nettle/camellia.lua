@@ -60,14 +60,14 @@ local camellia = {}
 camellia.__index = camellia
 
 function camellia.new(key, mode, iv, ad)
-  local len = #key
-  if len ~= 16 and len ~= 24 and len ~= 32 then
-    return nil, "the Camellia supported key sizes are 128, 192, and 256 bits"
-  end
   if mode then
     mode = lower(mode)
   else
     mode = "ecb"
+  end
+  local len = #key
+  if len ~= 16 and len ~= 24 and len ~= 32 then
+    return nil, "the Camellia supported key sizes are 128, 192, and 256 bits"
   end
   local config = ciphers[mode]
   if not config then
@@ -84,15 +84,20 @@ function camellia.new(key, mode, iv, ad)
       return nil, "the Camellia-" .. mode:upper() .. " supported initialization vector size is " ..
         (iv_size * 8) .. " bits"
     end
-    cipher.setiv(context, iv_size, iv)
+    if cipher.setiv then
+      cipher.setiv(context, iv_size, iv)
+      iv = nil
+    end
   end
   if ad and cipher.update then
     cipher.update(context, #ad, ad)
+    ad = nil
   end
-
   return setmetatable({
     context = context,
-    cipher = cipher
+    cipher = cipher,
+    iv = iv,
+    ad = ad,
   }, camellia)
 end
 
