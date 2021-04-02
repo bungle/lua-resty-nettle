@@ -20,6 +20,7 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 - Add support for AES-XTS mode
 - Add suppoer for curve448
 - Add support for EdDSA448 SHAKE-256
+- Add support for AES-SIV-CMAC mode
   
 ### Fixed
 - P-512 curve was missing on internal curves table with cdata

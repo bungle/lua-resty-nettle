@@ -1,3 +1,5 @@
+require "resty.nettle.types.aes"
+
 local ffi = require "ffi"
 local ffi_cdef = ffi.cdef
 local ffi_typeof = ffi.typeof
