@@ -43,7 +43,7 @@ end
 function cmac:digest()
   local cmc = self.cmac
   cmc.digest(self.context, 16, cmc.buffer)
-  return ffi_str(cmac.buffer, 16)
+  return ffi_str(cmc.buffer, 16)
 end
 
 local function factory(mac)

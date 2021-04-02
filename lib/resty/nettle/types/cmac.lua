@@ -6,9 +6,12 @@ local ffi_cdef = ffi.cdef
 local ffi_typeof = ffi.typeof
 
 ffi_cdef [[
-struct cmac128_ctx {
+struct cmac128_key {
   union nettle_block16 K1;
   union nettle_block16 K2;
+};
+
+struct cmac128_ctx {
   union nettle_block16 X;
   union nettle_block16 block;
   size_t index;
@@ -34,17 +37,18 @@ nettle_cmac_aes256_update(struct cmac_aes256_ctx *ctx,
 
 void
 nettle_cmac_aes256_digest(struct cmac_aes256_ctx *ctx,
-                          size_t length, uint8_t *digest);
-]]
+                          size_t length, uint8_t *digest);]]
 
 return {
   aes128 = ffi_typeof [[
 struct cmac_aes128_ctx {
+  struct cmac128_key key;
   struct cmac128_ctx ctx;
   struct aes128_ctx cipher;
 }]],
   aes256 = ffi_typeof [[
 struct cmac_aes256_ctx {
+  struct cmac128_key key;
   struct cmac128_ctx ctx;
   struct aes256_ctx cipher;
 }]],
