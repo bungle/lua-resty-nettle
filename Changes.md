@@ -3,11 +3,11 @@
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
 
-## [2.0] - Upcoming
+## [2.0] - 2020-04-06
 ### Added
 - Add Streebog hashing algorithms (256 and 512)
 - Add PBKDF2 HMAC-SHA384 and HMAC-SHA512 variants
-- Add support for Nettle 3.6.x and Nettle 3.7.x
+- Add support for Nettle 3.7.x
 - Add support for GC256B and GC512A ECC curves 
 - Add support for SHA3 256 SHAKE
 - Add support for ARCTWO (RC2)
@@ -27,8 +27,8 @@ All notable changes to `lua-resty-nettle` will be documented in this file.
 - ARCFOUR (RC4) maximum key size is raised from 256 bits to 2048 bits
 
 ### Changed
+- Drop (official) support for Nettle < 3.7.x
 
-- Drop support for Nettle < 3.7.x
 
 ## [1.5] - 2020-04-01
 ### Fixed
