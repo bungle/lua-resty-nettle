@@ -75,6 +75,7 @@ build = {
     ["resty.nettle.yarrow"]                = "lib/resty/nettle/yarrow.lua",
     ["resty.nettle.types.aes"]             = "lib/resty/nettle/types/aes.lua",
     ["resty.nettle.types.arcfour"]         = "lib/resty/nettle/types/arcfour.lua",
+    ["resty.nettle.types.arctwo"]          = "lib/resty/nettle/types/arctwo.lua",
     ["resty.nettle.types.base16"]          = "lib/resty/nettle/types/base16.lua",
     ["resty.nettle.types.base64"]          = "lib/resty/nettle/types/base64.lua",
     ["resty.nettle.types.bcrypt"]          = "lib/resty/nettle/types/bcrypt.lua",
