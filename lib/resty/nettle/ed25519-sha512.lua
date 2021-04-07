@@ -5,25 +5,30 @@ local hogweed = require "resty.nettle.hogweed"
 local ffi = require "ffi"
 local ffi_str = ffi.string
 
-local ed = {}
+local ed25519 = {}
 
-function ed.public_key(pri)
+function ed25519.public_key(pri)
+  if not pri then
+    return nil, "the EdDSA25519 SHA-512 public key cannot be extracted without private key"
+  end
   if #pri ~= 32 then
-    return nil, "the EdDSA25519 SHA-512 supported key size is 256 bits"
+    return nil, "the EdDSA25519 SHA-512 supported private key size is 256 bits"
   end
   hogweed.nettle_ed25519_sha512_public_key(types.uint8_t_32, pri)
   return ffi_str(types.uint8_t_32, 32)
 end
 
-function ed.sign(pub, pri, msg)
-  if pri and not pub then
+function ed25519.sign(pub, pri, msg)
+  if not pri then
+    return nil, "the EdDSA25519 SHA-512 signing is not possible without private key"
+  end
+  if not pub then
     local err
-    pub, err = ed.public_key(pri)
+    pub, err = ed25519.public_key(pri)
     if not pub then
       return nil, err
     end
   end
-
   if #pub ~= 32 then
     return nil, "the EdDSA25519 SHA-512 supported public key size is 256 bits"
   end
@@ -34,7 +39,13 @@ function ed.sign(pub, pri, msg)
   return ffi_str(types.uint8_t_64, 64)
 end
 
-function ed.verify(pub, msg, sig)
+function ed25519.verify(pub, msg, sig)
+  if not pub then
+    return nil, "the EdDSA25519 SHA-512 signature verification is not possible without public key"
+  end
+  if not sig then
+    return nil, "the EdDSA25519 SHA-512 signature verification is not possible without signature"
+  end
   if #pub ~= 32 then
     return nil, "the EdDSA25519 SHA-512 supported public key size is 256 bits"
   end
@@ -47,4 +58,4 @@ function ed.verify(pub, msg, sig)
   return true
 end
 
-return ed
+return ed25519

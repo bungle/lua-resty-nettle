@@ -5,20 +5,26 @@ local hogweed = require "resty.nettle.hogweed"
 local ffi = require "ffi"
 local ffi_str = ffi.string
 
-local ed = {}
+local ed448 = {}
 
-function ed.public_key(pri)
+function ed448.public_key(pri)
+  if not pri then
+    return nil, "the EdDSA448 SHAKE-256 public key cannot be extracted without private key"
+  end
   if #pri ~= 57 then
-    return nil, "the EdDSA448 SHAKE-256 supported key size is 456 bits"
+    return nil, "the EdDSA448 SHAKE-256 supported private key size is 456 bits"
   end
   hogweed.nettle_ed448_shake256_public_key(types.uint8_t_57, pri)
   return ffi_str(types.uint8_t_57, 57)
 end
 
-function ed.sign(pub, pri, msg)
-  if pri and not pub then
+function ed448.sign(pub, pri, msg)
+  if not pri then
+    return nil, "the EdDSA448 SHAKE-256 signing is not possible without private key"
+  end
+  if not pub then
     local err
-    pub, err = ed.public_key(pri)
+    pub, err = ed448.public_key(pri)
     if not pub then
       return nil, err
     end
@@ -33,7 +39,13 @@ function ed.sign(pub, pri, msg)
   return ffi_str(types.uint8_t_114, 114)
 end
 
-function ed.verify(pub, msg, sig)
+function ed448.verify(pub, msg, sig)
+  if not pub then
+    return nil, "the EdDSA448 SHAKE-256 signature verification is not possible without public key"
+  end
+  if not sig then
+    return nil, "the EdDSA448 SHAKE-256 signature verification is not possible without signature"
+  end
   if #pub ~= 57 then
     return nil, "the EdDSA448 SHAKE-256 supported public key size is 456 bits"
   end
@@ -46,4 +58,4 @@ function ed.verify(pub, msg, sig)
   return true
 end
 
-return ed
+return ed448

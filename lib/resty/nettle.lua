@@ -23,6 +23,7 @@ return {
   ["ed448-shake256"]  = require "resty.nettle.ed448-shake256",
   ed25519_sha512      = require "resty.nettle.ed25519-sha512",
   ["ed25519-sha512"]  = require "resty.nettle.ed25519-sha512",
+  eddsa               = require "resty.nettle.eddsa",
   gmp                 = require "resty.nettle.gmp",
   gosthash94          = require "resty.nettle.gosthash94",
   gosthash94cp        = require "resty.nettle.gosthash94cp",
