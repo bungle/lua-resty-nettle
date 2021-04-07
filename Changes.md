@@ -3,7 +3,14 @@
 All notable changes to `lua-resty-nettle` will be documented in this file.
 
 
-## [2.0] - 2020-04-06
+## [2.1] - 2021-04-07
+
+### Added
+- Publish `resty.nettle.eddsa` module with `resty.nettle` module
+- Make `resty.nettle.eddsa` to automatically choose the algorithm based on key size
+
+
+## [2.0] - 2021-04-06
 ### Added
 - Add Streebog hashing algorithms (256 and 512)
 - Add PBKDF2 HMAC-SHA384 and HMAC-SHA512 variants
