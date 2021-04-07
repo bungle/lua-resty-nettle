@@ -1,5 +1,5 @@
 return {
-  _VERSION            = "2.0",
+  _VERSION            = "2.1",
   aes                 = require "resty.nettle.aes",
   arcfour             = require "resty.nettle.arcfour",
   arctwo              = require "resty.nettle.arctwo",

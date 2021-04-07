@@ -1,14 +1,15 @@
 rockspec_format = "3.0"
 package = "lua-resty-nettle"
-version = "dev-1"
+version = "2.1-1"
 source = {
   url = "git://github.com/bungle/lua-resty-nettle.git",
+  branch = "v2.1",
 }
+
 description = {
   summary    = "LuaJIT FFI bindings for Nettle (a low-level cryptographic library)",
   detailed   = "lua-resty-nettle contains LuaJIT FFI bindings to GNU Nettle cryptographic library.",
   homepage   = "https://github.com/bungle/lua-resty-nettle",
-  issues_url = "https://github.com/bungle/lua-resty-nettle/issues",
   maintainer = "Aapo Talvensaari <aapo.talvensaari@gmail.com>",
   license    = "BSD",
   labels     = {
@@ -132,5 +133,5 @@ build = {
     ["resty.nettle.padding.pkcs7"]         = "lib/resty/nettle/padding/pkcs7.lua",
     ["resty.nettle.padding.spacepadding"]  = "lib/resty/nettle/padding/spacepadding.lua",
     ["resty.nettle.padding.zeropadding"]   = "lib/resty/nettle/padding/zeropadding.lua",
-  }
+  },
 }
